@@ -184,7 +184,7 @@ class SshAvahiMonitor(gobject.GObject):
         self.__browser.connect_to_signal('ItemRemove', self.__on_item_remove)
 
     def __iter__(self):
-        for k,addr,port in self.__cache.iteritems():
+        for k,(addr,port) in self.__cache.iteritems():
             yield (k, addr, port)
 
     def __on_resolve_reply(self, *args):
@@ -249,6 +249,10 @@ class LocalConnectDialog(gtk.Dialog):
                                             parent=parent,
                                             flags=gtk.DIALOG_DESTROY_WITH_PARENT,
                                             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
+        
+        self.__local_avahi = local_avahi
+        self.__custom_user = False
+        
         self.connect('response', lambda *args: self.hide())
         self.connect('delete-event', self.hide_on_delete)
         button = self.add_button(_('C_onnect'), gtk.RESPONSE_ACCEPT)
@@ -267,12 +271,12 @@ class LocalConnectDialog(gtk.Dialog):
         self.__view = gtk.TreeView(self.__model)
         self.__view.connect('row-activated', self.__on_item_activated)
         frame.add(self.__view)
-        colidx = self.__recent_view.insert_column_with_attributes(-1, _('Name'),
+        colidx = self.__view.insert_column_with_attributes(-1, _('Name'),
                                                           gtk.CellRendererText(),
-                                                          'text', 0)
-        colidx = self.__recent_view.insert_column_with_attributes(-1, _('Address'),
+                                                          text=0)
+        colidx = self.__view.insert_column_with_attributes(-1, _('Address'),
                                                           gtk.CellRendererText(),
-                                                          'text', 1)
+                                                          text=1)
         vbox.pack_start(frame, expand=True)
         self.__reload_avahi()
         
@@ -284,7 +288,6 @@ class LocalConnectDialog(gtk.Dialog):
         vbox.pack_start(hbox, expand=False)
         user_label = gtk.Label(_('User: '))
         user_label.set_markup('<b>%s</b>' % (gobject.markup_escape_text(user_label.get_text())))
-        sg.add_widget(user_label)
         hbox.pack_start(user_label, expand=False)
         self.__user_entry = gtk.Entry()
         self.__set_user(None)
@@ -295,10 +298,18 @@ class LocalConnectDialog(gtk.Dialog):
 
         self.set_default_size(640, 480)
         
+    def __reload_avahi(self):
+        self.__model.clear()
+        for name,host,port in self.__local_avahi:
+            self.__model.append((name,host,port))
+        
     def __set_user(self, name):
         if name is None:
             name = pwd.getpwuid(os.getuid()).pw_name
         self.__user_entry.set_text(name)    
+
+    def __on_user_modified(self, *args):   
+        self.__custom_user = True
         
     def __on_item_activated(self, tv, path, vc):
         self.activate_default()
@@ -308,10 +319,16 @@ class LocalConnectDialog(gtk.Dialog):
         resp = self.run()
         if resp != gtk.RESPONSE_ACCEPT:
             return None
-        host = self.__view.get_selection().get_selected()
-        if not host:
+        (model, seliter) = self.__view.get_selection().get_selected()
+        if seliter is None:
             return None
-        args = [x for x in _whitespace_re.split(self.__options_entry.get_text()) if x != '']
+        host = model.get_value(seliter, 1)
+        port = model.get_value(seliter, 2)
+        if port != 22:
+            args = ['-p', '%s' % (port,)]
+        else:
+            args = []
+        args.extend([x for x in _whitespace_re.split(self.__options_entry.get_text()) if x != ''])
         if self.__custom_user:
             args.append(self.__user_entry.get_text() + '@' + host)
         else:
@@ -886,7 +903,7 @@ class SshWindow(VteWindow):
         self.__actions = actions = [
             ('NewConnection', gtk.STOCK_NEW, _('Connect to server'), '<control><shift>O',
              _('Open a new Secure Shell connection'), self.__new_connection_cb),
-            ('NewLocalConnection', gtk.STOCK_NEW, _('Connect to local server'), None,
+            ('NewLocalConnection', None, _('Connect to local server'), None,
              _('Open a new Secure Shell connection to local server'), self.__new_local_connection_cb),                
             ('CopyConnection', gtk.STOCK_JUMP_TO, _('New tab for connection'), '<control><shift>T',
              _('Open a new tab for the same remote computer'), self.__copy_connection_cb),              
