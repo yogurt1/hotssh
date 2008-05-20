@@ -1,0 +1,6 @@
+include hotwire-ssh.desktop
+include COPYING
+include images/*.png
+include images/*.gif
+include images/*.ico
+include hotwire-ssh.*sh

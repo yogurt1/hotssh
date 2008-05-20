@@ -1,0 +1,71 @@
+#!/usr/bin/python
+# This file is part of the Hotwire Shell user interface.
+#   
+# Copyright (C) 2007 Colin Walters <walters@verbum.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+import sys, os
+
+# We want to avoid running under the controlling terminal if we were passed
+# --bg, which by default comes from our sh/csh alias 
+if len(sys.argv) > 1 and sys.argv[1] == '--bg' and os.isatty(0):
+    pid = os.fork()
+    if pid == 0:
+       del sys.argv[1]
+       os.setsid()
+    else:
+       sys.exit(0)
+
+if __name__ == '__main__' and hasattr(sys.modules['__main__'], '__file__'):
+    basedir = os.path.dirname(os.path.abspath(__file__))
+    up_basedir = os.path.dirname(basedir)
+    if os.path.exists(os.path.join(up_basedir, 'COPYING')):
+        print "Detected COPYING; Apparently running uninstalled, extending path"
+        sys.path.insert(0, up_basedir)
+        os.environ['HOTWIRE_UNINSTALLED'] = up_basedir
+        os.environ['PYTHONPATH'] = os.pathsep.join(sys.path)
+        
+exec_real_ssh = False
+try:
+	import gtk
+except:
+	# No gtk, clearly no hotwire-ssh
+	exec_real_ssh = True
+if not exec_real_ssh:
+	# These options are ones which are mostly designed to be used from
+	# an existing Unix terminal.
+	for arg in ['-n', '-s', '-T']:
+		if arg in sys.argv[1:]:
+			exec_real_ssh = True
+			break
+if not exec_real_ssh:
+	# If we have at least two nonoptions, then the command is of the form:
+	# user@host command ...
+	# This style is designed to get output into an existing display generally
+	nonoption_count = 0
+	for arg in sys.argv[1:]:
+		if not arg.startswith('-'):
+			nonoption_count += 1
+	if nonoption_count > 1:
+		exec_real_ssh = True 
+
+if exec_real_ssh:
+	os.execvp('ssh', ['ssh'] + sys.argv[1:])
+
+from hotssh.sshwindow import SshApp
+from hotssh.hotvte.vtewindow import VteMain
+
+VteMain().main(SshApp)
