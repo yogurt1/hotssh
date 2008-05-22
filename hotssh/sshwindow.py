@@ -645,8 +645,15 @@ class SshTerminalWidgetImpl(VteTerminalWidget):
 
 class SshTerminalWidget(gtk.VBox):
     __gsignals__ = {
+        "status-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
         "close" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
-    }       
+    }
+    
+    latency = property(lambda self: self.__latency)
+    connecting_state = property(lambda self: self.__connecting_state)
+    connected = property(lambda self: self.__connected)
+    ssh_options = property(lambda self: self.__sshopts)
+    
     def __init__(self, args, cwd, actions=None):
         super(SshTerminalWidget, self).__init__()
         self.__init_state()
@@ -673,7 +680,7 @@ class SshTerminalWidget(gtk.VBox):
         self.__msg = gtk.Label()
         self.__msg.set_alignment(0.0, 0.5)
         self.__msgarea_mgr = MsgAreaController()
-        header.pack_start(self.__msg)
+        #header.pack_start(self.__msg)
         header.pack_start(self.__msgarea_mgr)
         self.pack_start(header, expand=False)
         self.ssh_connect()
@@ -694,23 +701,11 @@ class SshTerminalWidget(gtk.VBox):
             return        
         self.__connected = connected
         self.__latency = latency
+        self.emit('status-changed')
         self.__sync_msg()
         
     def __sync_msg(self):
-        if self.__cmd_exited:
-            return
-        if self.__connecting_state:
-            text = _('Connecting')
-        elif self.__connected is True:
-            text = _('Connected (%.2fs latency)') % (self.__latency)
-        elif self.__connected is False:
-            text = '<span foreground="red">%s</span>' % (_('Connection timeout'))
-        elif self.__connected is None:
-            text = _('Checking connection')
-        if len(self.__sshopts) > 1:
-            text += _('; Options: ') + (' '.join(map(gobject.markup_escape_text, self.__sshopts)))
-        self.__msg.show()
-        self.__msg.set_markup(text)
+        return
         
     def ssh_connect(self):
         self.__connecting_state = True        
@@ -803,6 +798,12 @@ class SshWindow(VteWindow):
             _logger.debug("Couldn't find NetworkManager")
             self.__nm_proxy = None
         
+        self.__status_hbox = gtk.HBox()
+        self.__statusbar = gtk.Statusbar()
+        self.__status_hbox.pack_start(self.__statusbar, expand=True)
+        self.__statusbar_ctx = self.__statusbar.get_context_id("HotSSH")
+        self._get_vbox().pack_start(self.__status_hbox, expand=False)        
+        
         self.__idle_stop_monitoring_id = 0
         
         self.connect("notify::is-active", self.__on_is_active_changed)
@@ -834,6 +835,32 @@ class SshWindow(VteWindow):
             self.__add_to_history(args)
             term = SshTerminalWidget(args=args, cwd=cwd, actions=self.__action_group)
             self.append_widget(term)
+            
+    def append_widget(self, w):
+        super(SshWindow, self).append_widget(w)
+        w.connect('status-changed', self.__on_widget_status_changed)
+        self.__sync_status_display()
+        
+    def __on_widget_status_changed(self, w):
+        self.__sync_status_display()
+    
+    def __sync_status_display(self):
+        notebook = self._get_notebook()
+        pn = notebook.get_current_page()
+        if pn < 0:
+            return
+        widget = notebook.get_nth_page(pn)
+        if widget.connecting_state:
+            text = _('Connecting')
+        elif widget.connected is True:
+            text = _('Connected (%.2fs latency)') % (widget.latency,)
+        elif widget.connected is False:
+            text = '<span foreground="red">%s</span>' % (_('Connection timeout'),)
+        elif widget.connected is None:
+            text = _('Checking connection')
+        if len(widget.ssh_options) > 1:
+            text += _('; Options: ') + (' '.join(map(gobject.markup_escape_text, widget.ssh_options)))        
+        id = self.__statusbar.push(self.__statusbar_ctx, text)
         
     def __on_nm_state_change(self, *args):
         self.__sync_nm_state()
@@ -879,6 +906,7 @@ class SshWindow(VteWindow):
         # for the new current one.
         self.__stop_monitoring()
         self.__start_monitoring(pn=pn)
+        self.__sync_status_display()
             
     def __stop_monitoring(self):
         notebook = self._get_notebook()

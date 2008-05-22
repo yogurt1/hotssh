@@ -63,7 +63,7 @@ class VteWindow(gtk.Window):
         self.__old_char_width = 0
         self.__old_geom_widget = None
         
-        vbox = gtk.VBox()
+        self.__vbox = vbox = gtk.VBox()
         self.add(vbox)
         self.__ui_string = """
 <ui>
@@ -153,6 +153,9 @@ class VteWindow(gtk.Window):
         
     def _get_notebook(self):
         return self.__notebook
+    
+    def _get_vbox(self):
+        return self.__vbox
 
     def __on_page_switch(self, n, p, pn):
         _logger.debug("got page switch, pn=%d", pn)
