@@ -770,7 +770,7 @@ class SshTerminalWidget(gtk.VBox):
 
 class SshWindow(VteWindow):
     def __init__(self, **kwargs):
-        super(SshWindow, self).__init__(title='HotSSH', icon_name='hotwire-openssh', **kwargs)
+        super(SshWindow, self).__init__(title='Secure Shell', icon_name='hotwire-openssh', **kwargs)
         
         self.__ui_string = """
 <ui>
