@@ -792,8 +792,12 @@ class SshWindow(VteWindow):
         self._get_notebook().connect('switch-page', self.__on_page_switch)
 
         try:
+            self.__cached_nm_connected = None
             self.__nm_proxy = dbus.SystemBus().get_object('org.freedesktop.NetworkManager', '/org/freedesktop/NetworkManager')
             self.__nm_proxy.connect_to_signal('StateChange', self.__on_nm_state_change)
+            dbus.Interface(self.__nm_proxy, 'org.freedesktop.DBus.Properties').Get('org.freedesktop.NetworkManager',
+                                                                                   'State', reply_handler=self.__on_nm_state_change,
+                                                                                   error_handler=self.__on_dbus_error)
         except dbus.DBusException, e:
             _logger.debug("Couldn't find NetworkManager")
             self.__nm_proxy = None
@@ -861,19 +865,37 @@ class SshWindow(VteWindow):
         if len(widget.ssh_options) > 1:
             text += _('; Options: ') + (' '.join(map(gobject.markup_escape_text, widget.ssh_options)))        
         id = self.__statusbar.push(self.__statusbar_ctx, text)
-        
-    def __on_nm_state_change(self, *args):
-        self.__sync_nm_state()
-        
-    def __sync_nm_state(self):
-        self.__nm_proxy.GetActiveConnections(reply_handler=self.__on_nm_connections, error_handler=self.__on_dbus_error)
-        
-    def __on_dbus_error(self, *args):
-        _logger.debug("caught DBus error: %r", args, exc_info=True)
+
+    def __on_dbus_error(self, *args, **kwargs):
+        _logger.error("DBus error: %r %r", args, kwargs)
         
     @log_except(_logger)        
-    def __on_nm_connections(self, connections):
-        _logger.debug("nm connections: %s", connections)    
+    def __on_nm_state_change(self, *args):
+        if len(args) > 1:
+            (_, curstate) = args
+        else:
+            curstate = args[0]
+        _logger.debug("nm state: %s", curstate)
+        connected = curstate == 3
+        if (self.__cached_nm_connected is not None) and \
+            (not self.__cached_nm_connected) and connected:
+            self.__do_network_change_notify()
+        self.__cached_nm_connected = connected            
+            
+    def __do_network_change_notify(self):
+        mgr = self._get_msgarea_mgr()
+        msgarea = mgr.new_from_text_and_icon(gtk.STOCK_INFO, _('Network connection changed'), 
+                                                            buttons=[(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)])
+        reconnect = self.__action_group.get_action('ReconnectAll')
+        msgarea.add_stock_button_with_text(reconnect.get_property('label'), 
+                                           reconnect.get_property('stock-id'), gtk.RESPONSE_ACCEPT)
+        msgarea.connect('response', self.__on_msgarea_response)
+        msgarea.show_all()
+        
+    def __on_msgarea_response(self, msgarea, respid):
+        if respid == gtk.RESPONSE_ACCEPT:
+            reconnect = self.__action_group.get_action('ReconnectAll')
+            reconnect.activate()       
         
     @log_except(_logger)        
     def __on_host_status(self, hostmon, host, connected, latency):
@@ -939,6 +961,7 @@ class SshWindow(VteWindow):
              _('Open a SFTP connection'), self.__open_sftp_cb),            
             ('ConnectionMenu', None, _('Connection')),
             ('Reconnect', gtk.STOCK_CONNECT, _('_Reconnect'), '<control><shift>R', _('Reset connection to server'), self.__reconnect_cb),
+            ('ReconnectAll', gtk.STOCK_CONNECT, _('Re_connect All'), None, _('Reset all connections'), self.__reconnect_all_cb),            
             ]
         self.__action_group = self._merge_ui(self.__actions, self.__ui_string)
         
@@ -986,6 +1009,11 @@ class SshWindow(VteWindow):
         notebook = self._get_notebook()        
         widget = notebook.get_nth_page(notebook.get_current_page())
         widget.ssh_reconnect()
+        
+    @log_except(_logger)        
+    def __reconnect_all_cb(self, a):
+        for widget in self._get_notebook().get_children():        
+            widget.ssh_reconnect()
 
 class SshApp(VteApp):
     def __init__(self):

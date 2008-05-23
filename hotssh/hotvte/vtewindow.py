@@ -24,7 +24,7 @@ import gtk,gobject,pango
 import dbus,dbus.glib,dbus.service
 
 from hotssh.hotvte.vteterm import VteTerminalWidget
-
+from hotssh.hotlib_ui.msgarea import MsgAreaController
 from hotssh.hotlib_ui.quickfind import QuickFindWindow
 
 _logger = logging.getLogger("hotvte.VteWindow")
@@ -96,6 +96,9 @@ class VteWindow(gtk.Window):
         self.__create_ui()
         vbox.pack_start(self.__ui.get_widget('/Menubar'), expand=False)
         
+        self.__msgarea_mgr = MsgAreaController()
+        vbox.pack_start(self.__msgarea_mgr, expand=False)        
+        
         self.connect("key-press-event", self.__on_keypress)
                 
         self.__title = title
@@ -156,6 +159,9 @@ class VteWindow(gtk.Window):
     
     def _get_vbox(self):
         return self.__vbox
+    
+    def _get_msgarea_mgr(self):
+        return self.__msgarea_mgr
 
     def __on_page_switch(self, n, p, pn):
         _logger.debug("got page switch, pn=%d", pn)
