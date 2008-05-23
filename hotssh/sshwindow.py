@@ -893,6 +893,8 @@ class SshWindow(VteWindow):
         msgarea.show_all()
         
     def __on_msgarea_response(self, msgarea, respid):
+        mgr = self._get_msgarea_mgr()
+        mgr.clear()
         if respid == gtk.RESPONSE_ACCEPT:
             reconnect = self.__action_group.get_action('ReconnectAll')
             reconnect.activate()       
