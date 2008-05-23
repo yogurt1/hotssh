@@ -343,6 +343,8 @@ class ConnectDialog(gtk.Dialog):
                                             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
         
         self.__history = history
+        
+        self.__default_username = pwd.getpwuid(os.getuid()).pw_name
 
         self.connect('response', lambda *args: self.hide())
         self.connect('delete-event', self.hide_on_delete)
@@ -449,7 +451,7 @@ class ConnectDialog(gtk.Dialog):
         
     def __set_user(self, name):
         if name is None:
-            name = pwd.getpwuid(os.getuid()).pw_name
+            name = self.__default_username
         self.__user_entry.set_text(name) 
         
     def __render_time_recency(self, col, cell, model, iter, curtime):
@@ -472,9 +474,8 @@ class ConnectDialog(gtk.Dialog):
             self.__entry.append_text(host)
             
     def __on_user_modified(self, *args):
-        if self.__suppress_recent_search:
-            return        
-        self.__custom_user = True
+        text = self.__user_entry.get_text()     
+        self.__custom_user = text != self.__default_username
 
     def __on_entry_modified(self, *args):
         text = self.__entry.get_active_text()
