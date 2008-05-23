@@ -963,7 +963,7 @@ class SshWindow(VteWindow):
              _('Open a SFTP connection'), self.__open_sftp_cb),            
             ('ConnectionMenu', None, _('Connection')),
             ('Reconnect', gtk.STOCK_CONNECT, _('_Reconnect'), '<control><shift>R', _('Reset connection to server'), self.__reconnect_cb),
-            ('ReconnectAll', gtk.STOCK_CONNECT, _('Re_connect All'), None, _('Reset all connections'), self.__reconnect_all_cb),            
+            ('ReconnectAll', gtk.STOCK_CONNECT, _('_Reconnect All'), None, _('Reset all connections'), self.__reconnect_all_cb),            
             ]
         self.__action_group = self._merge_ui(self.__actions, self.__ui_string)
         
