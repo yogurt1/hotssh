@@ -219,8 +219,8 @@ class VteWindow(gtk.Window):
             ('Close', gtk.STOCK_CLOSE, _('_Close'), '<control><shift>W',
              'Close the current tab', self.__close_cb),
             ('EditMenu', None, _('Edit')),
-            ('Copy', 'gtk-copy', _('_Copy'), '<control><shift>C', 'Copy selected text', self.__copy_cb),
-            ('Paste', 'gtk-paste', _('_Paste'), '<control><shift>V', 'Paste text', self.__paste_cb),                   
+            ('Copy', gtk.STOCK_COPY, _('_Copy'), '<control><shift>C', 'Copy selected text', self.__copy_cb),
+            ('Paste', gtk.STOCK_PASTE, _('_Paste'), '<control><shift>V', 'Paste text', self.__paste_cb),                   
             ('ViewMenu', None, _('View')),
             ('ToolsMenu', None, _('Tools')),                    
             ('About', gtk.STOCK_ABOUT, _('_About'), None, 'About HotVTE', self.__help_about_cb),
@@ -275,6 +275,9 @@ class VteWindow(gtk.Window):
         self.__remove_page_widget(widget)
 
     def __help_about_cb(self, action):
+        self._do_about()
+        
+    def _do_about(self):
         from hotwire_ui.aboutdialog import HotwireAboutDialog        
         dialog = HotwireAboutDialog()
         dialog.run()

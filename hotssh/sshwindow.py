@@ -49,6 +49,34 @@ _logger = logging.getLogger("hotssh.SshWindow")
 
 _whitespace_re = re.compile('\s+')
 
+class HotSshAboutDialog(gtk.AboutDialog):
+    def __init__(self):
+        super(HotSshAboutDialog, self).__init__()
+        dialog = self
+        import hotssh.version
+        dialog.set_property('website', 'http://live.gnome.org/HotwireSsh')
+        dialog.set_property('version', hotssh.version.__version__)
+        dialog.set_property('authors', ['Colin Walters <walters@verbum.org>'])
+        dialog.set_property('copyright', u'Copyright \u00A9 2007,2008 Colin Walters <walters@verbum.org>')
+        dialog.set_property('logo-icon-name', 'hotwire-openssh')
+        dialog.set_property('license', 
+                            '''Hotwire is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.\n
+Hotwire is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.\n
+You should have received a copy of the GNU General Public License
+along with Hotwire; if not, write to the Free Software Foundation, Inc.,
+51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA''')
+        dialog.set_property('name', "About Secure Shell")
+        comments = _("An interface to OpenSSH, a Secure Shell client\n\n")
+        if hotssh.version.svn_version_info:
+            comments += "changeset: %s\ndate: %s\n" % (hotssh.version.svn_version_info['Revision'], hotssh.version.svn_version_info['Last Changed Date'],)
+        dialog.set_property('comments', comments)
+
 class SshConnectionHistory(object):
     def __init__(self):
         self.__statedir = os.path.expanduser('~/.hotwire/state')
@@ -241,108 +269,18 @@ class SshOptions(gtk.Expander):
     
     def __on_options_help_clicked(self, b):
         # Hooray Unix!
-        subprocess.Popen(['gnome-terminal', '-x', 'man', 'ssh'])
-        
-class LocalConnectDialog(gtk.Dialog):
-    def __init__(self, parent=None, local_avahi=None):    
-        super(LocalConnectDialog, self).__init__(title=_("New Local Secure Shell Connection"),
-                                            parent=parent,
-                                            flags=gtk.DIALOG_DESTROY_WITH_PARENT,
-                                            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
-        
-        self.__local_avahi = local_avahi
-        self.__custom_user = False
-        
-        self.connect('response', lambda *args: self.hide())
-        self.connect('delete-event', self.hide_on_delete)
-        button = self.add_button(_('C_onnect'), gtk.RESPONSE_ACCEPT)
-        button.set_property('image', gtk.image_new_from_stock('gtk-connect', gtk.ICON_SIZE_BUTTON))
-        self.set_default_response(gtk.RESPONSE_ACCEPT)
-                
-        self.set_has_separator(False)
-        self.set_border_width(5)
-        self.__vbox = vbox = gtk.VBox()
-        self.vbox.add(self.__vbox)   
-        self.vbox.set_spacing(6)
-        
-        frame = gtk.Frame()
-        #frame.set_label_widget(history_label)
-        self.__model = gtk.ListStore(str, str, int)
-        self.__view = gtk.TreeView(self.__model)
-        self.__view.connect('row-activated', self.__on_item_activated)
-        frame.add(self.__view)
-        colidx = self.__view.insert_column_with_attributes(-1, _('Name'),
-                                                          gtk.CellRendererText(),
-                                                          text=0)
-        colidx = self.__view.insert_column_with_attributes(-1, _('Address'),
-                                                          gtk.CellRendererText(),
-                                                          text=1)
-        vbox.pack_start(frame, expand=True)
-        self.__reload_avahi()
-        
-        self.__options_expander = SshOptions()
-        self.__options_entry = self.__options_expander.get_entry()           
-        
-        vbox.pack_start(gtk.Label(' '), expand=False)
-        hbox = gtk.HBox()
-        vbox.pack_start(hbox, expand=False)
-        user_label = gtk.Label(_('User: '))
-        user_label.set_markup('<b>%s</b>' % (gobject.markup_escape_text(user_label.get_text())))
-        hbox.pack_start(user_label, expand=False)
-        self.__user_entry = gtk.Entry()
-        self.__set_user(None)
-        
-        hbox.pack_start(self.__user_entry, expand=False) 
-  
-        vbox.pack_start(self.__options_expander, expand=False)        
-
-        self.set_default_size(640, 480)
-        
-    def __reload_avahi(self):
-        self.__model.clear()
-        for name,host,port in self.__local_avahi:
-            self.__model.append((name,host,port))
-        
-    def __set_user(self, name):
-        if name is None:
-            name = pwd.getpwuid(os.getuid()).pw_name
-        self.__user_entry.set_text(name)    
-
-    def __on_user_modified(self, *args):   
-        self.__custom_user = True
-        
-    def __on_item_activated(self, tv, path, vc):
-        self.activate_default()
-            
-    def run_get_cmd(self):
-        self.show_all()        
-        resp = self.run()
-        if resp != gtk.RESPONSE_ACCEPT:
-            return None
-        (model, seliter) = self.__view.get_selection().get_selected()
-        if seliter is None:
-            return None
-        host = model.get_value(seliter, 1)
-        port = model.get_value(seliter, 2)
-        if port != 22:
-            args = ['-p', '%s' % (port,)]
-        else:
-            args = []
-        args.extend([x for x in _whitespace_re.split(self.__options_entry.get_text()) if x != ''])
-        if self.__custom_user:
-            args.append(self.__user_entry.get_text() + '@' + host)
-        else:
-            args.append(host)
-        return args                    
+        subprocess.Popen(['gnome-terminal', '-x', 'man', 'ssh'])                  
 
 class ConnectDialog(gtk.Dialog):
-    def __init__(self, parent=None, history=None):
+    def __init__(self, parent=None, history=None, local_avahi=None):
         super(ConnectDialog, self).__init__(title=_("New Secure Shell Connection"),
                                             parent=parent,
                                             flags=gtk.DIALOG_DESTROY_WITH_PARENT,
                                             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
         
         self.__history = history
+        self.__local_avahi = local_avahi
+        self.__local_avahi.connect('changed', self.__on_local_avahi_changed)
         
         self.__default_username = pwd.getpwuid(os.getuid()).pw_name
 
@@ -355,11 +293,13 @@ class ConnectDialog(gtk.Dialog):
         self.set_has_separator(False)
         self.set_border_width(5)
         
-        self.__vbox = vbox =gtk.VBox()
+        self.__vbox = vbox = gtk.VBox()
         self.vbox.add(self.__vbox)   
         self.vbox.set_spacing(6)
 
         self.__response_value = None
+   
+        self.__viewmode = 'history'
    
         self.__suppress_recent_search = False
         self.__idle_search_id = 0
@@ -411,24 +351,45 @@ class ConnectDialog(gtk.Dialog):
 
         vbox.pack_start(gtk.Label(' '), expand=False)
 
-        history_label = gtk.Label(_('Connection History'))
-        history_label.set_markup('<b>%s</b>' % (gobject.markup_escape_text(history_label.get_text())))        
-        frame = gtk.Frame()
+        self.__conntype_notebook = gtk.Notebook()
+        self.__conntype_notebook.set_scrollable(True)
+        self.__conntype_notebook.connect('switch-page', self.__on_switch_page)
+        vbox.pack_start(self.__conntype_notebook, expand=True)
+        
+        history_label = gtk.Label(_('History'))     
+        tab = gtk.VBox()
         #frame.set_label_widget(history_label)
-        self.__recent_model = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)
+        self.__recent_model = gtk.ListStore(object, str, object)
         self.__recent_view = gtk.TreeView(self.__recent_model)
         self.__recent_view.get_selection().connect('changed', self.__on_recent_selected)
         self.__recent_view.connect('row-activated', self.__on_recent_activated)
-        frame.add(self.__recent_view)
+        tab.add(self.__recent_view)
         colidx = self.__recent_view.insert_column_with_data_func(-1, _('Connection'),
                                                           gtk.CellRendererText(),
                                                           self.__render_userhost)
         colidx = self.__recent_view.insert_column_with_data_func(-1, _('Time'),
                                                           gtk.CellRendererText(),
                                                           self.__render_time_recency, datetime.datetime.now())
-        vbox.pack_start(frame, expand=True)
+
+        self.__conntype_notebook.append_page(tab, history_label)
+        
+        local_label = gtk.Label(_('Local'))
+        tab = gtk.VBox()
+        self.__local_model = gtk.ListStore(str, str, str)
+        self.__local_view = gtk.TreeView(self.__local_model)
+        self.__local_view.get_selection().connect('changed', self.__on_local_selected)
+        self.__local_view.connect('row-activated', self.__on_local_activated)
+        tab.add(self.__local_view)
+        colidx = self.__local_view.insert_column_with_attributes(-1, _('Name'),
+                                                          gtk.CellRendererText(),
+                                                          text=0)
+        colidx = self.__local_view.insert_column_with_attributes(-1, _('Address'),
+                                                          gtk.CellRendererText(),
+                                                          text=1)
+        self.__conntype_notebook.append_page(tab, local_label)
+
         self.__on_entry_modified()
-        self.__reload_connection_history()
+        self.__force_idle_search()
         
         self.__options_expander = SshOptions()
         self.__options_entry = self.__options_expander.get_entry()
@@ -437,8 +398,18 @@ class ConnectDialog(gtk.Dialog):
 
         self.set_default_size(640, 480)
         
+    def __on_switch_page(self, nb, p, pn):
+        _logger.debug("got page switch, pn=%d", pn)
+        widget = self.__conntype_notebook.get_nth_page(pn)
+        self.__viewmode = (pn == 0 and 'history' or 'local')
+        self.__force_idle_search()      
+        
     def __on_browse_local(self, b):
         pass
+    
+    def __on_local_avahi_changed(self, *args):
+        if self.__viewmode == 'local':
+            self.__force_idle_search()
 
     def __render_userhost(self, col, cell, model, iter):
         user = model.get_value(iter, 0)
@@ -457,7 +428,7 @@ class ConnectDialog(gtk.Dialog):
     def __render_time_recency(self, col, cell, model, iter, curtime):
         val = model.get_value(iter, 2)
         deltastr = timesince(val, curtime)
-        cell.set_property('text', deltastr)
+        cell.set_property('text', deltastr)      
        
     def __reload_entry(self, *args, **kwargs):
         _logger.debug("reloading")
@@ -493,7 +464,20 @@ class ConnectDialog(gtk.Dialog):
 
     def __idle_update_search(self):
         self.__idle_update_search_id = 0
-        host = self.__entry.get_active_text()
+        if self.__viewmode == 'history':
+            self.__idle_update_search_history()
+        else:
+            self.__idle_update_search_local()
+            
+    def __idle_update_search_local(self):
+        hosttext = self.__entry.get_active_text()
+        self.__local_model.clear()
+        for name,host,port in self.__local_avahi:
+            if host.find(hosttext) >= 0:
+                self.__local_model.append((name,host,port))       
+            
+    def __idle_update_search_history(self):
+        host = self.__entry.get_active_text()        
         usernames = list(self.__history.get_users_for_host_search(host))
         if len(usernames) > 0:
             last_user = usernames[0]
@@ -523,6 +507,19 @@ class ConnectDialog(gtk.Dialog):
         else:
             self.__user_entry.select_region(0, -1)
             self.__user_entry.grab_focus()
+            
+    def __on_local_selected(self, ts):
+        (tm, seliter) = ts.get_selected()
+        if seliter is None: 
+            return
+        host = self.__local_model.get_value(seliter, 1)
+        port = self.__local_model.get_value(seliter, 2)
+        self.__suppress_recent_search = True
+        self.__entry.child.set_text(host)
+        self.__suppress_recent_search = False     
+            
+    def __on_local_activated(self, tv, path, vc):
+        self.activate_default()
             
     def __on_recent_selected(self, ts):
         (tm, seliter) = ts.get_selected()
@@ -778,8 +775,7 @@ class SshWindow(VteWindow):
     <menu action='FileMenu'>
       <placeholder name='FileAdditions'>
         <menuitem action='NewConnection'/>
-        <menuitem action='NewLocalConnection'/>        
-        <menuitem action='CopyConnection'/>    
+        <menuitem action='CopyConnection'/>
         <menuitem action='OpenSFTP'/>
         <separator/>
         <menuitem action='Reconnect'/>
@@ -860,7 +856,7 @@ class SshWindow(VteWindow):
         elif widget.connected is True:
             text = _('Connected (%.2fs latency)') % (widget.latency,)
         elif widget.connected is False:
-            text = '<span foreground="red">%s</span>' % (_('Connection timeout'),)
+            text = _('Connection timed out')
         elif widget.connected is None:
             text = _('Checking connection')
         if len(widget.ssh_options) > 1:
@@ -955,9 +951,7 @@ class SshWindow(VteWindow):
         self.__using_accels = True
         self.__actions = actions = [
             ('NewConnection', gtk.STOCK_NEW, _('Connect to server'), '<control><shift>O',
-             _('Open a new Secure Shell connection'), self.__new_connection_cb),
-            ('NewLocalConnection', None, _('Connect to local server'), None,
-             _('Open a new Secure Shell connection to local server'), self.__new_local_connection_cb),                
+             _('Open a new Secure Shell connection'), self.__new_connection_cb),               
             ('CopyConnection', gtk.STOCK_JUMP_TO, _('New tab for connection'), '<control><shift>T',
              _('Open a new tab for the same remote computer'), self.__copy_connection_cb),              
             ('OpenSFTP', gtk.STOCK_OPEN, _('Open SFTP'), '<control><shift>S',
@@ -979,7 +973,7 @@ class SshWindow(VteWindow):
         self.new_tab(args, None)
 
     def open_connection_dialog(self, exit_on_cancel=False):
-        win = ConnectDialog(parent=self, history=self.__connhistory)
+        win = ConnectDialog(parent=self, history=self.__connhistory, local_avahi=self.__local_avahi)
         sshargs = win.run_get_cmd()
         if not sshargs:
             # We get here when called with no arguments, and we're the main instance.
@@ -991,14 +985,6 @@ class SshWindow(VteWindow):
     @log_except(_logger)        
     def __new_connection_cb(self, action):
         self.open_connection_dialog()
-        
-    @log_except(_logger)        
-    def __new_local_connection_cb(self, action):
-        win = LocalConnectDialog(parent=self, local_avahi=self.__local_avahi)
-        sshargs = win.run_get_cmd()
-        if not sshargs:
-            return
-        self.new_tab(sshargs, None)  
         
     @log_except(_logger)        
     def __open_sftp_cb(self, action):
@@ -1017,6 +1003,11 @@ class SshWindow(VteWindow):
     def __reconnect_all_cb(self, a):
         for widget in self._get_notebook().get_children():        
             widget.ssh_reconnect()
+            
+    def _do_about(self):
+        dlg = HotSshAboutDialog()
+        dlg.run()
+        dlg.destroy()
 
 class SshApp(VteApp):
     def __init__(self):
