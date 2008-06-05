@@ -49,6 +49,15 @@ _logger = logging.getLogger("hotssh.SshWindow")
 
 _whitespace_re = re.compile('\s+')
 
+def glibc_backtrace():
+    from ctypes import cdll
+    libc = cdll.LoadLibrary("libc.so.6")
+    btcount = 100
+    btdata = (c_void_p * btcount)() 
+    libc.backtrace(btdata, c_int(btcount))
+    symbols = libc.backtrace_symbols(btdata, c_int(btcount))
+    print symbols
+
 class HotSshAboutDialog(gtk.AboutDialog):
     def __init__(self):
         super(HotSshAboutDialog, self).__init__()
@@ -357,7 +366,8 @@ class ConnectDialog(gtk.Dialog):
         vbox.pack_start(self.__conntype_notebook, expand=True)
         
         history_label = gtk.Label(_('History'))     
-        tab = gtk.VBox()
+        tab = gtk.ScrolledWindow()
+        tab.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         #frame.set_label_widget(history_label)
         self.__recent_model = gtk.ListStore(object, str, object)
         self.__recent_view = gtk.TreeView(self.__recent_model)
@@ -374,7 +384,8 @@ class ConnectDialog(gtk.Dialog):
         self.__conntype_notebook.append_page(tab, history_label)
         
         local_label = gtk.Label(_('Local'))
-        tab = gtk.VBox()
+        tab = gtk.ScrolledWindow()
+        tab.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)        
         self.__local_model = gtk.ListStore(str, str, str)
         self.__local_view = gtk.TreeView(self.__local_model)
         self.__local_view.get_selection().connect('changed', self.__on_local_selected)
@@ -398,11 +409,18 @@ class ConnectDialog(gtk.Dialog):
 
         self.set_default_size(640, 480)
         
+    @log_except(_logger)
     def __on_switch_page(self, nb, p, pn):
         _logger.debug("got page switch, pn=%d", pn)
+        self.__suppress_recent_search = True
         widget = self.__conntype_notebook.get_nth_page(pn)
         self.__viewmode = (pn == 0 and 'history' or 'local')
-        self.__force_idle_search()      
+        # If we're switching, particularly from history->local it's
+        # unlikely we want to keep the active search; the assumption here
+        # is that the history search failed.
+        self.__entry.child.set_text('')
+        self.__force_idle_search()
+        self.__suppress_recent_search = False    
         
     def __on_browse_local(self, b):
         pass
@@ -464,12 +482,15 @@ class ConnectDialog(gtk.Dialog):
 
     def __idle_update_search(self):
         self.__idle_update_search_id = 0
+        self.__suppress_recent_search = True
         if self.__viewmode == 'history':
             self.__idle_update_search_history()
         else:
             self.__idle_update_search_local()
+        self.__suppress_recent_search = False
             
     def __idle_update_search_local(self):
+        self.__local_view.get_selection().unselect_all()        
         hosttext = self.__entry.get_active_text()
         self.__local_model.clear()
         for name,host,port in self.__local_avahi:
@@ -477,6 +498,7 @@ class ConnectDialog(gtk.Dialog):
                 self.__local_model.append((name,host,port))       
             
     def __idle_update_search_history(self):
+        self.__recent_view.get_selection().unselect_all()
         host = self.__entry.get_active_text()        
         usernames = list(self.__history.get_users_for_host_search(host))
         if len(usernames) > 0:
@@ -508,7 +530,10 @@ class ConnectDialog(gtk.Dialog):
             self.__user_entry.select_region(0, -1)
             self.__user_entry.grab_focus()
             
-    def __on_local_selected(self, ts):
+    def __on_local_selected(self, ts):     
+        if self.__suppress_recent_search:
+            return        
+        _logger.debug("local selected: %s", ts)           
         (tm, seliter) = ts.get_selected()
         if seliter is None: 
             return
@@ -522,6 +547,9 @@ class ConnectDialog(gtk.Dialog):
         self.activate_default()
             
     def __on_recent_selected(self, ts):
+        if self.__suppress_recent_search:
+            return        
+        _logger.debug("recent selected: %s", ts)            
         (tm, seliter) = ts.get_selected()
         if seliter is None: 
             return
