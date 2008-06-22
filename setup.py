@@ -20,7 +20,7 @@ import os,sys,subprocess
 from distutils.core import setup
 from distutils.command.install import install
 
-APPNAME = 'hotwire-ssh'
+APPNAME = 'hotssh'
 MODDIR = 'hotssh'
 
 if __name__ == '__main__' and hasattr(sys.modules['__main__'], '__file__'):
@@ -84,10 +84,10 @@ elif 'svn-dist-test' in sys.argv:
     sys.exit(0)
 
 kwargs = {'cmdclass': {}}
-kwargs['scripts'] = ['bin/hotwire-ssh']
-kwargs['data_files'] = [('share/applications', ['hotwire-ssh.desktop']), 
+kwargs['scripts'] = ['bin/hotssh']
+kwargs['data_files'] = [('share/applications', ['hotssh.desktop']), 
                         ('share/icons/hicolor/24x24/apps', ['images/hotwire-openssh.png']),
-                        ('/etc/profile.d', ['hotwire-ssh.sh', 'hotwire-ssh.csh']),
+                        ('/etc/profile.d', ['hotssh.sh', 'hotssh.csh']),
                        ]   
     
 class HotInstall(install):
@@ -101,7 +101,7 @@ kwargs['cmdclass']['install'] = HotInstall
 
 setup(name=APPNAME,
       version=__version__,
-      description='Hotwire SSH',
+      description='HotSSH',
       author='Colin Walters',
       author_email='walters@verbum.org',
       url='http://hotwire-shell.org',   

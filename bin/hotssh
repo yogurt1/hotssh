@@ -42,7 +42,7 @@ exec_real_ssh = False
 try:
 	import gtk
 except:
-	# No gtk, clearly no hotwire-ssh
+	# No gtk, clearly no hotssh
 	exec_real_ssh = True
 if not exec_real_ssh:
 	# These options are ones which are mostly designed to be used from
