@@ -471,7 +471,7 @@ class ConnectDialog(gtk.Dialog):
         havetext = text != ''
         self.set_response_sensitive(gtk.RESPONSE_ACCEPT, havetext)
         if self.__suppress_recent_search:
-            return        
+            return
         if havetext and self.__idle_update_search_id == 0:
             self.__idle_update_search_id = gobject.timeout_add(250, self.__idle_update_search)
 
@@ -499,8 +499,11 @@ class ConnectDialog(gtk.Dialog):
             
     def __idle_update_search_history(self):
         self.__recent_view.get_selection().unselect_all()
-        host = self.__entry.get_active_text()        
-        usernames = list(self.__history.get_users_for_host_search(host))
+        host = self.__entry.get_active_text()
+        if host:
+            usernames = list(self.__history.get_users_for_host_search(host))
+        else:
+            usernames = []
         if len(usernames) > 0:
             last_user = usernames[0]
             if last_user:
@@ -510,6 +513,8 @@ class ConnectDialog(gtk.Dialog):
                 if uname:
                     model.append((uname,))
             self.__user_completion.set_model(model)
+        else:
+            self.__user_entry.set_text(self.__default_username)
         self.__reload_connection_history()            
 
     def __reload_connection_history(self):
@@ -565,8 +570,13 @@ class ConnectDialog(gtk.Dialog):
             
     def __on_recent_activated(self, tv, path, vc):
         self.activate_default()
+
+    def __reset(self):
+        self.__entry.child.set_text('')
+        self.__user_entry.set_text(self.__default_username)
             
     def run_get_cmd(self):
+        self.__reset()
         self.show_all()        
         resp = self.run()
         if resp != gtk.RESPONSE_ACCEPT:
@@ -807,6 +817,7 @@ class SshWindow(VteWindow):
         <menuitem action='OpenSFTP'/>
         <separator/>
         <menuitem action='Reconnect'/>
+        <menuitem action='ReconnectAll'/>
         <separator/>
       </placeholder>
     </menu>
@@ -986,7 +997,7 @@ class SshWindow(VteWindow):
              _('Open a SFTP connection'), self.__open_sftp_cb),            
             ('ConnectionMenu', None, _('Connection')),
             ('Reconnect', gtk.STOCK_CONNECT, _('_Reconnect'), '<control><shift>R', _('Reset connection to server'), self.__reconnect_cb),
-            ('ReconnectAll', gtk.STOCK_CONNECT, _('_Reconnect All'), None, _('Reset all connections'), self.__reconnect_all_cb),            
+            ('ReconnectAll', gtk.STOCK_CONNECT, _('R_econnect All'), None, _('Reset all connections'), self.__reconnect_all_cb),            
             ]
         self.__action_group = self._merge_ui(self.__actions, self.__ui_string)
         
