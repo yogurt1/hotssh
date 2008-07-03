@@ -638,7 +638,7 @@ class HostConnectionMonitor(gobject.GObject):
         starttime = time.time()
         # This is a hack.  Blame Adam Jackson.
         cmd.extend(['-oBatchMode=true', host, '/bin/true'])
-        subproc = subprocess.Popen(cmd)
+        subproc = subprocess.Popen(cmd, stdout=None, stderr=None)
         child_watch_id = gobject.child_watch_add(subproc.pid, self.__on_check_exited, host)
         timeout_id = gobject.timeout_add(7000, self.__check_timeout, host)
         self.__check_statuses[host] = (starttime, subproc.pid, timeout_id, child_watch_id)
@@ -683,6 +683,8 @@ class SshTerminalWidget(gtk.VBox):
     __gsignals__ = {
         "status-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
         "close" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        # Emitted when we do a reconnect so that other tabs for this host can pick it up
+        "reconnect" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
     }
     
     latency = property(lambda self: self.__latency)
@@ -757,12 +759,13 @@ class SshTerminalWidget(gtk.VBox):
         
     def ssh_reconnect(self):
         # TODO - do this in a better way
-        if not self.__term.exited:
+        if not self.__term.exited and self.__term.pid:
             os.kill(self.__term.pid, signal.SIGTERM)
         self.remove(self.__term)
         self.__term.destroy()
         self.__init_state()
         self.ssh_connect()
+        self.emit('reconnect')
         
     def __on_child_exited(self, term):
         _logger.debug("disconnected")
@@ -844,6 +847,7 @@ class SshWindow(VteWindow):
         self.__statusbar_ctx = self.__statusbar.get_context_id("HotSSH")
         self._get_vbox().pack_start(self.__status_hbox, expand=False)        
         
+        self.__in_reconnect = False
         self.__idle_stop_monitoring_id = 0
         
         self.connect("notify::is-active", self.__on_is_active_changed)
@@ -879,10 +883,26 @@ class SshWindow(VteWindow):
     def append_widget(self, w):
         super(SshWindow, self).append_widget(w)
         w.connect('status-changed', self.__on_widget_status_changed)
+        w.connect('reconnect', self.__on_widget_reconnect)
         self.__sync_status_display()
         
     def __on_widget_status_changed(self, w):
         self.__sync_status_display()
+
+    def __on_widget_reconnect(self, changed_widget):
+        if self.__in_reconnect:
+            return
+        self.__in_reconnect = True
+        changed_host = changed_widget.get_host()
+        _logger.debug("reconnecting all widgets for host %s", changed_host)
+        for widget in self._get_notebook().get_children():
+            if changed_widget is widget:
+                continue
+            host = widget.get_host()
+            if host != changed_host:
+                continue
+            widget.ssh_reconnect()
+        self.__in_reconnect = False
     
     def __sync_status_display(self):
         notebook = self._get_notebook()
@@ -1071,11 +1091,13 @@ class SshApp(VteApp):
             
     def offer_load_session(self):
         savedsession = self._parse_saved_session()
+        alltabs_count = 0
         allhosts = set()        
         if savedsession:
             for window in savedsession:
                 for connection in window:
                     allhosts.add(connection['userhost'])
+                    alltabs_count += 1
         if len(allhosts) > 0:
             dlg = gtk.MessageDialog(parent=None, flags=0, type=gtk.MESSAGE_QUESTION, 
                                     buttons=gtk.BUTTONS_CANCEL,
@@ -1083,7 +1105,7 @@ class SshApp(VteApp):
             button = dlg.add_button(_('_Reconnect'), gtk.RESPONSE_ACCEPT)
             button.set_property('image', gtk.image_new_from_stock('gtk-connect', gtk.ICON_SIZE_BUTTON))
             dlg.set_default_response(gtk.RESPONSE_ACCEPT)
-            dlg.format_secondary_markup(_('Reconnect to %d hosts') % (len(allhosts),))
+            dlg.format_secondary_markup(_('Reconnect to %d hosts, %d tabs in %d windows') % (len(allhosts), alltabs_count, len(savedsession)))
             
             #ls = gtk.ListStore(str)
             #gv = gtk.TreeView(ls)
