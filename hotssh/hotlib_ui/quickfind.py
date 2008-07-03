@@ -66,10 +66,15 @@ class QuickFindWindow(gtk.Dialog):
         colidx = self.__results.insert_column_with_data_func(-1, '',
                                                              gtk.CellRendererPixbuf(),
                                                              self.__render_icon)
+        renderer = gtk.CellRendererText()
+        renderer.set_property('ellipsize', True)
         colidx = self.__results.insert_column_with_data_func(-1, '',
-                                                             hotwidgets.CellRendererText(ellipsize=True),
-                                                             self.__render_match)        
-        self.__vbox.pack_start(hotwidgets.Border(self.__scroll), expand=True)
+                                                             renderer,
+                                                             self.__render_match)
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        frame.add(self.__scroll)
+        self.__vbox.pack_start(frame, expand=True)
         self.__selection = self.__results.get_selection()
         self.__selection.set_mode(gtk.SELECTION_SINGLE)
         self.__selection.connect('changed', self.__on_selection_changed)
