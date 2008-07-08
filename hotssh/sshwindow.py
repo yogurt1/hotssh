@@ -63,7 +63,7 @@ class HotSshAboutDialog(gtk.AboutDialog):
         super(HotSshAboutDialog, self).__init__()
         dialog = self
         import hotssh.version
-        dialog.set_property('website', 'http://live.gnome.org/HotwireSsh')
+        dialog.set_property('website', 'http://www.gnome.org/projects/hotssh')
         dialog.set_property('version', hotssh.version.__version__)
         dialog.set_property('authors', ['Colin Walters <walters@verbum.org>'])
         dialog.set_property('copyright', u'Copyright \u00A9 2007,2008 Colin Walters <walters@verbum.org>')
@@ -504,10 +504,12 @@ class ConnectDialog(gtk.Dialog):
             usernames = list(self.__history.get_users_for_host_search(host))
         else:
             usernames = []
+        _logger.debug("doing history update, usernames:%r", usernames)
         if len(usernames) > 0:
             last_user = usernames[0]
-            if last_user:
-                self.__user_entry.set_text(usernames[0])
+            if last_user is None:
+                last_user = self.__default_username
+            self.__user_entry.set_text(last_user)
             model = gtk.ListStore(gobject.TYPE_STRING)
             for uname in usernames:
                 if uname:
@@ -984,9 +986,15 @@ class SshWindow(VteWindow):
         # Becuase of the way get_current_page() works in this signal handler, this
         # will actually disable monitoring for the previous tab, and enable it
         # for the new current one.
-        self.__stop_monitoring()
-        self.__start_monitoring(pn=pn)
+        self.__sync_monitoring(new_pn=pn)
         self.__sync_status_display()
+
+    def __get_host_for_pn(self, pn):
+        notebook = self._get_notebook()
+        if pn >= 0:
+            widget = notebook.get_nth_page(pn)
+            return widget.get_host()
+        return None
             
     def __stop_monitoring(self):
         notebook = self._get_notebook()
@@ -1005,6 +1013,13 @@ class SshWindow(VteWindow):
             pagenum = notebook.get_current_page()
         widget = notebook.get_nth_page(pagenum)
         _hostmonitor.start_monitor(widget.get_host())
+
+    def __sync_monitoring(self, new_pn):
+        prevhost = self.__get_host_for_pn(self._get_notebook().get_current_page())
+        newhost = self.__get_host_for_pn(new_pn)
+        if prevhost != newhost:
+            self.__stop_monitoring()
+            self.__start_monitoring(pn=new_pn)
         
     def __merge_ssh_ui(self):
         self.__using_accels = True
