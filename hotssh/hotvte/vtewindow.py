@@ -51,6 +51,10 @@ class TabbedVteWidget(VteTerminalWidget):
         return self.__title
 
 class VteWindow(gtk.Window):
+    __gsignals__ = {
+        "shutdown" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    }    
+
     ascii_nums = [long(x+ord('0')) for x in xrange(10)]    
     def __init__(self, factory=None, title=None, icon_name=None, **kwargs):
         super(VteWindow, self).__init__()
@@ -75,6 +79,8 @@ class VteWindow(gtk.Window):
       <menuitem action='DetachTab'/>
       <separator/>
       <menuitem action='Close'/>
+      <separator/>
+      <menuitem action='Quit'/>
     </menu>
     <menu action='EditMenu'>
       <menuitem action='Copy'/>
@@ -87,7 +93,7 @@ class VteWindow(gtk.Window):
       <placeholder name='ViewAdditions'/>        
     </menu>
     <placeholder name='TermAppAdditions'/>
-    <menu action='ToolsMenu'>
+    <menu action='HelpMenu'>
       <menuitem action='About'/>
     </menu>
   </menubar>
@@ -218,12 +224,14 @@ class VteWindow(gtk.Window):
             ('TabSearch', None, '_Search Tabs', '<control><shift>L', 'Search across tab names', self.__quickswitch_tab_cb),
             ('Close', gtk.STOCK_CLOSE, _('_Close'), '<control><shift>W',
              'Close the current tab', self.__close_cb),
+            ('Quit', gtk.STOCK_QUIT, _('_Quit'), '<control><shift>Q',
+             'Quit application', self.__quit_cb),
             ('EditMenu', None, _('Edit')),
             ('Copy', gtk.STOCK_COPY, _('_Copy'), '<control><shift>C', 'Copy selected text', self.__copy_cb),
             ('Paste', gtk.STOCK_PASTE, _('_Paste'), '<control><shift>V', 'Paste text', self.__paste_cb),                   
             ('ViewMenu', None, _('View')),
-            ('ToolsMenu', None, _('Tools')),                    
-            ('About', gtk.STOCK_ABOUT, _('_About'), None, 'About HotVTE', self.__help_about_cb),
+            ('HelpMenu', None, _('Help')),
+            ('About', gtk.STOCK_ABOUT, _('_About'), None, 'About this application', self.__help_about_cb),
             ]
         ag.add_actions(actions)
         self.__ui = gtk.UIManager()
@@ -270,6 +278,9 @@ class VteWindow(gtk.Window):
         
     def __close_cb(self, action):
         self.__remove_page_widget(self.__notebook.get_nth_page(self.__notebook.get_current_page()))
+
+    def __quit_cb(self, action):
+        self.emit('shutdown')
         
     def __on_widget_close(self, widget):
         self.__remove_page_widget(widget)
@@ -278,11 +289,8 @@ class VteWindow(gtk.Window):
         self._do_about()
         
     def _do_about(self):
-        from hotwire_ui.aboutdialog import HotwireAboutDialog        
-        dialog = HotwireAboutDialog()
-        dialog.run()
-        dialog.destroy()
-        
+        raise NotImplementedError()
+
     def get_tabs(self):
         return self.__notebook.get_children()
         
@@ -375,6 +383,7 @@ class VteWindowFactory(gobject.GObject):
         win = self.__klass(factory=self, is_initial=is_initial, **kwargs)
         win.connect('notify::is-active', self.__on_window_active)
         win.connect('destroy', self.__on_win_destroy)
+        win.connect('shutdown', self.__on_win_shutdown)
         self.__windows.add(win)
         return win
     
@@ -405,6 +414,10 @@ class VteWindowFactory(gobject.GObject):
         if len(self.__windows) == 0:
             self.emit('shutdown')
             gtk.main_quit()
+
+    def __on_win_shutdown(self, win):
+        self.emit('shutdown')
+        gtk.main_quit()
 
 class UiProxy(dbus.service.Object):
     def __init__(self, factory, bus_name, ui_iface, ui_opath):
