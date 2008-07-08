@@ -499,7 +499,7 @@ class VteApp(object):
         pass
     
     def on_shutdown(self, factory):
-        pass
+        self.save_session()
     
     def save_session(self):
         _logger.debug("noop session save")
