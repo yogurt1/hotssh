@@ -19,7 +19,7 @@
 import os,sys,platform,logging,getopt,re
 import locale,threading,subprocess,time
 import signal,tempfile,shutil,stat,pwd
-import datetime
+import datetime, gettext
 
 import xml.dom.minidom
 
@@ -1120,7 +1120,10 @@ class SshApp(VteApp):
             button = dlg.add_button(_('_Reconnect'), gtk.RESPONSE_ACCEPT)
             button.set_property('image', gtk.image_new_from_stock('gtk-connect', gtk.ICON_SIZE_BUTTON))
             dlg.set_default_response(gtk.RESPONSE_ACCEPT)
-            dlg.format_secondary_markup(_('Reconnect to %d hosts, %d tabs in %d windows') % (len(allhosts), alltabs_count, len(savedsession)))
+            allhosts_count = len(allhosts)
+            text = gettext.ngettext('Reconnect to %d host' % (allhosts_count,), 
+                                    'Reconnect to %d hosts' % (allhosts_count,), len(allhosts))
+            dlg.format_secondary_markup(text)
             
             #ls = gtk.ListStore(str)
             #gv = gtk.TreeView(ls)
