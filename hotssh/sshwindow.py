@@ -944,7 +944,7 @@ class SshWindow(VteWindow):
         if widget.connecting_state:
             text = _('Connecting')
         elif widget.connected is True:
-            text = _('Connected; %.2fs latency; %s)') % (widget.latency, widget.status_line)
+            text = _('Connected; %.2fs latency; %s') % (widget.latency, widget.status_line)
         elif widget.connected is False:
             text = _('Connection timed out')
         elif widget.connected is None:
