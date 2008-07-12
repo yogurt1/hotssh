@@ -20,7 +20,7 @@ import os,sys,platform,logging,getopt,re
 import locale,threading,subprocess,time
 import signal,tempfile,shutil,stat,pwd
 import datetime, gettext
-
+from StringIO import StringIO
 import xml.dom.minidom
 
 try:
@@ -609,12 +609,18 @@ def get_connection_sharing_args():
 
 class HostConnectionMonitor(gobject.GObject):
     __gsignals__ = {
-        "host-status" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,gobject.TYPE_BOOLEAN,gobject.TYPE_PYOBJECT)),
+        "host-status" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,
+                                                                      gobject.TYPE_BOOLEAN,
+                                                                      gobject.TYPE_PYOBJECT,
+                                                                      gobject.TYPE_PYOBJECT)),
     }      
     def __init__(self):
         super(HostConnectionMonitor, self).__init__()
         self.__host_monitor_ids = {}
+        # map host -> various idle ids, etc
         self.__check_statuses = {}
+        # Map host -> w output
+        self.__check_status_output = {}
     
     def start_monitor(self, host):
         if not (host in self.__host_monitor_ids or host in self.__check_statuses):
@@ -632,6 +638,18 @@ class HostConnectionMonitor(gobject.GObject):
         
     def get_monitors(self):
         return self.__host_monitor_ids
+
+    def __on_check_io(self, source, condition, host):
+        have_read = condition & gobject.IO_IN
+        if have_read:
+            _logger.debug("got status output")
+            self.__check_status_output[host] += os.read(source.fileno(), 8192)
+        if ((condition & gobject.IO_HUP) or (condition & gobject.IO_ERR)):
+            source.close()
+            _logger.debug("got condition %s, cancelling status io check", condition)
+            return False
+        else:
+            return have_read
             
     def __check_host(self, host):
         _logger.debug("performing check for %s", host)
@@ -639,19 +657,23 @@ class HostConnectionMonitor(gobject.GObject):
         cmd = list(get_base_sshcmd())
         starttime = time.time()
         # This is a hack.  Blame Adam Jackson.
-        cmd.extend(['-oBatchMode=true', host, '/bin/true'])
+        cmd.extend(['-oBatchMode=true', host, 'uptime'])
         nullf = open(os.path.devnull, 'w')
-        subproc = subprocess.Popen(cmd, stdout=nullf, stderr=subprocess.STDOUT)
+        subproc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=nullf)
         nullf.close()
+        io_watch_id = gobject.io_add_watch(subproc.stdout, 
+                                           gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP, 
+                                           self.__on_check_io, host)
+        self.__check_status_output[host] = ""
         child_watch_id = gobject.child_watch_add(subproc.pid, self.__on_check_exited, host)
         timeout_id = gobject.timeout_add(7000, self.__check_timeout, host)
-        self.__check_statuses[host] = (starttime, subproc.pid, timeout_id, child_watch_id)
+        self.__check_statuses[host] = (starttime, subproc.pid, timeout_id, child_watch_id, io_watch_id)
         return False
-        
+
     def __check_timeout(self, host):
         _logger.debug("timeout for host=%s", host)
         try:
-            (starttime, pid, timeout_id, child_watch_id) = self.__check_statuses[host]
+            (starttime, pid, timeout_id, child_watch_id, io_watch_id) = self.__check_statuses[host]
         except KeyError, e:
             return False
         try:
@@ -664,13 +686,13 @@ class HostConnectionMonitor(gobject.GObject):
     def __on_check_exited(self, pid, condition, host):
         _logger.debug("check exited, pid=%s condition=%s host=%s", pid, condition, host)
         try:
-            (starttime, pid, timeout_id, child_watch_id) = self.__check_statuses[host]
+            (starttime, pid, timeout_id, child_watch_id, io_watch_id) = self.__check_statuses[host]
         except KeyError, e:
             return False
-        gobject.source_remove(timeout_id)
         del self.__check_statuses[host]    
         self.__host_monitor_ids[host] = gobject.timeout_add(4000, self.__check_host, host)              
-        self.emit('host-status', host, condition == 0, time.time()-starttime)
+        self.emit('host-status', host, condition == 0, time.time()-starttime, self.__check_status_output[host])
+        del self.__check_status_output[host]
         return False
         
 _hostmonitor = HostConnectionMonitor()
@@ -692,6 +714,7 @@ class SshTerminalWidget(gtk.VBox):
     }
     
     latency = property(lambda self: self.__latency)
+    status_line = property(lambda self: self.__status_output_first)
     connecting_state = property(lambda self: self.__connecting_state)
     connected = property(lambda self: self.__connected)
     ssh_options = property(lambda self: self.__sshopts)
@@ -732,8 +755,9 @@ class SshTerminalWidget(gtk.VBox):
         self.__connected = None
         self.__cmd_exited = False
         self.__latency = None        
+        self.__status_output_first = None
         
-    def set_status(self, connected, latency):
+    def set_status(self, connected, latency, status_output=None):
         if not connected and self.__connecting_state:
             return
         self.__connecting_state = False
@@ -743,6 +767,9 @@ class SshTerminalWidget(gtk.VBox):
             return        
         self.__connected = connected
         self.__latency = latency
+        buf = StringIO(status_output)
+        firstline = buf.readline().strip()
+        self.__status_output_first = firstline
         self.emit('status-changed')
         self.__sync_msg()
         
@@ -846,10 +873,10 @@ class SshWindow(VteWindow):
             self.__nm_proxy = None
         
         self.__status_hbox = gtk.HBox()
+        self._get_vbox().pack_start(self.__status_hbox, expand=False)
         self.__statusbar = gtk.Statusbar()
         self.__status_hbox.pack_start(self.__statusbar, expand=True)
         self.__statusbar_ctx = self.__statusbar.get_context_id("HotSSH")
-        self._get_vbox().pack_start(self.__status_hbox, expand=False)        
         
         self.__in_reconnect = False
         self.__idle_stop_monitoring_id = 0
@@ -917,13 +944,13 @@ class SshWindow(VteWindow):
         if widget.connecting_state:
             text = _('Connecting')
         elif widget.connected is True:
-            text = _('Connected (%.2fs latency)') % (widget.latency,)
+            text = _('Connected; %.2fs latency; %s)') % (widget.latency, widget.status_line)
         elif widget.connected is False:
             text = _('Connection timed out')
         elif widget.connected is None:
             text = _('Checking connection')
-        if len(widget.ssh_options) > 1:
-            text += _('; Options: ') + (' '.join(map(gobject.markup_escape_text, widget.ssh_options)))        
+        #if len(widget.ssh_options) > 1:
+        #    text += _('; Options: ') + (' '.join(map(gobject.markup_escape_text, widget.ssh_options)))        
         id = self.__statusbar.push(self.__statusbar_ctx, text)
 
     def __on_dbus_error(self, *args, **kwargs):
@@ -960,13 +987,13 @@ class SshWindow(VteWindow):
             reconnect.activate()       
         
     @log_except(_logger)        
-    def __on_host_status(self, hostmon, host, connected, latency):
+    def __on_host_status(self, hostmon, host, connected, latency, status_output):
         _logger.debug("got host status host=%s conn=%s latency=%s", host, connected, latency)
         for widget in self._get_notebook().get_children():
             child_host = widget.get_host()
             if child_host != host:
                 continue
-            widget.set_status(connected, latency)
+            widget.set_status(connected, latency, status_output)
             
     @log_except(_logger)            
     def __on_is_active_changed(self, *args):
