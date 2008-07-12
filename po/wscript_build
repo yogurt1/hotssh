@@ -1,0 +1,2 @@
+obj=bld.create_obj('intltool_po')
+obj.appname='hotssh'
