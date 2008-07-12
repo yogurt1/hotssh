@@ -640,7 +640,9 @@ class HostConnectionMonitor(gobject.GObject):
         starttime = time.time()
         # This is a hack.  Blame Adam Jackson.
         cmd.extend(['-oBatchMode=true', host, '/bin/true'])
-        subproc = subprocess.Popen(cmd, stdout=None, stderr=None)
+        nullf = open(os.path.devnull, 'w')
+        subproc = subprocess.Popen(cmd, stdout=nullf, stderr=subprocess.STDOUT)
+        nullf.close()
         child_watch_id = gobject.child_watch_add(subproc.pid, self.__on_check_exited, host)
         timeout_id = gobject.timeout_add(7000, self.__check_timeout, host)
         self.__check_statuses[host] = (starttime, subproc.pid, timeout_id, child_watch_id)
