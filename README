@@ -1,0 +1,21 @@
+On the web: http://www.gnome.org/projects/hotssh/
+
+= Installation =
+
+HotSSH is currently built using WAF.  This is a bit of an experiment, but
+it's what we use for now.  
+
+If you want to run HotSSH straight from Subversion, just do:
+
+python bin/hotssh
+
+That's it, no setup/install.
+
+If you want to install to the system (complete with sh/csh aliases for 'ssh'), do:
+
+python ./waf configure --prefix=/usr
+python ./waf
+python ./waf install
+
+Hint for packagers: the waf usage of DESTDIR looks like this:
+python ./waf install --destdir=$RPM_BUILD_ROOT
