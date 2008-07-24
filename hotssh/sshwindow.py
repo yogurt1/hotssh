@@ -172,6 +172,8 @@ class OpenSSHKnownHostsDB(object):
             return
         hosts = set()
         for line in f:
+            if not line:
+                continue
             hostip,rest = line.split(' ', 1)
             if hostip.find(',') > 0:
                 host = hostip.split(',', 1)[0]
