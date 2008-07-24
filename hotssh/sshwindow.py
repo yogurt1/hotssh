@@ -751,11 +751,19 @@ class SshTerminalWidget(gtk.VBox):
         self.ssh_connect()
         
     def __init_state(self):
+        self.__global_connection_changed = False
         self.__connecting_state = False
         self.__connected = None
         self.__cmd_exited = False
         self.__latency = None        
         self.__status_output_first = None
+
+    def set_global_connection_changed(self, changed):
+        self.__global_connection_changed = changed
+        if changed:
+            self.__msgarea_mgr.clear()
+        elif self.__cmd_exited:
+            self.__show_disconnected()
         
     def set_status(self, connected, latency, status_output=None):
         if not connected and self.__connecting_state:
@@ -801,7 +809,12 @@ class SshTerminalWidget(gtk.VBox):
     def __on_child_exited(self, term):
         _logger.debug("disconnected")
         self.__cmd_exited = True
+        self.__show_disconnected()
+
+    def __show_disconnected(self):
         self.__msg.hide()
+        if self.__global_connection_changed:
+            return
         msgarea = self.__msgarea_mgr.new_from_text_and_icon(gtk.STOCK_INFO, _('Connection closed'), 
                                                             buttons=[(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)])
         reconnect = self.__actions.get_action('Reconnect')
@@ -967,7 +980,9 @@ class SshWindow(VteWindow):
         if (self.__cached_nm_connected is not None) and \
             (not self.__cached_nm_connected) and connected:
             self.__do_network_change_notify()
-        self.__cached_nm_connected = connected            
+        self.__cached_nm_connected = connected
+        for child in self._get_notebook():
+            child.set_global_connection_changed(True)
             
     def __do_network_change_notify(self):
         mgr = self._get_msgarea_mgr()
@@ -983,6 +998,8 @@ class SshWindow(VteWindow):
         mgr = self._get_msgarea_mgr()
         mgr.clear()
         if respid == gtk.RESPONSE_ACCEPT:
+            for child in self._get_notebook():
+                child.set_global_connection_changed(False)
             reconnect = self.__action_group.get_action('ReconnectAll')
             reconnect.activate()       
         
