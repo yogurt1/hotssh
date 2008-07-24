@@ -657,6 +657,7 @@ class HostConnectionMonitor(gobject.GObject):
         _logger.debug("performing check for %s", host)
         del self.__host_monitor_ids[host]
         cmd = list(get_base_sshcmd())
+        cmd.extend(get_connection_sharing_args())
         starttime = time.time()
         # This is a hack.  Blame Adam Jackson.
         cmd.extend(['-oBatchMode=true', host, 'uptime'])
