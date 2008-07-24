@@ -114,7 +114,7 @@ class SshConnectionHistory(object):
         def sqlite_timestamp_to_datetime(s):
             return datetime.datetime.fromtimestamp(time.mktime(time.strptime(s[:-7], '%Y-%m-%d %H:%M:%S')))
         # Uniquify, which we coudln't do in the SQL because we're also grabbing the conntime
-        seen = set()         
+        seen = set()
         for user,host,options,conntime in cursor.execute(q, params):
             if len(seen) >= limit:
                 break
@@ -371,7 +371,7 @@ class ConnectDialog(gtk.Dialog):
         tab = gtk.ScrolledWindow()
         tab.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         #frame.set_label_widget(history_label)
-        self.__recent_model = gtk.ListStore(object, str, object)
+        self.__recent_model = gtk.ListStore(object, str,  object)
         self.__recent_view = gtk.TreeView(self.__recent_model)
         self.__recent_view.get_selection().connect('changed', self.__on_recent_selected)
         self.__recent_view.connect('row-activated', self.__on_recent_activated)
@@ -721,28 +721,59 @@ class SshTerminalWidget(gtk.VBox):
     connected = property(lambda self: self.__connected)
     ssh_options = property(lambda self: self.__sshopts)
     
+    ssh_opt_with_args = "bcDeFiLlmOopRSw"
+    ssh_opt_witouth_args = "1246AaCfgKkMNnqsTtVvXxY"
+
     def __init__(self, args, cwd, actions=None):
         super(SshTerminalWidget, self).__init__()
         self.__init_state()
         self.__args = args        
         self.__sshcmd = list(get_base_sshcmd())
-        self.__sshcmd.extend(args)
         self.__cwd = cwd
         self.__host = None
+	self.__port = None
         self.__sshopts = []
         self.__actions = actions
         enable_connection_sharing = True
+        need_arg = False
+        this_is_port = False
+        port_in_args = False
+
         for arg in args:
-            if not arg.startswith('-'):
-                if self.__host is None:                 
-                    self.__host = arg
+            if not need_arg and not arg.startswith('-'):
+                need_arg = False
+                if self.__host is None:
+                    host_port = arg.split(":")
+                    if len(host_port) == 2:
+                        self.__host = host_port[0]
+                        self.__port = host_port[1]
+                    else:
+                        self.__host = arg
+                    self.__sshcmd.append(self.__host)
+            elif this_is_port:
+                self.__port = arg
+                this_is_port = False
+                need_arg = False
+                port_in_args = True
+                self.__sshcmd.append(arg)
             else:
                 if arg == '-oControlPath=none':
                     enable_connection_sharing = False
-                self.__sshopts.append(arg)
+                elif self.ssh_opt_with_args.find(arg[1:]) != -1:
+                    need_arg = True
+                    if arg == "-p":
+                        this_is_port = True
+                else:
+                    need_arg = False
+                self.__sshcmd.append(arg)
+
+        if not port_in_args and self.__port:
+            self.__sshcmd.append("-p")
+            self.__sshcmd.append(self.__port)
+        
         if enable_connection_sharing:
             self.__sshcmd.extend(get_connection_sharing_args())
-        
+
         header = gtk.VBox()
         self.__msg = gtk.Label()
         self.__msg.set_alignment(0.0, 0.5)
@@ -848,6 +879,9 @@ class SshTerminalWidget(gtk.VBox):
     
     def get_host(self):
         return self.__host
+
+    def get_port(self):
+        return self.__port
     
     def get_options(self):
         return self.__sshopts
@@ -907,15 +941,25 @@ class SshWindow(VteWindow):
     def __add_to_history(self, args):
         user = None
         host = None
+        need_arg = False
         options = []
+
         for arg in args:
-            if arg.startswith('-'): 
-                options.extend(arg)
+            if arg.startswith('-') and SshTerminalWidget.ssh_opt_with_args.find(arg[1:]) >= 0: 
+                options.append(arg)
+                if SshTerminalWidget.ssh_opt_with_args.find(arg[1:]) >= 0:
+                    need_arg = True
                 continue
-            if arg.find('@') >= 0:
-                (user, host) = arg.split('@', 1)
+            
+            if need_arg:
+                options.append(arg)
             else:
-                host = arg
+                if arg.find('@') >= 0:
+                    (user, host) = arg.split('@', 1)
+                else:
+                    host = arg
+            need_arg = False
+
         self.__connhistory.add_connection(user, host, options)
 
     def new_tab(self, args, cwd):
@@ -1113,7 +1157,11 @@ class SshWindow(VteWindow):
         notebook = self._get_notebook()        
         widget = notebook.get_nth_page(notebook.get_current_page())
         host = widget.get_host()
-        subprocess.Popen(['nautilus', 'sftp://%s' % (host,)])
+        port = widget.get_port()
+        if port:
+            subprocess.Popen(['nautilus', 'sftp://%s:%s' % (host,port)])
+        else:
+            subprocess.Popen(['nautilus', 'sftp://%s' % (host,)])
         
     @log_except(_logger)        
     def __reconnect_cb(self, a):
