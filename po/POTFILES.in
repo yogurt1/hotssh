@@ -2,3 +2,8 @@
 # Please keep this file sorted alphabetically.
 [encoding: UTF-8]
 hotssh.desktop.in
+hotssh/hotlib/timesince.py
+hotssh/hotvte/vteterm.py
+hotssh/hotvte/vtewindow.py
+hotssh/sshwindow.py
+
