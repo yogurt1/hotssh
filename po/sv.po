@@ -1,0 +1,273 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-07-25 22:31+0200\n"
+"PO-Revision-Date: 2008-07-25 22:38+0100\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Connect to a remote computer using Secure Shell"
+msgstr "Anslut till en fjärrdator med Secure Shell"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Secure Shell"
+msgstr "Secure Shell"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "år"
+msgstr[1] "år"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "månad"
+msgstr[1] "månader"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "vecka"
+msgstr[1] "veckor"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "dygn"
+msgstr[1] "dygn"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "timme"
+msgstr[1] "timmar"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minut"
+msgstr[1] "minuter"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "i framtiden"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "mindre än en minut sedan"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "%(number)d %(type)s, %(number2)d %(type2)s sedan"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "%(number)d %(type)s sedan"
+
+#: ../hotssh/hotvte/vteterm.py:81
+#: ../hotssh/hotvte/vtewindow.py:230
+msgid "_Copy"
+msgstr "_Kopiera"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "Kopiera markerad text"
+
+#: ../hotssh/hotvte/vteterm.py:82
+#: ../hotssh/hotvte/vtewindow.py:231
+msgid "_Paste"
+msgstr "Klistra _in"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "Klistra in text"
+
+#: ../hotssh/hotvte/vteterm.py:173
+msgid "Open Link"
+msgstr "Öppna länk"
+
+#: ../hotssh/hotvte/vtewindow.py:35
+msgid "Tab Search"
+msgstr "Fliksökning"
+
+#: ../hotssh/hotvte/vtewindow.py:222
+msgid "File"
+msgstr "Arkiv"
+
+#: ../hotssh/hotvte/vtewindow.py:223
+msgid "_Detach Tab"
+msgstr "_Frigör flik"
+
+#: ../hotssh/hotvte/vtewindow.py:225
+msgid "_Close"
+msgstr "S_täng"
+
+#: ../hotssh/hotvte/vtewindow.py:227
+msgid "_Quit"
+msgstr "A_vsluta"
+
+#: ../hotssh/hotvte/vtewindow.py:229
+msgid "Edit"
+msgstr "Redigera"
+
+#: ../hotssh/hotvte/vtewindow.py:232
+msgid "View"
+msgstr "Visa"
+
+#: ../hotssh/hotvte/vtewindow.py:233
+msgid "Help"
+msgstr "Hjälp"
+
+#: ../hotssh/hotvte/vtewindow.py:234
+msgid "_About"
+msgstr "_Om"
+
+#: ../hotssh/sshwindow.py:84
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"Ett gränssnitt till OpenSSH, en Secure Shell-klient\n"
+"\n"
+
+#: ../hotssh/sshwindow.py:261
+msgid "Options"
+msgstr "Alternativ"
+
+#: ../hotssh/sshwindow.py:272
+msgid "Example: "
+msgstr "Exempel: "
+
+#: ../hotssh/sshwindow.py:287
+msgid "New Secure Shell Connection"
+msgstr "Ny Secure Shell-anslutning"
+
+#: ../hotssh/sshwindow.py:300
+msgid "C_onnect"
+msgstr "Ans_lut"
+
+#: ../hotssh/sshwindow.py:327
+msgid "Host: "
+msgstr "Värd: "
+
+#: ../hotssh/sshwindow.py:346
+msgid "User: "
+msgstr "Användare: "
+
+#: ../hotssh/sshwindow.py:370
+msgid "History"
+msgstr "Historik"
+
+#: ../hotssh/sshwindow.py:379
+#: ../hotssh/sshwindow.py:1126
+msgid "Connection"
+msgstr "Anslutning"
+
+#: ../hotssh/sshwindow.py:382
+msgid "Time"
+msgstr "Tid"
+
+#: ../hotssh/sshwindow.py:388
+msgid "Local"
+msgstr "Lokal"
+
+#: ../hotssh/sshwindow.py:396
+msgid "Name"
+msgstr "Namn"
+
+#: ../hotssh/sshwindow.py:399
+msgid "Address"
+msgstr "Adress"
+
+#: ../hotssh/sshwindow.py:852
+msgid "Connection closed"
+msgstr "Anslutning stängdes"
+
+#: ../hotssh/sshwindow.py:1005
+msgid "Connecting"
+msgstr "Ansluter"
+
+#: ../hotssh/sshwindow.py:1007
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "Ansluten; %.2f s latens; %s"
+
+#: ../hotssh/sshwindow.py:1009
+msgid "Connection timed out"
+msgstr "Anslutningens tidsgräns överstegs"
+
+#: ../hotssh/sshwindow.py:1011
+msgid "Checking connection"
+msgstr "Kontrollerar anslutning"
+
+#: ../hotssh/sshwindow.py:1036
+msgid "Network connection changed"
+msgstr "Nätverksanslutning ändrad"
+
+#: ../hotssh/sshwindow.py:1120
+msgid "Connect to server"
+msgstr "Anslut till server"
+
+#: ../hotssh/sshwindow.py:1121
+msgid "Open a new Secure Shell connection"
+msgstr "Öppna en ny Secure Shell-anslutning"
+
+#: ../hotssh/sshwindow.py:1122
+msgid "New tab for connection"
+msgstr "Ny flik för anslutning"
+
+#: ../hotssh/sshwindow.py:1123
+msgid "Open a new tab for the same remote computer"
+msgstr "Öppna en ny flik för samma fjärrdator"
+
+#: ../hotssh/sshwindow.py:1124
+msgid "Open SFTP"
+msgstr "Öppna SFTP"
+
+#: ../hotssh/sshwindow.py:1125
+msgid "Open a SFTP connection"
+msgstr "Öppna en SFTP-anslutning"
+
+#: ../hotssh/sshwindow.py:1127
+#: ../hotssh/sshwindow.py:1217
+msgid "_Reconnect"
+msgstr "Anslut i_gen"
+
+#: ../hotssh/sshwindow.py:1127
+msgid "Reset connection to server"
+msgstr "Nollställ anslutning till server"
+
+#: ../hotssh/sshwindow.py:1128
+msgid "R_econnect All"
+msgstr "Anslut alla ig_en"
+
+#: ../hotssh/sshwindow.py:1128
+msgid "Reset all connections"
+msgstr "Nollställ alla anslutningar"
+
+#: ../hotssh/sshwindow.py:1216
+msgid "Restore saved session?"
+msgstr "Återuppta sparad session?"
+
+#: ../hotssh/sshwindow.py:1221
+#, python-format
+msgid "Reconnect to %d host"
+msgid_plural "Reconnect to %d hosts"
+msgstr[0] "Anslut igen till %d värd"
+msgstr[1] "Anslut igen till %d värdar"
+
