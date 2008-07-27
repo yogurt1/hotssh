@@ -1,0 +1,268 @@
+# Catalan translation of hotssh.
+# Copyright (C) 2008 Free Software Foundation, Inc.
+# This file is distributed under the same license as the hotssh package.
+# Gil Forcada <gilforcada@guifi.net, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-07-25 19:30+0200\n"
+"PO-Revision-Date: 2008-07-28 00:05+0200\n"
+"Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
+"Language-Team: Catalan <tradgnome@softcatala.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Connect to a remote computer using Secure Shell"
+msgstr "Connecta't a un ordinador remot utilitzant un intèrpret d'ordres segur"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Secure Shell"
+msgstr "Intèrpret d'ordres segur"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "any"
+msgstr[1] "anys"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "mes"
+msgstr[1] "mesos"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "setmana"
+msgstr[1] "setmanes"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "dia"
+msgstr[1] "dies"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "hora"
+msgstr[1] "hores"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minut"
+msgstr[1] "minuts"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "en el futur"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "fa menys d'un minut"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "fa %(number)d %(type)s, %(number2)d %(type2)s"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "fa %(number)d %(type)s"
+
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:230
+msgid "_Copy"
+msgstr "_Copia"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "Copia el text seleccionat"
+
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:231
+msgid "_Paste"
+msgstr "_Enganxa"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "Enganxa el text"
+
+#: ../hotssh/hotvte/vteterm.py:173
+msgid "Open Link"
+msgstr "Obre l'enllaç"
+
+#: ../hotssh/hotvte/vtewindow.py:35
+msgid "Tab Search"
+msgstr "Pestanya de cerca"
+
+#: ../hotssh/hotvte/vtewindow.py:222
+msgid "File"
+msgstr "Fitxer"
+
+#: ../hotssh/hotvte/vtewindow.py:223
+msgid "_Detach Tab"
+msgstr "_Separa la pestanya"
+
+#: ../hotssh/hotvte/vtewindow.py:225
+msgid "_Close"
+msgstr "_Tanca"
+
+#: ../hotssh/hotvte/vtewindow.py:227
+msgid "_Quit"
+msgstr "_Surt"
+
+#: ../hotssh/hotvte/vtewindow.py:229
+msgid "Edit"
+msgstr "Edita"
+
+#: ../hotssh/hotvte/vtewindow.py:232
+msgid "View"
+msgstr "Visualitza"
+
+#: ../hotssh/hotvte/vtewindow.py:233
+msgid "Help"
+msgstr "Ajuda"
+
+#: ../hotssh/hotvte/vtewindow.py:234
+msgid "_About"
+msgstr "_Quant a"
+
+#: ../hotssh/sshwindow.py:84
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"Una interfície per a l'OpenSSH, un client d'intèrpret d'ordres segur\n"
+"\n"
+
+#: ../hotssh/sshwindow.py:261
+msgid "Options"
+msgstr "Opcions"
+
+#: ../hotssh/sshwindow.py:272
+msgid "Example: "
+msgstr "Exemple: "
+
+#: ../hotssh/sshwindow.py:287
+msgid "New Secure Shell Connection"
+msgstr "Connexió d'intèrpret d'ordres segur nova"
+
+#: ../hotssh/sshwindow.py:300
+msgid "C_onnect"
+msgstr "C_onnecta"
+
+#: ../hotssh/sshwindow.py:327
+msgid "Host: "
+msgstr "Ordinador: "
+
+#: ../hotssh/sshwindow.py:346
+msgid "User: "
+msgstr "Usuari: "
+
+#: ../hotssh/sshwindow.py:370
+msgid "History"
+msgstr "Historial"
+
+#: ../hotssh/sshwindow.py:379 ../hotssh/sshwindow.py:1126
+msgid "Connection"
+msgstr "Connexió"
+
+#: ../hotssh/sshwindow.py:382
+msgid "Time"
+msgstr "Temps"
+
+#: ../hotssh/sshwindow.py:388
+msgid "Local"
+msgstr "Local"
+
+#: ../hotssh/sshwindow.py:396
+msgid "Name"
+msgstr "Nom"
+
+#: ../hotssh/sshwindow.py:399
+msgid "Address"
+msgstr "Adreça"
+
+#: ../hotssh/sshwindow.py:852
+msgid "Connection closed"
+msgstr "S'ha tancat la connexió"
+
+#: ../hotssh/sshwindow.py:1005
+msgid "Connecting"
+msgstr "S'està connectant"
+
+#: ../hotssh/sshwindow.py:1007
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "Connectat; latència de %.2fs; %s"
+
+#: ../hotssh/sshwindow.py:1009
+msgid "Connection timed out"
+msgstr "La connexió ha expirat"
+
+#: ../hotssh/sshwindow.py:1011
+msgid "Checking connection"
+msgstr "S'està comprovant la connexió"
+
+#: ../hotssh/sshwindow.py:1036
+msgid "Network connection changed"
+msgstr "La connexió de la xarxa ha canviat"
+
+#: ../hotssh/sshwindow.py:1120
+msgid "Connect to server"
+msgstr "Connecta al servidor"
+
+#: ../hotssh/sshwindow.py:1121
+msgid "Open a new Secure Shell connection"
+msgstr "Obre una connexió d'intèrpret d'ordres segur nova"
+
+#: ../hotssh/sshwindow.py:1122
+msgid "New tab for connection"
+msgstr "Pestanya nova per a la connexió"
+
+#: ../hotssh/sshwindow.py:1123
+msgid "Open a new tab for the same remote computer"
+msgstr "Obre una pestanya nova per al mateix ordinador remot"
+
+#: ../hotssh/sshwindow.py:1124
+msgid "Open SFTP"
+msgstr "Obre per SFTP"
+
+#: ../hotssh/sshwindow.py:1125
+msgid "Open a SFTP connection"
+msgstr "Obre una connexió SFTP"
+
+#: ../hotssh/sshwindow.py:1127 ../hotssh/sshwindow.py:1217
+msgid "_Reconnect"
+msgstr "_Torna a connectar"
+
+#: ../hotssh/sshwindow.py:1127
+msgid "Reset connection to server"
+msgstr "Reinicia la connexió amb el servidor"
+
+#: ../hotssh/sshwindow.py:1128
+msgid "R_econnect All"
+msgstr "T_orna a connectar-les totes"
+
+#: ../hotssh/sshwindow.py:1128
+msgid "Reset all connections"
+msgstr "Reinicia totes les connexions"
+
+#: ../hotssh/sshwindow.py:1216
+msgid "Restore saved session?"
+msgstr "Voleu restaurar la sessió desada?"
+
+#: ../hotssh/sshwindow.py:1221
+#, python-format
+msgid "Reconnect to %d host"
+msgid_plural "Reconnect to %d hosts"
+msgstr[0] "Torna a connectar a %d ordinador"
+msgstr[1] "Torna a connectar a %d ordinadors"
