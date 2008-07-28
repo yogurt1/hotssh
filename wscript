@@ -44,7 +44,7 @@ def build(bld):
 	obj.podir   = 'po'
 	obj.flags   = '-d'
 	install_files('PREFIX', 'share/applications', 'hotssh.desktop')
-	install_files('PREFIX', 'share/doc', 'COPYING')
+	install_files('PREFIX', 'share/doc/hotssh-' + VERSION, 'COPYING')
 	if bld.env()['PREFIX'] == '/usr':
 		install_files('PREFIX', '../etc/profile.d', 'hotssh.csh')
 		install_files('PREFIX', '../etc/profile.d', 'hotssh.sh')
