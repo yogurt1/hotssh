@@ -1251,9 +1251,12 @@ class SshWindow(VteWindow):
 
         self.__connhistory.add_connection(user, host, options)
 
-    def new_tab(self, args, cwd, **kwargs):
+    def remote_new_tab(self, args, cwd):
+        return self.new_tab(args, cwd, exit_on_cancel=False)
+
+    def new_tab(self, args, cwd, exit_on_cancel=True, **kwargs):
         if len(args) == 0 and len(kwargs) == 0:
-            self.open_connection_dialog(exit_on_cancel=True)
+            self.open_connection_dialog(exit_on_cancel=exit_on_cancel)
         else:
             self.__add_to_history(args, **kwargs)
             term = SshTerminalWidget(args=args, cwd=cwd, actions=self.__action_group, **kwargs)
@@ -1438,7 +1441,7 @@ class SshWindow(VteWindow):
             if exit_on_cancel:
                 sys.exit(0)
             return
-        self.new_tab(sshargs, None)
+        self.new_tab(sshargs, None, exit_on_cancel=exit_on_cancel)
 
     @log_except(_logger)        
     def __new_connection_cb(self, action):
