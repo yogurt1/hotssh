@@ -20,6 +20,7 @@ import os,sys,platform,logging,getopt,re
 import locale,threading,subprocess,time
 import signal,tempfile,shutil,stat,pwd
 import datetime,gettext,sha,commands,errno
+import urllib
 from StringIO import StringIO
 import xml.dom.minidom
 
@@ -232,11 +233,19 @@ class OpenSSHKnownHostsDB(gobject.GObject):
             self.__hostcache_ts_size = ts_size
         return self.__hostcache.iterkeys()
 
+    def __force_host_read(self):
+        self.get_hosts()
+
     def get_favicon_for_host(self, host, port=None):
-        hostport = hostport_pair_to_string(host, port)
-        if self.__hostcache is None or (hostport not in self.__hostcache.iterkeys()):
+        cache = self.__get_favicon_cache()
+        if cache is None:
             return None
-        return self.get_favicon_for_hostkey(*self.__hostcache[hostport])
+        path = self.__get_favicon_path(host, port)
+        try:
+            stbuf = os.stat(path)
+        except:
+            return None
+        return (path, stbuf[stat.ST_MTIME])
 
     def render_cached_favicon(self, path):
         bn = os.path.basename(path)
@@ -244,32 +253,15 @@ class OpenSSHKnownHostsDB(gobject.GObject):
             self.__pixbufcache[bn] = gtk.gdk.pixbuf_new_from_file_at_size(path, 16, 16)
         return self.__pixbufcache[bn]
 
-    def __get_favicon_path(self, hostkey_type, hostkey):
-        hostkey_hash = sha.new(hostkey_type+hostkey).hexdigest()
-        return os.path.join(self.__get_favicon_cache(), hostkey_hash + '.png')
+    def __get_favicon_path(self, hostname, port):
+        key = urllib.quote_plus(hostname)
+        return os.path.join(self.__get_favicon_cache(), key + '.png')
 
-    def get_favicon_for_hostkey(self, hostkey_type, hostkey):
+    def save_favicon(self, host, port, favicon_tmppath):
         cache = self.__get_favicon_cache()
         if cache is None:
             return None
-        path = self.__get_favicon_path(hostkey_type, hostkey)
-        try:
-            stbuf = os.stat(path)
-        except:
-            return None
-        return (path, stbuf[stat.ST_MTIME])
-
-    def save_favicon(self, host, port, favicon):
-        hostport = hostport_pair_to_string(host, port)
-        args = list(self.__hostcache[hostport])
-        args.append(favicon)
-        return self.save_favicon_for_hostkey(*args)
-
-    def save_favicon_for_hostkey(self, hostkey_type, hostkey, favicon_tmppath):
-        cache = self.__get_favicon_cache()
-        if cache is None:
-            return None
-        path = self.__get_favicon_path(hostkey_type, hostkey)
+        path = self.__get_favicon_path(host, port)
         shutil.move(favicon_tmppath, path)
         self.emit('changed')
         return path
