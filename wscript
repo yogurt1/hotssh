@@ -4,7 +4,7 @@
 import sys
 import Configure, Common, python, intltool, misc
 
-VERSION='0.2.1'
+VERSION='0.2.2'
 APPNAME='hotssh'
 srcdir = '.'
 blddir = 'build'
