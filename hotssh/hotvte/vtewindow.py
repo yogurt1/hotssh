@@ -43,12 +43,19 @@ class QuickSwitchTabWindow(QuickFindWindow):
                 yield (title, markup, None)
 
 class TabbedVteWidget(VteTerminalWidget):
+    __gsignals__ = {
+        "metadata-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    }    
+
     def __init__(self, cmd=None, *args, **kwargs):
         super(TabbedVteWidget, self).__init__(cmd=cmd, *args, **kwargs)
         self.__title = ' '.join(cmd)
         
     def get_title(self):
         return self.__title
+
+    def get_pixbuf(self):
+        return None
 
 class VteWindow(gtk.Window):
     __gsignals__ = {
@@ -138,9 +145,23 @@ class VteWindow(gtk.Window):
         
     def remote_new_tab(self, args, cwd):
         return self.new_tab(args, cwd)
-        
+
+    def __sync_metadata(self, widget):
+        title = widget.get_title()
+        label = widget.get_data('tab-label')
+        label.set_text(title)
+        self.__tips.set_tip(label, title)
+        img = widget.get_data('tab-image')
+        pixbuf_or_path = widget.get_pixbuf()
+        if isinstance(pixbuf_or_path,basestring):
+            pixbuf = gtk.gdk.pixbuf_new_from_file(pixbuf_or_path)
+        else:
+            pixbuf = pixbuf_or_path
+        img.set_from_pixbuf(pixbuf)
+
     def append_widget(self, term):
         idx = self.__notebook.append_page(term)
+        term.connect('metadata-changed', self.__sync_metadata)
         term.get_vte().connect('selection-changed', self.__sync_selection_sensitive)
         term.get_term().set_copy_paste_actions(self.__ag.get_action('Copy'), self.__ag.get_action('Paste'))
         if hasattr(term, 'has_close'):
@@ -151,10 +172,8 @@ class VteWindow(gtk.Window):
             term.connect('close', self.__on_widget_close)
         if hasattr(self.__notebook, 'set_tab_reorderable'):
             self.__notebook.set_tab_reorderable(term, True)
-        label = self.__add_widget_title(term)
-        title = term.get_title()
-        label.set_text(title)
-        self.__tips.set_tip(label, title)
+        (label, icon) = self.__add_widget_title(term)
+        self.__sync_metadata(term)
         term.show_all()
         self.__notebook.set_current_page(idx)
         term.get_vte().grab_focus()
@@ -249,6 +268,9 @@ class VteWindow(gtk.Window):
 
     def __add_widget_title(self, w):
         hbox = gtk.HBox()
+        piximg = gtk.Image()
+        w.set_data('tab-image', piximg)
+        hbox.pack_start(piximg, expand=False, padding=6)
         label = gtk.Label('<notitle>')
         label.set_selectable(False)
         label.set_ellipsize(pango.ELLIPSIZE_END)
@@ -267,10 +289,10 @@ class VteWindow(gtk.Window):
         hbox.pack_start(close, expand=False)
         hbox.show_all()
         self.__notebook.set_tab_label(w, hbox)
-        w.set_data('hotwire-tab-label', label)
+        w.set_data('tab-label', label)
         self.__notebook.set_tab_label_packing(w, True, True, gtk.PACK_START)
         self.__sync_tabs_visible()
-        return label
+        return (label, piximg)
     
     def __close_tab(self, w):
         self.__remove_page_widget(w)

@@ -132,7 +132,7 @@ class VteTerminalWidget(gtk.VBox):
             gobject.timeout_add(250, self.__idle_do_cmd_fork, cmd, cwd, ptyfd, initbuf)
             
     def __idle_do_cmd_fork(self, cmd, cwd, ptyfd, initbuf):
-        _logger.debug("Forking cmd: %s", cmd)
+        _logger.debug("Forking cmd: %r", cmd)
         self.__term.connect("child-exited", self._on_child_exited)
         if cwd:
             kwargs = {'directory': cwd}

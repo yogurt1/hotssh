@@ -19,7 +19,7 @@
 import os,sys,platform,logging,getopt,re
 import locale,threading,subprocess,time
 import signal,tempfile,shutil,stat,pwd
-import datetime, gettext
+import datetime,gettext,sha,commands,errno
 from StringIO import StringIO
 import xml.dom.minidom
 
@@ -58,6 +58,18 @@ def glibc_backtrace():
     symbols = libc.backtrace_symbols(btdata, c_int(btcount))
     print symbols
 
+def userhost_pair_to_string(user, host, port=None):
+    host = hostport_pair_to_string(host, port)
+    if user:
+        return user + '@' + host
+    return host
+
+def hostport_pair_to_string(host, port=None):
+    hostport = host
+    if port is not None:
+        hostport += (':%s' % (port,))
+    return hostport
+
 class HotSshAboutDialog(gtk.AboutDialog):
     def __init__(self):
         super(HotSshAboutDialog, self).__init__()
@@ -88,12 +100,17 @@ along with Hotwire; if not, write to the Free Software Foundation, Inc.,
 
 class SshConnectionHistory(object):
     def __init__(self):
-        self.__statedir = os.path.expanduser('~/.hotwire/state')
+        # We want to upgrade from the old Hotwire-derived location into the new ~/.hotssh
+        self.__oldstatedir = os.path.expanduser('~/.hotwire/state')
+        self.__statedir = os.path.expanduser('~/.hotssh')
         try:            
             os.makedirs(self.__statedir)
         except:
             pass
-        self.__path = path =os.path.join(self.__statedir, 'ssh.sqlite')
+        self.__path = path = os.path.join(self.__statedir, 'history.sqlite')
+        oldpath = os.path.join(self.__oldstatedir, 'ssh.sqlite')
+        if os.path.exists(oldpath) and not os.path.exists(self.__path):
+            shutil.copy2(oldpath, path)
         self.__conn = sqlite3.connect(path, isolation_level=None)
         cursor = self.__conn.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS Connections (bid INTEGER PRIMARY KEY AUTOINCREMENT, host TEXT, user TEXT, options TEXT, conntime DATETIME)''')
@@ -118,7 +135,7 @@ class SshConnectionHistory(object):
         for user,host,options,conntime in cursor.execute(q, params):
             if len(seen) >= limit:
                 break
-            if user:
+            if user and host:
                 uhost = user+'@'+host
             else:
                 uhost = host
@@ -132,10 +149,12 @@ class SshConnectionHistory(object):
         for user,host,options,ts in self.get_recent_connections_search(host):
             yield user
 
-    def add_connection(self, host, user, options):
+    def add_connection(self, user, host, options):
+        if host is None or host == '':
+            return
         cursor = self.__conn.cursor()
         cursor.execute('''BEGIN TRANSACTION''')
-        cursor.execute('''INSERT INTO Connections VALUES (NULL, ?, ?, ?, ?)''', (user, host, ' '.join(options), datetime.datetime.now()))
+        cursor.execute('''INSERT INTO Connections VALUES (NULL, ?, ?, ?, ?)''', (host, user, ' '.join(options), datetime.datetime.now()))
         cursor.execute('''COMMIT''')
 
     def get_color_for_host(self, host):
@@ -156,12 +175,27 @@ def get_history():
         _history_instance = SshConnectionHistory()
     return _history_instance
 
-class OpenSSHKnownHostsDB(object):
+class OpenSSHKnownHostsDB(gobject.GObject):
+    __gsignals__ = {
+        "changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+    }
     def __init__(self):
         super(OpenSSHKnownHostsDB, self).__init__()
         self.__path = os.path.expanduser('~/.ssh/known_hosts')
         self.__hostcache_ts_size = (None, None)
         self.__hostcache = None
+        self.__faviconcache = os.path.expanduser('~/.hotssh/favicons')
+        self.__pixbufcache = {}
+
+    def __get_favicon_cache(self):
+        try:            
+            os.makedirs(self.__faviconcache)
+        except OSError, e:
+            if e.errno == errno.EEXIST:
+                pass
+            else:
+                raise
+        return self.__faviconcache
         
     def __read_hosts(self):
         try:
@@ -170,7 +204,7 @@ class OpenSSHKnownHostsDB(object):
         except:
             _logger.debug("failed to open known hosts")
             return
-        hosts = set()
+        hosts = {}
         for line in f:
             if not line or line.startswith('|'):
                 continue
@@ -179,8 +213,11 @@ class OpenSSHKnownHostsDB(object):
                 host = hostip.split(',', 1)[0]
             else:
                 host = hostip
+            hostkey_type,hostkey = rest.split(' ', 1)
+            hostkey_type = hostkey_type.strip()
+            hostkey = hostkey.strip()
             host = host.strip()
-            hosts.add(host)
+            hosts[host] = (hostkey_type, hostkey)
         f.close()
         return hosts
         
@@ -193,7 +230,49 @@ class OpenSSHKnownHostsDB(object):
         if ts_size is not None and self.__hostcache_ts_size != ts_size:
             self.__hostcache = self.__read_hosts()
             self.__hostcache_ts_size = ts_size
-        return self.__hostcache
+        return self.__hostcache.iterkeys()
+
+    def get_favicon_for_host(self, host, port=None):
+        hostport = hostport_pair_to_string(host, port)
+        if self.__hostcache is None or (hostport not in self.__hostcache.iterkeys()):
+            return None
+        return self.get_favicon_for_hostkey(*self.__hostcache[hostport])
+
+    def render_cached_favicon(self, path):
+        bn = os.path.basename(path)
+        if bn not in self.__pixbufcache:
+            self.__pixbufcache[bn] = gtk.gdk.pixbuf_new_from_file_at_size(path, 16, 16)
+        return self.__pixbufcache[bn]
+
+    def __get_favicon_path(self, hostkey_type, hostkey):
+        hostkey_hash = sha.new(hostkey_type+hostkey).hexdigest()
+        return os.path.join(self.__get_favicon_cache(), hostkey_hash + '.png')
+
+    def get_favicon_for_hostkey(self, hostkey_type, hostkey):
+        cache = self.__get_favicon_cache()
+        if cache is None:
+            return None
+        path = self.__get_favicon_path(hostkey_type, hostkey)
+        try:
+            stbuf = os.stat(path)
+        except:
+            return None
+        return (path, stbuf[stat.ST_MTIME])
+
+    def save_favicon(self, host, port, favicon):
+        hostport = hostport_pair_to_string(host, port)
+        args = list(self.__hostcache[hostport])
+        args.append(favicon)
+        return self.save_favicon_for_hostkey(*args)
+
+    def save_favicon_for_hostkey(self, hostkey_type, hostkey, favicon_tmppath):
+        cache = self.__get_favicon_cache()
+        if cache is None:
+            return None
+        path = self.__get_favicon_path(hostkey_type, hostkey)
+        shutil.move(favicon_tmppath, path)
+        self.emit('changed')
+        return path
 
 _openssh_hosts_db = OpenSSHKnownHostsDB()
 
@@ -376,6 +455,9 @@ class ConnectDialog(gtk.Dialog):
         self.__recent_view.get_selection().connect('changed', self.__on_recent_selected)
         self.__recent_view.connect('row-activated', self.__on_recent_activated)
         tab.add(self.__recent_view)
+        colidx = self.__recent_view.insert_column_with_data_func(-1, '',
+                                                          gtk.CellRendererPixbuf(),
+                                                          self.__render_favicon)
         colidx = self.__recent_view.insert_column_with_data_func(-1, _('Connection'),
                                                           gtk.CellRendererText(),
                                                           self.__render_userhost)
@@ -434,7 +516,7 @@ class ConnectDialog(gtk.Dialog):
     def __render_userhost(self, col, cell, model, iter):
         user = model.get_value(iter, 0)
         host = model.get_value(iter, 1)
-        if user:
+        if user and host:
             userhost = user + '@' + host
         else:
             userhost = host
@@ -444,9 +526,20 @@ class ConnectDialog(gtk.Dialog):
         if name is None:
             name = self.__default_username
         self.__user_entry.set_text(name) 
+
+    def __render_favicon(self, col, cell, model, it):
+        user = model.get_value(it, 0)
+        host = model.get_value(it, 1)
+        favicondata = _openssh_hosts_db.get_favicon_for_host(host, None)
+        if favicondata is not None:
+            (favicon_path,mtime) = favicondata
+            pixbuf = _openssh_hosts_db.render_cached_favicon(favicon_path)
+            cell.set_property('pixbuf',pixbuf)
+        else:
+            cell.set_property('pixbuf', None)
         
-    def __render_time_recency(self, col, cell, model, iter, curtime):
-        val = model.get_value(iter, 2)
+    def __render_time_recency(self, col, cell, model, it, curtime):
+        val = model.get_value(it, 2)
         deltastr = timesince(val, curtime)
         cell.set_property('text', deltastr)      
        
@@ -609,6 +702,157 @@ def get_connection_sharing_args():
     # TODO - openssh should really do this out of the box    
     return ['-oControlMaster=auto', '-oControlPath=' + os.path.join(get_controlpath(), 'master-%r@%h:%p')]
 
+class AsyncCommandWithOutput(gobject.GObject):
+    __gsignals__ = {
+        "timeout" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
+
+        "complete" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (bool,
+                                                                   int,
+                                                                   gobject.TYPE_STRING))
+    }
+
+    user = property(lambda self: self.__user)
+    host = property(lambda self: self.__host)
+    port = property(lambda self: self.__port)
+    output = property(lambda self: self.__output.get_value())
+
+    def __init__(self, user, host, port, cmdstart, cmdend, timeout=7000, hostappend='', getoutput=True):
+        super(AsyncCommandWithOutput, self).__init__()
+        self.__user = user
+        self.__host = host
+        self.__port = port
+        cmd = list(cmdstart)
+        cmd.extend(get_connection_sharing_args())
+        if port:
+            cmd.extend(['-p', str(port)])
+        if user:
+            cmd.append('-oUser=' + user)
+        # hostappend is a dirty hack to handle scp's syntax
+        cmd.extend(['-oBatchMode=true', host+hostappend])
+        cmd.extend(cmdend)
+        self.__cmd = cmd
+        self.__starttime = time.time()
+        nullf = open(os.path.devnull, 'w')
+        _logger.debug("starting subprocess cmd=%r", cmd)
+        if getoutput:
+            stdout_target = subprocess.PIPE
+        else:
+            stdout_target = nullf
+        self.__subproc = subprocess.Popen(cmd, stdout=stdout_target, stderr=nullf)
+        nullf.close()
+        if getoutput:
+            self.__io_watch_id = gobject.io_add_watch(self.__subproc.stdout, 
+                                                      gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP, 
+                                                      self.__on_io)
+        self.__output = StringIO()
+        self.__child_watch_id = gobject.child_watch_add(self.__subproc.pid, self.__on_exited)
+        self.__timeout_id = gobject.timeout_add(timeout, self.__on_timeout)
+
+    def __on_io(self, source, condition):
+        have_read = condition & gobject.IO_IN
+        if have_read:
+            _logger.debug("got status output")
+            self.__output.write(os.read(source.fileno(), 8192))
+        if ((condition & gobject.IO_HUP) or (condition & gobject.IO_ERR)):
+            source.close()
+            _logger.debug("got condition %s, cancelling status io check", condition)
+            return False
+        else:
+            return have_read
+
+    def __on_timeout(self):
+        _logger.debug("timeout for host=%r cmd=%r", self.__host, self.__cmd)
+        try:
+            os.kill(self.__subproc.pid, signal.SIGHUP)
+        except OSError, e:
+            _logger.debug("failed to signal pid %s", pid, exc_info=True)
+            pass
+        self.emit('timeout', self.__output.getvalue())
+        self.__timeout_id = 0
+        return False    
+        
+    def __on_exited(self, pid, condition):
+        _logger.debug("command exited host=%r condition=%r cmd=%r", self.__host, condition, self.__cmd)
+        if self.__timeout_id == 0:
+            _logger.debug("command exited (but timeout already run")
+            return
+        gobject.source_remove(self.__timeout_id)
+        self.__timeout_id = 0
+        self.emit('complete', condition == 0, time.time() - self.__starttime, self.__output.getvalue())
+        return False
+
+class FaviconRetriever(gobject.GObject):
+    __gsignals__ = {
+        "favicon-loaded" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [str]),
+    }
+
+    user = property(lambda self: self.__user)
+    host = property(lambda self: self.__host)
+    port = property(lambda self: self.__port)
+
+    def __init__(self, user, host, port=None):
+        super(FaviconRetriever, self).__init__()
+        self.__user = user
+        self.__host = host
+        self.__port = port
+        self.__cached_mtime = None
+        self.__favicon_mtime = None
+        self.__tmp_favicon_path = None
+
+        hostport = userhost_pair_to_string(user, host, port)
+        _logger.debug("loading favicon for %s", hostport)
+        cmd = commands.mkarg('''python -c 'import os,sys,stat; print os.stat(sys.argv[1])[stat.ST_MTIME]' /etc/favicon.png''')
+        req = AsyncCommandWithOutput(user, host, port, ['ssh'], ['sh', '-c', cmd])
+        req.connect('timeout', self.__on_mtime_timeout)
+        req.connect('complete', self.__on_mtime_complete)
+        self.__active_req = req
+
+    def __on_mtime_timeout(self, req, curoutput):
+        _logger.debug("favicon mtime retrieval timeout")
+        return False
+
+    def __on_mtime_complete(self, req, status, elapsed_time, output):
+        _logger.debug("favicon mtime retrieval complete, status: %r", status)
+        if not status:
+            return False
+        mtime = int(output.strip())
+        self.__favicon_mtime = mtime
+        gobject.idle_add(self.__idle_start_scp)
+
+    @log_except(_logger)
+    def __idle_start_scp(self):
+        current = _openssh_hosts_db.get_favicon_for_host(self.__host, self.__port)
+        cached_mtime = 0
+        if current is not None:
+            (_, mtime) = current
+            cached_mtime = mtime
+        if self.__favicon_mtime > cached_mtime:
+            (fd, tmppath) = tempfile.mkstemp('.png', 'favicon')
+            self.__tmp_favicon_path = tmppath
+            os.close(fd)
+
+            _logger.debug("creating scp request")
+            req = AsyncCommandWithOutput(self.__user, self.__host, self.__port, 
+                                         ['scp', '-p', '-q'], [tmppath], 
+                                         hostappend=':/etc/favicon.png', timeout=15000, getoutput=False)
+            req.connect('timeout', self.__on_favicon_timeout)
+            req.connect('complete', self.__on_favicon_complete)
+            self.__active_req = req
+        else:
+            _logger.debug("favicon is up to date")
+        return False
+
+    def __on_favicon_timeout(self, req, elapsed):
+        _logger.debug("favicon data retrieval timeout (%r elapsed)", elapsed)
+        return False
+
+    def __on_favicon_complete(self, req, status, elapsed_time, output):
+        _logger.debug("favicon data retrieval complete; elapsed=%r status=%r", elapsed_time, status)
+        if not status:
+            return False
+        self.emit('favicon-loaded', self.__tmp_favicon_path)
+        return False
+
 class HostConnectionMonitor(gobject.GObject):
     __gsignals__ = {
         "host-status" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,
@@ -674,7 +918,7 @@ class HostConnectionMonitor(gobject.GObject):
         return False
 
     def __check_timeout(self, host):
-        _logger.debug("timeout for host=%s", host)
+        _logger.debug("timeout for host=%r", host)
         try:
             (starttime, pid, timeout_id, child_watch_id, io_watch_id) = self.__check_statuses[host]
         except KeyError, e:
@@ -714,6 +958,7 @@ class SshTerminalWidget(gtk.VBox):
         "close" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
         # Emitted when we do a reconnect so that other tabs for this host can pick it up
         "reconnect" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        "metadata-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
     latency = property(lambda self: self.__latency)
@@ -725,16 +970,25 @@ class SshTerminalWidget(gtk.VBox):
     ssh_opt_with_args = "bcDeFiLlmOopRSw"
     ssh_opt_witouth_args = "1246AaCfgKkMNnqsTtVvXxY"
 
-    def __init__(self, args, cwd, actions=None):
+    def __init__(self, args, cwd, actions=None, inituser=None, inithost=None):
         super(SshTerminalWidget, self).__init__()
-        self.__init_state()
+
         self.__args = args        
         self.__sshcmd = list(get_base_sshcmd())
         self.__cwd = cwd
-        self.__host = None
+        self.__user = inituser
+        self.__host = inithost
 	self.__port = None
         self.__sshopts = []
         self.__actions = actions
+        self.__idle_start_favicon_id = 0
+        self.__favicon_path = None
+        self.__favicon_pixbuf = None
+        self.__favicon_retriever = None
+        self.__favicon_retriever_connections = []
+
+        self.__init_state()
+
         enable_connection_sharing = True
         need_arg = False
         this_is_port = False
@@ -750,7 +1004,10 @@ class SshTerminalWidget(gtk.VBox):
                         self.__port = host_port[1]
                     else:
                         self.__host = arg
-                    self.__sshcmd.append(self.__host)
+                    try:
+                        (self.__user,self.__host) = self.__host.split('@', 1)
+                    except ValueError, e:
+                        pass
             elif this_is_port:
                 self.__port = arg
                 this_is_port = False
@@ -768,6 +1025,10 @@ class SshTerminalWidget(gtk.VBox):
                     need_arg = False
                 self.__sshcmd.append(arg)
 
+        if self.__user:
+            self.__sshcmd.append('-oUser=' + self.__user)
+        self.__sshcmd.append(self.__host)
+                    
         if not port_in_args and self.__port:
             self.__sshcmd.append("-p")
             self.__sshcmd.append(self.__port)
@@ -785,6 +1046,15 @@ class SshTerminalWidget(gtk.VBox):
         self.ssh_connect()
         
     def __init_state(self):
+        if self.__idle_start_favicon_id > 0:
+            gobject.source_remove(self.__idle_start_favicon_id)
+            self.__idle_start_favicon_id = 0
+        if self.__favicon_retriever is not None:
+            for sigid in self.__favicon_retriever_connections:
+                self.__favicon_retriever.disconnect(sigid)
+            self.__favicon_retriever_connections = []
+        self.__favicon_retriever = None
+
         self.__global_connection_changed = False
         self.__connecting_state = False
         self.__connected = None
@@ -817,6 +1087,12 @@ class SshTerminalWidget(gtk.VBox):
         
     def __sync_msg(self):
         return
+
+    def __on_favicon_loaded(self, retriever, faviconpath):
+        _logger.debug("favicon loaded; path=%r", faviconpath)
+        self.__favicon_path = _openssh_hosts_db.save_favicon(self.__host, self.__port, faviconpath)
+        self.__favicon_pixbuf = _openssh_hosts_db.render_cached_favicon(self.__favicon_path)
+        self.emit('metadata-changed')
         
     def ssh_connect(self):
         self.__connecting_state = True        
@@ -829,6 +1105,20 @@ class SshTerminalWidget(gtk.VBox):
         term.emit('focus', True)
         self.__msgarea_mgr.clear()
         self.__sync_msg()
+
+        current = _openssh_hosts_db.get_favicon_for_host(self.__host, self.__port)
+        if current is not None:
+            (pixbufpath, mtime) = current
+            self.__favicon_path = pixbufpath
+            self.__favicon_pixbuf = _openssh_hosts_db.render_cached_favicon(pixbufpath)
+        self.__idle_start_favicon_id = gobject.timeout_add(3000, self.__idle_start_favicon)
+
+    def __idle_start_favicon(self):
+        if self.__favicon_retriever is not None:
+            return
+        self.__favicon_retriever = FaviconRetriever(self.__user, self.__host, self.__port)
+        sigid = self.__favicon_retriever.connect('favicon-loaded', self.__on_favicon_loaded)
+        self.__favicon_retriever_connections.append(sigid)
         
     def ssh_reconnect(self):
         # TODO - do this in a better way
@@ -877,9 +1167,15 @@ class SshTerminalWidget(gtk.VBox):
         
     def get_title(self):
         return self.get_host()
+
+    def get_pixbuf(self):
+        return self.__favicon_pixbuf
     
     def get_host(self):
         return self.__host
+
+    def get_user(self):
+        return self.__user
 
     def get_port(self):
         return self.__port
@@ -939,9 +1235,9 @@ class SshWindow(VteWindow):
         
         self.__merge_ssh_ui()
 
-    def __add_to_history(self, args):
-        user = None
-        host = None
+    def __add_to_history(self, args, inituser=None, inithost=None):
+        user = inituser
+        host = inithost
         need_arg = False
         options = []
 
@@ -954,7 +1250,7 @@ class SshWindow(VteWindow):
             
             if need_arg:
                 options.append(arg)
-            else:
+            elif host is None:
                 if arg.find('@') >= 0:
                     (user, host) = arg.split('@', 1)
                 else:
@@ -963,12 +1259,12 @@ class SshWindow(VteWindow):
 
         self.__connhistory.add_connection(user, host, options)
 
-    def new_tab(self, args, cwd):
-        if len(args) == 0:
+    def new_tab(self, args, cwd, **kwargs):
+        if len(args) == 0 and len(kwargs) == 0:
             self.open_connection_dialog(exit_on_cancel=True)
         else:
-            self.__add_to_history(args)
-            term = SshTerminalWidget(args=args, cwd=cwd, actions=self.__action_group)
+            self.__add_to_history(args, **kwargs)
+            term = SshTerminalWidget(args=args, cwd=cwd, actions=self.__action_group, **kwargs)
             self.append_widget(term)
             
     def append_widget(self, w):
@@ -984,13 +1280,17 @@ class SshWindow(VteWindow):
         if self.__in_reconnect:
             return
         self.__in_reconnect = True
+        changed_user = changed_widget.get_user()
         changed_host = changed_widget.get_host()
-        _logger.debug("reconnecting all widgets for host %s", changed_host)
+        changed_userhost = userhost_pair_to_string(changed_user, changed_host)
+        _logger.debug("reconnecting all widgets for host %s", changed_userhost)
         for widget in self._get_notebook().get_children():
             if changed_widget is widget:
                 continue
             host = widget.get_host()
-            if host != changed_host:
+            user = widget.get_user()
+            userhost = userhost_pair_to_string(user, host)
+            if userhost != changed_userhost:
                 continue
             widget.ssh_reconnect()
         self.__in_reconnect = False
@@ -1133,11 +1433,10 @@ class SshWindow(VteWindow):
     def __copy_connection_cb(self, action):
         notebook = self._get_notebook()
         widget = notebook.get_nth_page(notebook.get_current_page())
+        user = widget.get_user()
         host = widget.get_host()
         opts = widget.get_options()
-        args = list(opts)
-        args.append(host)
-        self.new_tab(args, None)
+        self.new_tab(widget.get_options(), None, inituser=user, inithost=host)
 
     def open_connection_dialog(self, exit_on_cancel=False):
         win = ConnectDialog(parent=self, history=self.__connhistory, local_avahi=self.__local_avahi)
