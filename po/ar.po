@@ -1,0 +1,311 @@
+# Arabic translations for PACKAGE package.
+# Copyright (C) 2008 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-07-31 11:07+0100\n"
+"PO-Revision-Date: 2008-08-02 10:49+0100\n"
+"Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
+"Language-Team: Arabeyes <doc@arabeyes.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Connect to a remote computer using Secure Shell"
+msgstr ""
+
+#: ../hotssh.desktop.in.h:2
+msgid "Secure Shell"
+msgstr "صدفة آمنة"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "سنة"
+msgstr[1] "سنة واحدة"
+msgstr[2] "سنتان"
+msgstr[3] "سنوات"
+msgstr[4] "سنة"
+msgstr[5] "سنة"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "شهر"
+msgstr[1] "شهر واحد"
+msgstr[2] "شهران"
+msgstr[3] "أشهر"
+msgstr[4] "شهر"
+msgstr[5] "شهر"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "أسبوع"
+msgstr[1] "أسبوع"
+msgstr[2] "أسبوعان"
+msgstr[3] "أسابيع"
+msgstr[4] "أسبوع"
+msgstr[5] "أسبوع"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "يوم"
+msgstr[1] "يوم واحد"
+msgstr[2] "يومان"
+msgstr[3] "أيام"
+msgstr[4] "يوم"
+msgstr[5] "يوم"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "ساعة"
+msgstr[1] "ساعة"
+msgstr[2] "ساعتان"
+msgstr[3] "ساعات"
+msgstr[4] "ساعة"
+msgstr[5] "ساعة"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "دقيقة"
+msgstr[1] "دقيقة واحدة"
+msgstr[2] "دقيقتان"
+msgstr[3] "دقائق"
+msgstr[4] "دقيقة"
+msgstr[5] "دقيقة"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "في المستقبل"
+
+#: ../hotssh/hotlib/timesince.py:72
+#, fuzzy
+msgid "less than 1 minute ago"
+msgstr "_تاريخ التّعديل أقل من"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr ""
+
+#: ../hotssh/hotlib/timesince.py:86
+#, fuzzy, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "نوع سيء لرقم VT \n"
+
+#: ../hotssh/hotvte/vteterm.py:81
+#: ../hotssh/hotvte/vtewindow.py:249
+msgid "_Copy"
+msgstr "ا_نسخ"
+
+#: ../hotssh/hotvte/vteterm.py:81
+#, fuzzy
+msgid "Copy selected text"
+msgstr "نسخ النّص المنتقى للحافظة الوسيطة"
+
+#: ../hotssh/hotvte/vteterm.py:82
+#: ../hotssh/hotvte/vtewindow.py:250
+msgid "_Paste"
+msgstr "ا_لصق"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "لصق نص"
+
+#: ../hotssh/hotvte/vteterm.py:173
+msgid "Open Link"
+msgstr "افتح وصلة"
+
+#: ../hotssh/hotvte/vtewindow.py:35
+#, fuzzy
+msgid "Tab Search"
+msgstr "<b>محركات بحث</b>"
+
+#: ../hotssh/hotvte/vtewindow.py:241
+msgid "File"
+msgstr "ملف"
+
+#: ../hotssh/hotvte/vtewindow.py:242
+#, fuzzy
+msgid "_Detach Tab"
+msgstr "فصل التبويب"
+
+#: ../hotssh/hotvte/vtewindow.py:244
+msgid "_Close"
+msgstr "أ_غلق"
+
+#: ../hotssh/hotvte/vtewindow.py:246
+msgid "_Quit"
+msgstr "أ_نه"
+
+#: ../hotssh/hotvte/vtewindow.py:248
+msgid "Edit"
+msgstr "تحرير"
+
+#: ../hotssh/hotvte/vtewindow.py:251
+msgid "View"
+msgstr "عرض"
+
+#: ../hotssh/hotvte/vtewindow.py:252
+msgid "Help"
+msgstr "مساعدة"
+
+#: ../hotssh/hotvte/vtewindow.py:253
+msgid "_About"
+msgstr "_عن"
+
+#: ../hotssh/sshwindow.py:97
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+
+#: ../hotssh/sshwindow.py:332
+msgid "Options"
+msgstr "خيارات"
+
+#: ../hotssh/sshwindow.py:343
+msgid "Example: "
+msgstr "مثال:"
+
+#: ../hotssh/sshwindow.py:358
+#, fuzzy
+msgid "New Secure Shell Connection"
+msgstr "مفتاح صدفة آمنة جديد"
+
+#: ../hotssh/sshwindow.py:371
+msgid "C_onnect"
+msgstr "إِ_تّصل"
+
+#: ../hotssh/sshwindow.py:398
+msgid "Host: "
+msgstr "المضيف:"
+
+#: ../hotssh/sshwindow.py:417
+msgid "User: "
+msgstr "المستخدم:"
+
+#: ../hotssh/sshwindow.py:441
+msgid "History"
+msgstr "تاريخ"
+
+#: ../hotssh/sshwindow.py:453
+#: ../hotssh/sshwindow.py:1421
+msgid "Connection"
+msgstr "إتصال"
+
+#: ../hotssh/sshwindow.py:456
+msgid "Time"
+msgstr "الوقت"
+
+#: ../hotssh/sshwindow.py:462
+msgid "Local"
+msgstr "محلًي"
+
+#: ../hotssh/sshwindow.py:470
+msgid "Name"
+msgstr "الاسم"
+
+#: ../hotssh/sshwindow.py:473
+msgid "Address"
+msgstr "العنوان"
+
+#: ../hotssh/sshwindow.py:1134
+#, fuzzy
+msgid "Connection closed"
+msgstr "غطاء مغلق"
+
+#: ../hotssh/sshwindow.py:1300
+msgid "Connecting"
+msgstr "يجري الاتصال"
+
+#: ../hotssh/sshwindow.py:1302
+#, fuzzy, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "تم الاتصال مع %s باستخدام %s"
+
+#: ../hotssh/sshwindow.py:1304
+msgid "Connection timed out"
+msgstr "نفاذ الوقت للاتصال"
+
+#: ../hotssh/sshwindow.py:1306
+msgid "Checking connection"
+msgstr "التحقق من الاتصال"
+
+#: ../hotssh/sshwindow.py:1331
+#, fuzzy
+msgid "Network connection changed"
+msgstr "خدمة شبكية موجّهة بالاتصال"
+
+#: ../hotssh/sshwindow.py:1415
+msgid "Connect to server"
+msgstr "إتّصل بالخادم..."
+
+#: ../hotssh/sshwindow.py:1416
+#, fuzzy
+msgid "Open a new Secure Shell connection"
+msgstr "عبارة سر لمفتاح الصدفة الآمنة الجديد"
+
+#: ../hotssh/sshwindow.py:1417
+#, fuzzy
+msgid "New tab for connection"
+msgstr "بانتظار اتّصال telnet..."
+
+#: ../hotssh/sshwindow.py:1418
+msgid "Open a new tab for the same remote computer"
+msgstr ""
+
+#: ../hotssh/sshwindow.py:1419
+#, fuzzy
+msgid "Open SFTP"
+msgstr "%sملفات FTP"
+
+#: ../hotssh/sshwindow.py:1420
+#, fuzzy
+msgid "Open a SFTP connection"
+msgstr "فشل فتح إتصال مع الناقل: %s\n"
+
+#: ../hotssh/sshwindow.py:1422
+#: ../hotssh/sshwindow.py:1511
+msgid "_Reconnect"
+msgstr "ا_عد الإتصال"
+
+#: ../hotssh/sshwindow.py:1422
+#, fuzzy
+msgid "Reset connection to server"
+msgstr "فشل الاتصال بالخادم %1: %2."
+
+#: ../hotssh/sshwindow.py:1423
+#, fuzzy
+msgid "R_econnect All"
+msgstr "انسخ ال_كل"
+
+#: ../hotssh/sshwindow.py:1423
+#, fuzzy
+msgid "Reset all connections"
+msgstr "تنضيد كل الفلاتر"
+
+#: ../hotssh/sshwindow.py:1510
+#, fuzzy
+msgid "Restore saved session?"
+msgstr "حُفِظت جلستُك."
+
+#: ../hotssh/sshwindow.py:1515
+#, fuzzy, python-format
+msgid "Reconnect to %d host"
+msgid_plural "Reconnect to %d hosts"
+msgstr[0] "تشفير مضيف إلى مضيف"
+msgstr[1] ""
+
