@@ -1477,7 +1477,8 @@ class SshWindow(VteWindow):
 class SshApp(VteApp):
     def __init__(self):
         super(SshApp, self).__init__(SshWindow)
-        self.__sessionpath = os.path.expanduser('~/.hotwire/hotwire-ssh.session')
+        self.__old_sessionpath = os.path.expanduser('~/.hotwire/hotssh.session')
+        self.__sessionpath = os.path.expanduser('~/.hotssh/hotssh-session.xml')
         self.__connhistory = get_history()
         self.__local_avahi = SshAvahiMonitor() 
         
@@ -1553,7 +1554,10 @@ class SshApp(VteApp):
         try:
             f = open(self.__sessionpath)
         except:
-            return None
+            try:
+                f = open(self.__old_sessionpath)
+            except:
+                return None
         doc = xml.dom.minidom.parse(f)
         saved_windows = []
         current_widget = None
@@ -1564,6 +1568,7 @@ class SshApp(VteApp):
             for child in window_child.childNodes:
                 if not (child.nodeType == child.ELEMENT_NODE and child.nodeName == 'connection'): 
                     continue
+                user = child.getAttribute('user')
                 host = child.getAttribute('host')
                 iscurrent = child.getAttribute('current')
                 options = []
@@ -1574,7 +1579,8 @@ class SshApp(VteApp):
                         if not (option_elt.nodeType == child.ELEMENT_NODE and options_elt.nodeName == 'option'): 
                             continue
                         options.append(option.firstChild.nodeValue)
-                kwargs = {'userhost': host}
+                userhost = userhost_pair_to_string(user, host)
+                kwargs = {'userhost': userhost}
                 if len(options) > 0:
                     kwargs['options'] = options
                 if iscurrent:
@@ -1587,7 +1593,7 @@ class SshApp(VteApp):
     @log_except(_logger)    
     def save_session(self):
         _logger.debug("doing session save")
-        tempf_path = tempfile.mktemp('.session.tmp', 'hotwire-session', os.path.dirname(self.__sessionpath))
+        tempf_path = tempfile.mktemp('.xml.tmp', 'hotssh-session', os.path.dirname(self.__sessionpath))
         f = open(tempf_path, 'w')
         state = []
         doc = xml.dom.minidom.getDOMImplementation().createDocument(None, "session", None)
@@ -1601,7 +1607,12 @@ class SshApp(VteApp):
             for widget in notebook:
                 connection = doc.createElement('connection')
                 window_node.appendChild(connection)
-                connection.setAttribute('host', widget.get_host())
+                user = widget.get_user()
+                if user is not None:
+                    connection.setAttribute('user', user)
+                host = widget.get_host()
+                if host is not None:
+                    connection.setAttribute('host', host)
                 if current == widget:
                     connection.setAttribute('current', 'true')
                 options = widget.get_options()

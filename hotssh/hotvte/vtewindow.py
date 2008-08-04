@@ -59,6 +59,7 @@ class TabbedVteWidget(VteTerminalWidget):
 
 class VteWindow(gtk.Window):
     __gsignals__ = {
+        "window-close" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
         "shutdown" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }    
 
@@ -416,6 +417,11 @@ class VteWindowFactory(gobject.GObject):
     def queue_save_session(self):      
         if self.__idle_save_session_id == 0:
             self.__idle_save_session_id = gobject.timeout_add(5*1000, self.__idle_save_session)
+
+    def __save_session_now(self):
+        if self.__idle_save_session_id > 0:
+            gobject.source_remove(self.__idle_save_session_id)
+        self.__idle_save_session()
             
     def __idle_save_session(self):
         self.__idle_save_session_id = 0
@@ -431,6 +437,7 @@ class VteWindowFactory(gobject.GObject):
 
     def __on_win_destroy(self, win):
         _logger.debug("got window destroy")
+        self.__save_session_now()
         self.__windows.remove(win)
         win.get_child().destroy()
         if len(self.__windows) == 0:
@@ -521,7 +528,9 @@ class VteApp(object):
         pass
     
     def on_shutdown(self, factory):
-        self.save_session()
+        # We used to save the session here, but now that is done in
+        # the window shutdown above
+        pass
     
     def save_session(self):
         _logger.debug("noop session save")
