@@ -280,9 +280,12 @@ class SshAvahiMonitor(gobject.GObject):
         if not avahi_available:
             return
         
-        sysbus = dbus.SystemBus()
-        avahi_service = sysbus.get_object(avahi.DBUS_NAME, avahi.DBUS_PATH_SERVER)
-        self.__avahi = dbus.Interface(avahi_service, avahi.DBUS_INTERFACE_SERVER)
+        try:
+            sysbus = dbus.SystemBus()
+            avahi_service = sysbus.get_object(avahi.DBUS_NAME, avahi.DBUS_PATH_SERVER)
+            self.__avahi = dbus.Interface(avahi_service, avahi.DBUS_INTERFACE_SERVER)
+        except dbus.exceptions.DBusException:
+            return
 
         browser_ref = self.__avahi.ServiceBrowserNew(avahi.IF_UNSPEC,
                                                      avahi.PROTO_UNSPEC,
