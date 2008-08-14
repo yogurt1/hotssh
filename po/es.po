@@ -1,0 +1,271 @@
+# Spanish translation of hotssh.
+# Copyright (C) 2008 Free Software Foundation, Inc.
+# This file is distributed under the same license as the hotssh package.
+#
+# Ulises Genis <ulises.genis@gmail.com>, 2008.
+#
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-09 03:56+0000\n"
+"PO-Revision-Date: 2008-08-09 12:24-0500\n"
+"Last-Translator: Ulises Genis <ulises.genis@gmail.com>\n"
+"Language-Team: Spanish <gnome-es-list@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Connect to a remote computer using Secure Shell"
+msgstr "Conectar a un equipo remoto usando Shell segura"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Secure Shell"
+msgstr "Shell segura"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "año"
+msgstr[1] "años"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "mes"
+msgstr[1] "meses"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "semana"
+msgstr[1] "semanas"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "día"
+msgstr[1] "días"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "hora"
+msgstr[1] "horas"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuto"
+msgstr[1] "minutos"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "en el futuro"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "hace menos de un minuto"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "hace %(number)d %(type)s, %(number2)d %(type2)s"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "hace %(number)d %(type)s"
+
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:250
+msgid "_Copy"
+msgstr "_Copiar"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "Copiar el texto seleccionado"
+
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:251
+msgid "_Paste"
+msgstr "_Pegar"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "Pegar texto"
+
+#: ../hotssh/hotvte/vteterm.py:173
+msgid "Open Link"
+msgstr "Abrir enlace"
+
+#: ../hotssh/hotvte/vtewindow.py:35
+msgid "Tab Search"
+msgstr "Buscar solapa"
+
+#: ../hotssh/hotvte/vtewindow.py:242
+msgid "File"
+msgstr "Archivo"
+
+#: ../hotssh/hotvte/vtewindow.py:243
+msgid "_Detach Tab"
+msgstr "_Desprender solapa"
+
+#: ../hotssh/hotvte/vtewindow.py:245
+msgid "_Close"
+msgstr "_Cerrar"
+
+#: ../hotssh/hotvte/vtewindow.py:247
+msgid "_Quit"
+msgstr "_Salir"
+
+#: ../hotssh/hotvte/vtewindow.py:249
+msgid "Edit"
+msgstr "Edición"
+
+#: ../hotssh/hotvte/vtewindow.py:252
+msgid "View"
+msgstr "Ver"
+
+#: ../hotssh/hotvte/vtewindow.py:253
+msgid "Help"
+msgstr "Ayuda"
+
+#: ../hotssh/hotvte/vtewindow.py:254
+msgid "_About"
+msgstr "_Acerca de..."
+
+#: ../hotssh/sshwindow.py:97
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"Una interfaz de OpenSSH, un cliente de Shell segura\n"
+"\n"
+
+#: ../hotssh/sshwindow.py:335
+msgid "Options"
+msgstr "Opciones"
+
+#: ../hotssh/sshwindow.py:346
+msgid "Example: "
+msgstr "Ejemplo: "
+
+#: ../hotssh/sshwindow.py:361
+msgid "New Secure Shell Connection"
+msgstr "Nueva conexión de Shell segura"
+
+#: ../hotssh/sshwindow.py:374
+msgid "C_onnect"
+msgstr "C_onectar"
+
+#: ../hotssh/sshwindow.py:401
+msgid "Host: "
+msgstr "Equipo: "
+
+#: ../hotssh/sshwindow.py:420
+msgid "User: "
+msgstr "Usuario: "
+
+#: ../hotssh/sshwindow.py:444
+msgid "History"
+msgstr "Histórico"
+
+#: ../hotssh/sshwindow.py:456 ../hotssh/sshwindow.py:1424
+msgid "Connection"
+msgstr "Conexión"
+
+#: ../hotssh/sshwindow.py:459
+msgid "Time"
+msgstr "Hora"
+
+#: ../hotssh/sshwindow.py:465
+msgid "Local"
+msgstr "Local"
+
+#: ../hotssh/sshwindow.py:473
+msgid "Name"
+msgstr "Nombre"
+
+#: ../hotssh/sshwindow.py:476
+msgid "Address"
+msgstr "Dirección"
+
+#: ../hotssh/sshwindow.py:1137
+msgid "Connection closed"
+msgstr "Conexión cerrada"
+
+#: ../hotssh/sshwindow.py:1303
+msgid "Connecting"
+msgstr "Conectando"
+
+#: ../hotssh/sshwindow.py:1305
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "Conectado; %.2fs latencia; %s"
+
+#: ../hotssh/sshwindow.py:1307
+msgid "Connection timed out"
+msgstr "Expiró la conexión"
+
+#: ../hotssh/sshwindow.py:1309
+msgid "Checking connection"
+msgstr "Verificando conexión"
+
+#: ../hotssh/sshwindow.py:1334
+msgid "Network connection changed"
+msgstr "Cambió la conexión de red"
+
+#: ../hotssh/sshwindow.py:1418
+msgid "Connect to server"
+msgstr "Conectar con un servidor"
+
+#: ../hotssh/sshwindow.py:1419
+msgid "Open a new Secure Shell connection"
+msgstr "Abrir una nueva conexión de Shell segura"
+
+#: ../hotssh/sshwindow.py:1420
+msgid "New tab for connection"
+msgstr "Solapa nueva para conexión"
+
+#: ../hotssh/sshwindow.py:1421
+msgid "Open a new tab for the same remote computer"
+msgstr "Abrir solapa nueva para el mismo equipo remoto"
+
+#: ../hotssh/sshwindow.py:1422
+msgid "Open SFTP"
+msgstr "Abrir SFTP"
+
+#: ../hotssh/sshwindow.py:1423
+msgid "Open a SFTP connection"
+msgstr "Abrir una conexión SFTP"
+
+#: ../hotssh/sshwindow.py:1425 ../hotssh/sshwindow.py:1515
+msgid "_Reconnect"
+msgstr "_Reconectar"
+
+#: ../hotssh/sshwindow.py:1425
+msgid "Reset connection to server"
+msgstr "Reiniciar la conexión con el servidor"
+
+#: ../hotssh/sshwindow.py:1426
+msgid "R_econnect All"
+msgstr "R_econectar todo"
+
+#: ../hotssh/sshwindow.py:1426
+msgid "Reset all connections"
+msgstr "Reiniciar todas las conexiones"
+
+#: ../hotssh/sshwindow.py:1514
+msgid "Restore saved session?"
+msgstr "¿Restaurar la sesión guardada?"
+
+#: ../hotssh/sshwindow.py:1519
+#, python-format
+msgid "Reconnect to %d host"
+msgid_plural "Reconnect to %d hosts"
+msgstr[0] "Reconectar con el equipo %d"
+msgstr[1] "Reconectar con los equipos %d"
+
