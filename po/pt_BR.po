@@ -2,14 +2,15 @@
 # Copyright (C) 2008 Colin Walters
 # This file is distributed under the same license as the hotssh package.
 # Alexsandro Haag <alexsandro.haag@gmail.com>, 2008.
+# Leonardo Ferreira Fontenelle <leonardof@gnome.org>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-20 03:55+0000\n"
-"PO-Revision-Date: 2008-08-20 23:26-0300\n"
-"Last-Translator: Alexsandro Haag <alexsandro.haag@gmail.com>\n"
+"POT-Creation-Date: 2008-08-23 23:38-0300\n"
+"PO-Revision-Date: 2008-08-23 23:41-0300\n"
+"Last-Translator: Leonardo Ferreira Fontenelle <leonardof@gnome.org>\n"
 "Language-Team: Portuguese/Brazil <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -262,9 +263,10 @@ msgstr "Reinicia todas as conexões"
 msgid "Restore saved session?"
 msgstr "Restaurar a sessão salva?"
 
-#: ../hotssh/sshwindow.py:1519
+#. Translators: %d is the number of hosts we are about to reconnect to.
+#: ../hotssh/sshwindow.py:1520
 #, python-format
 msgid "Reconnect to %d host"
 msgid_plural "Reconnect to %d hosts"
-msgstr[0] "Reconectar à máquina %d"
-msgstr[1] "Reconectar à máquinas %d"
+msgstr[0] "Reconectar a %d máquina"
+msgstr[1] "Reconectar a %d máquinas"
