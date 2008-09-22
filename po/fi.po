@@ -1,0 +1,269 @@
+# Finnish messages for hotssh.
+# Copyright (C) 2008 Free Software Foundation Inc.
+#
+# Ilkka Tuohela <hile@iki.fi>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-09-22 08:57+0300\n"
+"PO-Revision-Date: 2008-09-22 08:00+0300\n"
+"Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Connect to a remote computer using Secure Shell"
+msgstr "Ota toiseen tietokoneeseen yhteyttä SSH:lla"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Secure Shell"
+msgstr "SSH"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "vuosi"
+msgstr[1] "vuotta"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "kuukausi"
+msgstr[1] "kuukautta"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "viikko"
+msgstr[1] "viikkoa"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "päivä"
+msgstr[1] "päivää"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "tunti"
+msgstr[1] "tuntia"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuutti"
+msgstr[1] "minuuttia"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "tulevaisuudessa"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "alle minuutti sitten"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "%(number)d %(type)s, %(number2)d %(type2)s sitten"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "%(number)d %(type)s sitten"
+
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:250
+msgid "_Copy"
+msgstr "_Kopioi"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "Kopioi valittu teksti"
+
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:251
+msgid "_Paste"
+msgstr "_Liitä"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "Liitä tekstiä"
+
+#: ../hotssh/hotvte/vteterm.py:173
+msgid "Open Link"
+msgstr "Avaa linkki"
+
+#: ../hotssh/hotvte/vtewindow.py:35
+msgid "Tab Search"
+msgstr "Välilehtien haku"
+
+#: ../hotssh/hotvte/vtewindow.py:242
+msgid "File"
+msgstr "Tiedosto"
+
+#: ../hotssh/hotvte/vtewindow.py:243
+msgid "_Detach Tab"
+msgstr "_Irrota välilehti"
+
+#: ../hotssh/hotvte/vtewindow.py:245
+msgid "_Close"
+msgstr "_Sulje"
+
+#: ../hotssh/hotvte/vtewindow.py:247
+msgid "_Quit"
+msgstr "_Lopeta"
+
+#: ../hotssh/hotvte/vtewindow.py:249
+msgid "Edit"
+msgstr "Muokkaa"
+
+#: ../hotssh/hotvte/vtewindow.py:252
+msgid "View"
+msgstr "Näytä"
+
+#: ../hotssh/hotvte/vtewindow.py:253
+msgid "Help"
+msgstr "Ohje"
+
+#: ../hotssh/hotvte/vtewindow.py:254
+msgid "_About"
+msgstr "_Tietoja"
+
+#: ../hotssh/sshwindow.py:97
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"Käyttäliittymä OpenSSH:lle, SSH-asiakasohjelmalle\n"
+
+#: ../hotssh/sshwindow.py:335
+msgid "Options"
+msgstr "Valitsimet"
+
+#: ../hotssh/sshwindow.py:346
+msgid "Example: "
+msgstr "Esimerkki:"
+
+#: ../hotssh/sshwindow.py:361
+msgid "New Secure Shell Connection"
+msgstr "Uusi SSH-yhteys"
+
+#: ../hotssh/sshwindow.py:374
+msgid "C_onnect"
+msgstr "_Yhdistä"
+
+#: ../hotssh/sshwindow.py:401
+msgid "Host: "
+msgstr "Palvelin:"
+
+#: ../hotssh/sshwindow.py:420
+msgid "User: "
+msgstr "Käyttäjä:"
+
+#: ../hotssh/sshwindow.py:444
+msgid "History"
+msgstr "Historia"
+
+#: ../hotssh/sshwindow.py:456 ../hotssh/sshwindow.py:1424
+msgid "Connection"
+msgstr "Yhteys"
+
+#: ../hotssh/sshwindow.py:459
+msgid "Time"
+msgstr "Aika"
+
+#: ../hotssh/sshwindow.py:465
+msgid "Local"
+msgstr "Paikallinen"
+
+#: ../hotssh/sshwindow.py:473
+msgid "Name"
+msgstr "Nimi"
+
+#: ../hotssh/sshwindow.py:476
+msgid "Address"
+msgstr "Osoite"
+
+#: ../hotssh/sshwindow.py:1137
+msgid "Connection closed"
+msgstr "Yhteys katkaistu"
+
+#: ../hotssh/sshwindow.py:1303
+msgid "Connecting"
+msgstr "Yhdistetään"
+
+#: ../hotssh/sshwindow.py:1305
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "Yhdistetty: %.2fs latenssi: %s"
+
+#: ../hotssh/sshwindow.py:1307
+msgid "Connection timed out"
+msgstr "Yhteys aikakatkaistiin"
+
+#: ../hotssh/sshwindow.py:1309
+msgid "Checking connection"
+msgstr "Tarkistetaan yhteyttä"
+
+#: ../hotssh/sshwindow.py:1334
+msgid "Network connection changed"
+msgstr "Verkkoyhteys on vaihtunut"
+
+#: ../hotssh/sshwindow.py:1418
+msgid "Connect to server"
+msgstr "Yhdistä palvelimeen"
+
+#: ../hotssh/sshwindow.py:1419
+msgid "Open a new Secure Shell connection"
+msgstr "Avaa uusi SSH-yhteys"
+
+#: ../hotssh/sshwindow.py:1420
+msgid "New tab for connection"
+msgstr "Uusi välilehti yhteydelle"
+
+#: ../hotssh/sshwindow.py:1421
+msgid "Open a new tab for the same remote computer"
+msgstr "Avaa uusi välilehti samalle palvelimelle"
+
+#: ../hotssh/sshwindow.py:1422
+msgid "Open SFTP"
+msgstr "Avaa SFTP"
+
+#: ../hotssh/sshwindow.py:1423
+msgid "Open a SFTP connection"
+msgstr "Avaa SFTP-yhteys"
+
+#: ../hotssh/sshwindow.py:1425 ../hotssh/sshwindow.py:1515
+msgid "_Reconnect"
+msgstr "Yh_distä uudestaan"
+
+#: ../hotssh/sshwindow.py:1425
+msgid "Reset connection to server"
+msgstr "Nollaa yhteys palvelimeen"
+
+#: ../hotssh/sshwindow.py:1426
+msgid "R_econnect All"
+msgstr "Yhdistä _kaikki uudestaan"
+
+#: ../hotssh/sshwindow.py:1426
+msgid "Reset all connections"
+msgstr "Nollaa kaikki yhteydet"
+
+#: ../hotssh/sshwindow.py:1514
+msgid "Restore saved session?"
+msgstr "Palautetaanko tallennettu istunto?"
+
+#: ../hotssh/sshwindow.py:1519
+#, python-format
+msgid "Reconnect to %d host"
+msgid_plural "Reconnect to %d hosts"
+msgstr[0] "Yhdistä %d palvelimeen uudestaan"
+msgstr[1] "Yhdistä %d palvelimeen uudestaan"
+
