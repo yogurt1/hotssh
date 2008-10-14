@@ -1516,6 +1516,7 @@ class SshApp(VteApp):
             button.set_property('image', gtk.image_new_from_stock('gtk-connect', gtk.ICON_SIZE_BUTTON))
             dlg.set_default_response(gtk.RESPONSE_ACCEPT)
             allhosts_count = len(allhosts)
+            # Translators: %d is the number of hosts we are about to reconnect to.
             text = gettext.ngettext('Reconnect to %d host' % (allhosts_count,), 
                                     'Reconnect to %d hosts' % (allhosts_count,), len(allhosts))
             dlg.format_secondary_markup(text)
