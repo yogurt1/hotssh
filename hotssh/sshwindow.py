@@ -1,5 +1,5 @@
 # This file is part of the Hotwire Shell user interface.
-#   
+#
 # Copyright (C) 2007 Colin Walters <walters@verbum.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -54,7 +54,7 @@ def glibc_backtrace():
     from ctypes import cdll
     libc = cdll.LoadLibrary("libc.so.6")
     btcount = 100
-    btdata = (c_void_p * btcount)() 
+    btdata = (c_void_p * btcount)()
     libc.backtrace(btdata, c_int(btcount))
     symbols = libc.backtrace_symbols(btdata, c_int(btcount))
     print symbols
@@ -81,7 +81,7 @@ class HotSshAboutDialog(gtk.AboutDialog):
         dialog.set_property('authors', ['Colin Walters <walters@verbum.org>'])
         dialog.set_property('copyright', u'Copyright \u00A9 2007,2008 Colin Walters <walters@verbum.org>')
         dialog.set_property('logo-icon-name', 'hotwire-openssh')
-        dialog.set_property('license', 
+        dialog.set_property('license',
                             '''Hotwire is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -104,7 +104,7 @@ class SshConnectionHistory(object):
         # We want to upgrade from the old Hotwire-derived location into the new ~/.hotssh
         self.__oldstatedir = os.path.expanduser('~/.hotwire/state')
         self.__statedir = os.path.expanduser('~/.hotssh')
-        try:            
+        try:
             os.makedirs(self.__statedir)
         except:
             pass
@@ -118,7 +118,7 @@ class SshConnectionHistory(object):
         cursor.execute('''CREATE INDEX IF NOT EXISTS ConnectionsIndex1 on Connections (host)''')
         cursor.execute('''CREATE INDEX IF NOT EXISTS ConnectionsIndex2 on Connections (host,user)''')
         cursor.execute('''CREATE TABLE IF NOT EXISTS Colors (bid INTEGER PRIMARY KEY AUTOINCREMENT, pattern TEXT UNIQUE, fg TEXT, bg TEXT, modtime DATETIME)''')
-        cursor.execute('''CREATE INDEX IF NOT EXISTS ColorsIndex on Colors (pattern)''')    
+        cursor.execute('''CREATE INDEX IF NOT EXISTS ColorsIndex on Colors (pattern)''')
 
     def get_recent_connections_search(self, host, limit=10):
         cursor = self.__conn.cursor()
@@ -144,7 +144,7 @@ class SshConnectionHistory(object):
                 continue
             seen.add(uhost)
             # We do this just to parse conntime
-            yield user,host,options,sqlite_timestamp_to_datetime(conntime)  
+            yield user,host,options,sqlite_timestamp_to_datetime(conntime)
 
     def get_users_for_host_search(self, host):
         for user,host,options,ts in self.get_recent_connections_search(host):
@@ -189,7 +189,7 @@ class OpenSSHKnownHostsDB(gobject.GObject):
         self.__pixbufcache = {}
 
     def __get_favicon_cache(self):
-        try:            
+        try:
             os.makedirs(self.__faviconcache)
         except OSError, e:
             if e.errno == errno.EEXIST:
@@ -197,7 +197,7 @@ class OpenSSHKnownHostsDB(gobject.GObject):
             else:
                 raise
         return self.__faviconcache
-        
+
     def __read_hosts(self):
         try:
             _logger.debug("reading %s", self.__path)
@@ -221,7 +221,7 @@ class OpenSSHKnownHostsDB(gobject.GObject):
             hosts[host] = (hostkey_type, hostkey)
         f.close()
         return hosts
-        
+
     def get_hosts(self):
         try:
             stbuf = os.stat(self.__path)
@@ -276,10 +276,10 @@ class SshAvahiMonitor(gobject.GObject):
         super(SshAvahiMonitor, self).__init__()
         # maps name->(addr,port)
         self.__cache = {}
-        
+
         if not avahi_available:
             return
-        
+
         try:
             sysbus = dbus.SystemBus()
             avahi_service = sysbus.get_object(avahi.DBUS_NAME, avahi.DBUS_PATH_SERVER)
@@ -306,10 +306,10 @@ class SshAvahiMonitor(gobject.GObject):
         _logger.debug("add Avahi SSH: %r %r %r", name, addr, port)
         self.__cache[name] = (addr, port)
         self.emit('changed')
-        
+
     def __on_avahi_error(self, *args):
         _logger.debug("Avahi error: %s", args)
-        
+
     def __on_item_new(self, interface, protocol, name, type, domain, flags):
         self.__avahi.ResolveService(interface, protocol, name, type, domain,
                                     avahi.PROTO_UNSPEC, dbus.UInt32(0),
@@ -319,17 +319,17 @@ class SshAvahiMonitor(gobject.GObject):
     def __on_item_remove(self, interface, protocol, name, type, domain,server):
         uname = name.decode('utf-8', 'replace')
         if uname in self.__cache:
-            _logger.debug("del Avahi SSH: %r", uname)            
+            _logger.debug("del Avahi SSH: %r", uname)
             del self.__cache[uname]
             self.emit('changed')
-            
+
 _local_avahi_instance = None
 def get_local_avahi():
     global _local_avahi_instance
     if _local_avahi_instance is None:
         _local_avahi_instance = SshAvahiMonitor()
-    return _local_avahi_instance            
-            
+    return _local_avahi_instance
+
 class SshOptions(gtk.Expander):
     def __init__(self):
         super(SshOptions, self).__init__(_('Options'))
@@ -348,13 +348,13 @@ class SshOptions(gtk.Expander):
         options_helplabel.set_alignment(0.0, 0.5)
         options_vbox.add(options_helplabel)
         self.add(options_vbox)
-        
+
     def get_entry(self):
-        return self.__entry   
-    
+        return self.__entry
+
     def __on_options_help_clicked(self, b):
         # Hooray Unix!
-        subprocess.Popen(['gnome-terminal', '-x', 'man', 'ssh'])                  
+        subprocess.Popen(['gnome-terminal', '-x', 'man', 'ssh'])
 
 class ConnectDialog(gtk.Dialog):
     def __init__(self, parent=None, history=None, local_avahi=None):
@@ -362,11 +362,11 @@ class ConnectDialog(gtk.Dialog):
                                             parent=parent,
                                             flags=gtk.DIALOG_DESTROY_WITH_PARENT,
                                             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
-        
+
         self.__history = history
         self.__local_avahi = local_avahi
         self.__local_avahi.connect('changed', self.__on_local_avahi_changed)
-        
+
         self.__default_username = pwd.getpwuid(os.getuid()).pw_name
 
         self.connect('response', lambda *args: self.hide())
@@ -374,28 +374,28 @@ class ConnectDialog(gtk.Dialog):
         button = self.add_button(_('C_onnect'), gtk.RESPONSE_ACCEPT)
         button.set_property('image', gtk.image_new_from_stock('gtk-connect', gtk.ICON_SIZE_BUTTON))
         self.set_default_response(gtk.RESPONSE_ACCEPT)
-                
+
         self.set_has_separator(False)
         self.set_border_width(5)
-        
+
         self.__vbox = vbox = gtk.VBox()
-        self.vbox.add(self.__vbox)   
+        self.vbox.add(self.__vbox)
         self.vbox.set_spacing(6)
 
         self.__response_value = None
-   
+
         self.__viewmode = 'history'
-   
+
         self.__suppress_recent_search = False
         self.__idle_search_id = 0
         self.__idle_update_search_id = 0
-        
+
         self.__custom_user = False
-   
+
         self.__hosts = _openssh_hosts_db
 
         sg = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        
+
         hbox = gtk.HBox()
         vbox.pack_start(hbox, expand=False)
         host_label = gtk.Label(_('Host: '))
@@ -410,7 +410,7 @@ class ConnectDialog(gtk.Dialog):
         self.__entrycompletion.set_property('popup-completion', False)
         self.__entrycompletion.set_property('popup-single-match', False)
         self.__entrycompletion.set_model(self.__entry.get_property('model'))
-        self.__entrycompletion.set_text_column(0)     
+        self.__entrycompletion.set_text_column(0)
         self.__entry.child.set_completion(self.__entrycompletion)
         hbox.add(self.__entry)
         self.__reload_entry()
@@ -429,7 +429,7 @@ class ConnectDialog(gtk.Dialog):
         self.__user_completion.set_property('inline-completion', True)
         self.__user_completion.set_property('popup-single-match', False)
         self.__user_completion.set_model(gtk.ListStore(gobject.TYPE_STRING))
-        self.__user_completion.set_text_column(0)     
+        self.__user_completion.set_text_column(0)
         self.__user_entry.set_completion(self.__user_completion)
 
         hbox.pack_start(self.__user_entry, expand=False)
@@ -440,8 +440,8 @@ class ConnectDialog(gtk.Dialog):
         self.__conntype_notebook.set_scrollable(True)
         self.__conntype_notebook.connect('switch-page', self.__on_switch_page)
         vbox.pack_start(self.__conntype_notebook, expand=True)
-        
-        history_label = gtk.Label(_('History'))     
+
+        history_label = gtk.Label(_('History'))
         tab = gtk.ScrolledWindow()
         tab.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         #frame.set_label_widget(history_label)
@@ -461,10 +461,10 @@ class ConnectDialog(gtk.Dialog):
                                                           self.__render_time_recency, datetime.datetime.now())
 
         self.__conntype_notebook.append_page(tab, history_label)
-        
+
         local_label = gtk.Label(_('Local'))
         tab = gtk.ScrolledWindow()
-        tab.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)        
+        tab.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         self.__local_model = gtk.ListStore(str, str, str)
         self.__local_view = gtk.TreeView(self.__local_model)
         self.__local_view.get_selection().connect('changed', self.__on_local_selected)
@@ -480,14 +480,14 @@ class ConnectDialog(gtk.Dialog):
 
         self.__on_entry_modified()
         self.__force_idle_search()
-        
+
         self.__options_expander = SshOptions()
         self.__options_entry = self.__options_expander.get_entry()
 
-        vbox.pack_start(self.__options_expander, expand=False)        
+        vbox.pack_start(self.__options_expander, expand=False)
 
         self.set_default_size(640, 480)
-        
+
     @log_except(_logger)
     def __on_switch_page(self, nb, p, pn):
         _logger.debug("got page switch, pn=%d", pn)
@@ -499,11 +499,11 @@ class ConnectDialog(gtk.Dialog):
         # is that the history search failed.
         self.__entry.child.set_text('')
         self.__force_idle_search()
-        self.__suppress_recent_search = False    
-        
+        self.__suppress_recent_search = False
+
     def __on_browse_local(self, b):
         pass
-    
+
     def __on_local_avahi_changed(self, *args):
         if self.__viewmode == 'local':
             self.__force_idle_search()
@@ -516,11 +516,11 @@ class ConnectDialog(gtk.Dialog):
         else:
             userhost = host
         cell.set_property('text', userhost)
-        
+
     def __set_user(self, name):
         if name is None:
             name = self.__default_username
-        self.__user_entry.set_text(name) 
+        self.__user_entry.set_text(name)
 
     def __render_favicon(self, col, cell, model, it):
         user = model.get_value(it, 0)
@@ -532,12 +532,12 @@ class ConnectDialog(gtk.Dialog):
             cell.set_property('pixbuf',pixbuf)
         else:
             cell.set_property('pixbuf', None)
-        
+
     def __render_time_recency(self, col, cell, model, it, curtime):
         val = model.get_value(it, 2)
         deltastr = timesince(val, curtime)
-        cell.set_property('text', deltastr)      
-       
+        cell.set_property('text', deltastr)
+
     def __reload_entry(self, *args, **kwargs):
         _logger.debug("reloading")
         # TODO do predictive completion here
@@ -546,14 +546,14 @@ class ConnectDialog(gtk.Dialog):
         # bar.cis.ohio-state.edu
         # Now I type baz.cis
         # The system notices that nothing matches baz.cis; however
-        # the "cis" part does match foo.cis.ohio-state.edu, so 
+        # the "cis" part does match foo.cis.ohio-state.edu, so
         # we start offering a completion for it
         self.__entry.get_property('model').clear()
         for host in self.__hosts.get_hosts():
             self.__entry.append_text(host)
-            
+
     def __on_user_modified(self, *args):
-        text = self.__user_entry.get_text()     
+        text = self.__user_entry.get_text()
         self.__custom_user = text != self.__default_username
 
     def __on_entry_modified(self, *args):
@@ -578,15 +578,15 @@ class ConnectDialog(gtk.Dialog):
         else:
             self.__idle_update_search_local()
         self.__suppress_recent_search = False
-            
+
     def __idle_update_search_local(self):
-        self.__local_view.get_selection().unselect_all()        
+        self.__local_view.get_selection().unselect_all()
         hosttext = self.__entry.get_active_text()
         self.__local_model.clear()
         for name,host,port in self.__local_avahi:
             if host.find(hosttext) >= 0:
-                self.__local_model.append((name,host,port))       
-            
+                self.__local_model.append((name,host,port))
+
     def __idle_update_search_history(self):
         self.__recent_view.get_selection().unselect_all()
         host = self.__entry.get_active_text()
@@ -607,7 +607,7 @@ class ConnectDialog(gtk.Dialog):
             self.__user_completion.set_model(model)
         else:
             self.__user_entry.set_text(self.__default_username)
-        self.__reload_connection_history()            
+        self.__reload_connection_history()
 
     def __reload_connection_history(self):
         hosttext = self.__entry.get_active_text()
@@ -626,29 +626,29 @@ class ConnectDialog(gtk.Dialog):
         else:
             self.__user_entry.select_region(0, -1)
             self.__user_entry.grab_focus()
-            
-    def __on_local_selected(self, ts):     
+
+    def __on_local_selected(self, ts):
         if self.__suppress_recent_search:
-            return        
-        _logger.debug("local selected: %s", ts)           
+            return
+        _logger.debug("local selected: %s", ts)
         (tm, seliter) = ts.get_selected()
-        if seliter is None: 
+        if seliter is None:
             return
         host = self.__local_model.get_value(seliter, 1)
         port = self.__local_model.get_value(seliter, 2)
         self.__suppress_recent_search = True
         self.__entry.child.set_text(host)
-        self.__suppress_recent_search = False     
-            
+        self.__suppress_recent_search = False
+
     def __on_local_activated(self, tv, path, vc):
         self.activate_default()
-            
+
     def __on_recent_selected(self, ts):
         if self.__suppress_recent_search:
-            return        
-        _logger.debug("recent selected: %s", ts)            
+            return
+        _logger.debug("recent selected: %s", ts)
         (tm, seliter) = ts.get_selected()
-        if seliter is None: 
+        if seliter is None:
             return
         user = self.__recent_model.get_value(seliter, 0)
         host = self.__recent_model.get_value(seliter, 1)
@@ -658,18 +658,18 @@ class ConnectDialog(gtk.Dialog):
             self.__user_entry.set_text(user)
         else:
             self.__set_user(None)
-        self.__suppress_recent_search = False        
-            
+        self.__suppress_recent_search = False
+
     def __on_recent_activated(self, tv, path, vc):
         self.activate_default()
 
     def __reset(self):
         self.__entry.child.set_text('')
         self.__user_entry.set_text(self.__default_username)
-            
+
     def run_get_cmd(self):
         self.__reset()
-        self.show_all()        
+        self.show_all()
         resp = self.run()
         if resp != gtk.RESPONSE_ACCEPT:
             return None
@@ -694,7 +694,7 @@ def get_base_sshcmd():
     return ['ssh']
 
 def get_connection_sharing_args():
-    # TODO - openssh should really do this out of the box    
+    # TODO - openssh should really do this out of the box
     return ['-oControlMaster=auto', '-oControlPath=' + os.path.join(get_controlpath(), 'master-%r@%h:%p')]
 
 class AsyncCommandWithOutput(gobject.GObject):
@@ -736,8 +736,8 @@ class AsyncCommandWithOutput(gobject.GObject):
         self.__subproc = subprocess.Popen(cmd, stdout=stdout_target, stderr=nullf)
         nullf.close()
         if getoutput:
-            self.__io_watch_id = gobject.io_add_watch(self.__subproc.stdout, 
-                                                      gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP, 
+            self.__io_watch_id = gobject.io_add_watch(self.__subproc.stdout,
+                                                      gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP,
                                                       self.__on_io)
         self.__output = StringIO()
         self.__child_watch_id = gobject.child_watch_add(self.__subproc.pid, self.__on_exited)
@@ -764,8 +764,8 @@ class AsyncCommandWithOutput(gobject.GObject):
             pass
         self.emit('timeout', self.__output.getvalue())
         self.__timeout_id = 0
-        return False    
-        
+        return False
+
     def __on_exited(self, pid, condition):
         _logger.debug("command exited host=%r condition=%r cmd=%r", self.__host, condition, self.__cmd)
         if self.__timeout_id == 0:
@@ -827,8 +827,8 @@ class FaviconRetriever(gobject.GObject):
             os.close(fd)
 
             _logger.debug("creating scp request")
-            req = AsyncCommandWithOutput(self.__user, self.__host, self.__port, 
-                                         ['scp', '-p', '-q'], [tmppath], 
+            req = AsyncCommandWithOutput(self.__user, self.__host, self.__port,
+                                         ['scp', '-p', '-q'], [tmppath],
                                          hostappend=':/etc/favicon.png', timeout=15000, getoutput=False)
             req.connect('timeout', self.__on_favicon_timeout)
             req.connect('complete', self.__on_favicon_complete)
@@ -854,7 +854,7 @@ class HostConnectionMonitor(gobject.GObject):
                                                                       gobject.TYPE_BOOLEAN,
                                                                       gobject.TYPE_PYOBJECT,
                                                                       gobject.TYPE_PYOBJECT)),
-    }      
+    }
     def __init__(self):
         super(HostConnectionMonitor, self).__init__()
         self.__host_monitor_ids = {}
@@ -862,12 +862,12 @@ class HostConnectionMonitor(gobject.GObject):
         self.__check_statuses = {}
         # Map host -> w output
         self.__check_status_output = {}
-    
+
     def start_monitor(self, host):
         if not (host in self.__host_monitor_ids or host in self.__check_statuses):
-            _logger.debug("adding monitor for %s", host)            
+            _logger.debug("adding monitor for %s", host)
             self.__host_monitor_ids[host] = gobject.timeout_add(3000, self.__check_host, host)
-            
+
     def stop_monitor(self, host):
         _logger.debug("stopping monitor for %s", host)
         if host in self.__host_monitor_ids:
@@ -876,7 +876,7 @@ class HostConnectionMonitor(gobject.GObject):
             del self.__host_monitor_ids[host]
         if host in self.__check_statuses:
             del self.__check_statuses[host]
-        
+
     def get_monitors(self):
         return self.__host_monitor_ids
 
@@ -891,7 +891,7 @@ class HostConnectionMonitor(gobject.GObject):
             return False
         else:
             return have_read
-            
+
     def __check_host(self, host):
         _logger.debug("performing check for %s", host)
         del self.__host_monitor_ids[host]
@@ -903,8 +903,8 @@ class HostConnectionMonitor(gobject.GObject):
         nullf = open(os.path.devnull, 'w')
         subproc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=nullf)
         nullf.close()
-        io_watch_id = gobject.io_add_watch(subproc.stdout, 
-                                           gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP, 
+        io_watch_id = gobject.io_add_watch(subproc.stdout,
+                                           gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP,
                                            self.__on_check_io, host)
         self.__check_status_output[host] = ""
         child_watch_id = gobject.child_watch_add(subproc.pid, self.__on_check_exited, host)
@@ -923,20 +923,20 @@ class HostConnectionMonitor(gobject.GObject):
         except OSError, e:
             _logger.debug("failed to signal pid %s", pid, exc_info=True)
             pass
-        return False    
-        
+        return False
+
     def __on_check_exited(self, pid, condition, host):
         _logger.debug("check exited, pid=%s condition=%s host=%s", pid, condition, host)
         try:
             (starttime, pid, timeout_id, child_watch_id, io_watch_id) = self.__check_statuses[host]
         except KeyError, e:
             return False
-        del self.__check_statuses[host]    
-        self.__host_monitor_ids[host] = gobject.timeout_add(4000, self.__check_host, host)              
+        del self.__check_statuses[host]
+        self.__host_monitor_ids[host] = gobject.timeout_add(4000, self.__check_host, host)
         self.emit('host-status', host, condition == 0, time.time()-starttime, self.__check_status_output[host])
         del self.__check_status_output[host]
         return False
-        
+
 _hostmonitor = HostConnectionMonitor()
 
 class SshTerminalWidgetImpl(VteTerminalWidget):
@@ -955,20 +955,20 @@ class SshTerminalWidget(gtk.VBox):
         "reconnect" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
         "metadata-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
-    
+
     latency = property(lambda self: self.__latency)
     status_line = property(lambda self: self.__status_output_first)
     connecting_state = property(lambda self: self.__connecting_state)
     connected = property(lambda self: self.__connected)
     ssh_options = property(lambda self: self.__sshopts)
-    
+
     ssh_opt_with_args = "bcDeFiLlmOopRSw"
     ssh_opt_witouth_args = "1246AaCfgKkMNnqsTtVvXxY"
 
     def __init__(self, args, cwd, actions=None, inituser=None, inithost=None):
         super(SshTerminalWidget, self).__init__()
 
-        self.__args = args        
+        self.__args = args
         self.__sshcmd = list(get_base_sshcmd())
         self.__cwd = cwd
         self.__user = inituser
@@ -1023,11 +1023,11 @@ class SshTerminalWidget(gtk.VBox):
         if self.__user:
             self.__sshcmd.append('-oUser=' + self.__user)
         self.__sshcmd.append(self.__host)
-                    
+
         if not port_in_args and self.__port:
             self.__sshcmd.append("-p")
             self.__sshcmd.append(self.__port)
-        
+
         if enable_connection_sharing:
             self.__sshcmd.extend(get_connection_sharing_args())
 
@@ -1039,7 +1039,7 @@ class SshTerminalWidget(gtk.VBox):
         header.pack_start(self.__msgarea_mgr)
         self.pack_start(header, expand=False)
         self.ssh_connect()
-        
+
     def __init_state(self):
         if self.__idle_start_favicon_id > 0:
             gobject.source_remove(self.__idle_start_favicon_id)
@@ -1054,7 +1054,7 @@ class SshTerminalWidget(gtk.VBox):
         self.__connecting_state = False
         self.__connected = None
         self.__cmd_exited = False
-        self.__latency = None        
+        self.__latency = None
         self.__status_output_first = None
 
     def set_global_connection_changed(self, changed):
@@ -1063,7 +1063,7 @@ class SshTerminalWidget(gtk.VBox):
             self.__msgarea_mgr.clear()
         elif self.__cmd_exited:
             self.__show_disconnected()
-        
+
     def set_status(self, connected, latency, status_output=None):
         if not connected and self.__connecting_state:
             return
@@ -1071,7 +1071,7 @@ class SshTerminalWidget(gtk.VBox):
         connected_changed = self.__connected != connected
         latency_changed = (not self.__latency) or (self.__latency*0.9 > latency) or (self.__latency*1.1 < latency)
         if not (connected_changed or latency_changed):
-            return        
+            return
         self.__connected = connected
         self.__latency = latency
         buf = StringIO(status_output)
@@ -1079,7 +1079,7 @@ class SshTerminalWidget(gtk.VBox):
         self.__status_output_first = firstline
         self.emit('status-changed')
         self.__sync_msg()
-        
+
     def __sync_msg(self):
         return
 
@@ -1088,9 +1088,9 @@ class SshTerminalWidget(gtk.VBox):
         self.__favicon_path = _openssh_hosts_db.save_favicon(self.__host, self.__port, faviconpath)
         self.__favicon_pixbuf = _openssh_hosts_db.render_cached_favicon(self.__favicon_path)
         self.emit('metadata-changed')
-        
+
     def ssh_connect(self):
-        self.__connecting_state = True        
+        self.__connecting_state = True
         self.__term = term = SshTerminalWidgetImpl(cwd=self.__cwd, cmd=self.__sshcmd, actions=self.__actions)
         term.connect('child-exited', self.__on_child_exited)
         term.show_all()
@@ -1114,7 +1114,7 @@ class SshTerminalWidget(gtk.VBox):
         self.__favicon_retriever = FaviconRetriever(self.__user, self.__host, self.__port)
         sigid = self.__favicon_retriever.connect('favicon-loaded', self.__on_favicon_loaded)
         self.__favicon_retriever_connections.append(sigid)
-        
+
     def ssh_reconnect(self):
         # TODO - do this in a better way
         if not self.__term.exited and self.__term.pid:
@@ -1124,7 +1124,7 @@ class SshTerminalWidget(gtk.VBox):
         self.__init_state()
         self.ssh_connect()
         self.emit('reconnect')
-        
+
     def __on_child_exited(self, term):
         _logger.debug("disconnected")
         self.__cmd_exited = True
@@ -1134,14 +1134,14 @@ class SshTerminalWidget(gtk.VBox):
         self.__msg.hide()
         if self.__global_connection_changed:
             return
-        msgarea = self.__msgarea_mgr.new_from_text_and_icon(gtk.STOCK_INFO, _('Connection closed'), 
+        msgarea = self.__msgarea_mgr.new_from_text_and_icon(gtk.STOCK_INFO, _('Connection closed'),
                                                             buttons=[(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)])
         reconnect = self.__actions.get_action('Reconnect')
-        msgarea.add_stock_button_with_text(reconnect.get_property('label'), 
+        msgarea.add_stock_button_with_text(reconnect.get_property('label'),
                                            reconnect.get_property('stock-id'), gtk.RESPONSE_ACCEPT)
         msgarea.connect('response', self.__on_msgarea_response)
         msgarea.show_all()
-        
+
     def __on_msgarea_response(self, msgarea, respid):
         if respid == gtk.RESPONSE_ACCEPT:
             self.ssh_reconnect()
@@ -1150,22 +1150,22 @@ class SshTerminalWidget(gtk.VBox):
 
     def has_close(self):
         return True
-        
+
     def get_exited(self):
-        return self.__cmd_exited        
-        
+        return self.__cmd_exited
+
     def get_term(self):
         return self.__term
-        
+
     def get_vte(self):
         return self.__term.get_vte()
-        
+
     def get_title(self):
         return self.get_host()
 
     def get_pixbuf(self):
         return self.__favicon_pixbuf
-    
+
     def get_host(self):
         return self.__host
 
@@ -1174,14 +1174,14 @@ class SshTerminalWidget(gtk.VBox):
 
     def get_port(self):
         return self.__port
-    
+
     def get_options(self):
         return self.__sshopts
 
 class SshWindow(VteWindow):
     def __init__(self, **kwargs):
         super(SshWindow, self).__init__(title='Secure Shell', icon_name='hotwire-openssh', **kwargs)
-        
+
         self.__ui_string = """
 <ui>
   <menubar name='Menubar'>
@@ -1198,7 +1198,7 @@ class SshWindow(VteWindow):
     </menu>
   </menubar>
 </ui>
-"""       
+"""
 
         self._get_notebook().connect('switch-page', self.__on_page_switch)
 
@@ -1212,22 +1212,22 @@ class SshWindow(VteWindow):
         except dbus.DBusException, e:
             _logger.debug("Couldn't find NetworkManager")
             self.__nm_proxy = None
-        
+
         self.__status_hbox = gtk.HBox()
         self._get_vbox().pack_start(self.__status_hbox, expand=False)
         self.__statusbar = gtk.Statusbar()
         self.__status_hbox.pack_start(self.__statusbar, expand=True)
         self.__statusbar_ctx = self.__statusbar.get_context_id("HotSSH")
-        
+
         self.__in_reconnect = False
         self.__idle_stop_monitoring_id = 0
-        
+
         self.connect("notify::is-active", self.__on_is_active_changed)
         _hostmonitor.connect('host-status', self.__on_host_status)
 
         self.__connhistory = get_history()
         self.__local_avahi = get_local_avahi()
-        
+
         self.__merge_ssh_ui()
 
     def __add_to_history(self, args, inituser=None, inithost=None):
@@ -1237,12 +1237,12 @@ class SshWindow(VteWindow):
         options = []
 
         for arg in args:
-            if arg.startswith('-') and SshTerminalWidget.ssh_opt_with_args.find(arg[1:]) >= 0: 
+            if arg.startswith('-') and SshTerminalWidget.ssh_opt_with_args.find(arg[1:]) >= 0:
                 options.append(arg)
                 if SshTerminalWidget.ssh_opt_with_args.find(arg[1:]) >= 0:
                     need_arg = True
                 continue
-            
+
             if need_arg:
                 options.append(arg)
             elif host is None:
@@ -1264,13 +1264,13 @@ class SshWindow(VteWindow):
             self.__add_to_history(args, **kwargs)
             term = SshTerminalWidget(args=args, cwd=cwd, actions=self.__action_group, **kwargs)
             self.append_widget(term)
-            
+
     def append_widget(self, w):
         super(SshWindow, self).append_widget(w)
         w.connect('status-changed', self.__on_widget_status_changed)
         w.connect('reconnect', self.__on_widget_reconnect)
         self.__sync_status_display()
-        
+
     def __on_widget_status_changed(self, w):
         self.__sync_status_display()
 
@@ -1292,7 +1292,7 @@ class SshWindow(VteWindow):
                 continue
             widget.ssh_reconnect()
         self.__in_reconnect = False
-    
+
     def __sync_status_display(self):
         notebook = self._get_notebook()
         pn = notebook.get_current_page()
@@ -1308,13 +1308,13 @@ class SshWindow(VteWindow):
         elif widget.connected is None:
             text = _('Checking connection')
         #if len(widget.ssh_options) > 1:
-        #    text += _('; Options: ') + (' '.join(map(gobject.markup_escape_text, widget.ssh_options)))        
+        #    text += _('; Options: ') + (' '.join(map(gobject.markup_escape_text, widget.ssh_options)))
         id = self.__statusbar.push(self.__statusbar_ctx, text)
 
     def __on_dbus_error(self, *args, **kwargs):
         _logger.error("DBus error: %r %r", args, kwargs)
-        
-    @log_except(_logger)        
+
+    @log_except(_logger)
     def __on_nm_state_change(self, *args):
         if len(args) > 1:
             (_, curstate) = args
@@ -1328,17 +1328,17 @@ class SshWindow(VteWindow):
         self.__cached_nm_connected = connected
         for child in self._get_notebook():
             child.set_global_connection_changed(True)
-            
+
     def __do_network_change_notify(self):
         mgr = self._get_msgarea_mgr()
-        msgarea = mgr.new_from_text_and_icon(gtk.STOCK_INFO, _('Network connection changed'), 
+        msgarea = mgr.new_from_text_and_icon(gtk.STOCK_INFO, _('Network connection changed'),
                                                             buttons=[(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)])
         reconnect = self.__action_group.get_action('ReconnectAll')
-        msgarea.add_stock_button_with_text(reconnect.get_property('label'), 
+        msgarea.add_stock_button_with_text(reconnect.get_property('label'),
                                            reconnect.get_property('stock-id'), gtk.RESPONSE_ACCEPT)
         msgarea.connect('response', self.__on_msgarea_response)
         msgarea.show_all()
-        
+
     def __on_msgarea_response(self, msgarea, respid):
         mgr = self._get_msgarea_mgr()
         mgr.clear()
@@ -1346,9 +1346,9 @@ class SshWindow(VteWindow):
             for child in self._get_notebook():
                 child.set_global_connection_changed(False)
             reconnect = self.__action_group.get_action('ReconnectAll')
-            reconnect.activate()       
-        
-    @log_except(_logger)        
+            reconnect.activate()
+
+    @log_except(_logger)
     def __on_host_status(self, hostmon, host, connected, latency, status_output):
         _logger.debug("got host status host=%s conn=%s latency=%s", host, connected, latency)
         for widget in self._get_notebook().get_children():
@@ -1356,8 +1356,8 @@ class SshWindow(VteWindow):
             if child_host != host:
                 continue
             widget.set_status(connected, latency, status_output)
-            
-    @log_except(_logger)            
+
+    @log_except(_logger)
     def __on_is_active_changed(self, *args):
         isactive = self.get_property('is-active')
         if isactive:
@@ -1367,11 +1367,11 @@ class SshWindow(VteWindow):
                 self.__idle_stop_monitoring_id = 0
         elif self.__idle_stop_monitoring_id == 0:
             self.__idle_stop_monitoring_id = gobject.timeout_add(8000, self.__idle_stop_monitoring)
-            
+
     def __idle_stop_monitoring(self):
         self.__idle_stop_monitoring_id = 0
         self.__stop_monitoring()
-        
+
     @log_except(_logger)
     def __on_page_switch(self, n, p, pn):
         # Becuase of the way get_current_page() works in this signal handler, this
@@ -1386,7 +1386,7 @@ class SshWindow(VteWindow):
             widget = notebook.get_nth_page(pn)
             return widget.get_host()
         return None
-            
+
     def __stop_monitoring(self):
         notebook = self._get_notebook()
         pn = notebook.get_current_page()
@@ -1394,8 +1394,8 @@ class SshWindow(VteWindow):
             prev_widget = notebook.get_nth_page(pn)
             prev_host = prev_widget.get_host()
             _hostmonitor.stop_monitor(prev_host)
-            prev_widget.set_status(None, None)        
-            
+            prev_widget.set_status(None, None)
+
     def __start_monitoring(self, pn=None):
         notebook = self._get_notebook()
         if pn is not None:
@@ -1411,23 +1411,23 @@ class SshWindow(VteWindow):
         if prevhost != newhost:
             self.__stop_monitoring()
             self.__start_monitoring(pn=new_pn)
-        
+
     def __merge_ssh_ui(self):
         self.__using_accels = True
         self.__actions = actions = [
             ('NewConnection', gtk.STOCK_NEW, _('Connect to server'), '<control><shift>O',
-             _('Open a new Secure Shell connection'), self.__new_connection_cb),               
+             _('Open a new Secure Shell connection'), self.__new_connection_cb),
             ('CopyConnection', gtk.STOCK_JUMP_TO, _('New tab for connection'), '<control><shift>T',
-             _('Open a new tab for the same remote computer'), self.__copy_connection_cb),              
+             _('Open a new tab for the same remote computer'), self.__copy_connection_cb),
             ('OpenSFTP', gtk.STOCK_OPEN, _('Open SFTP'), '<control><shift>S',
-             _('Open a SFTP connection'), self.__open_sftp_cb),            
+             _('Open a SFTP connection'), self.__open_sftp_cb),
             ('ConnectionMenu', None, _('Connection')),
             ('Reconnect', gtk.STOCK_CONNECT, _('_Reconnect'), '<control><shift>R', _('Reset connection to server'), self.__reconnect_cb),
-            ('ReconnectAll', gtk.STOCK_CONNECT, _('R_econnect All'), None, _('Reset all connections'), self.__reconnect_all_cb),            
+            ('ReconnectAll', gtk.STOCK_CONNECT, _('R_econnect All'), None, _('Reset all connections'), self.__reconnect_all_cb),
             ]
         self.__action_group = self._merge_ui(self.__actions, self.__ui_string)
-        
-    @log_except(_logger)        
+
+    @log_except(_logger)
     def __copy_connection_cb(self, action):
         notebook = self._get_notebook()
         widget = notebook.get_nth_page(notebook.get_current_page())
@@ -1446,13 +1446,13 @@ class SshWindow(VteWindow):
             return
         self.new_tab(sshargs, None, exit_on_cancel=exit_on_cancel)
 
-    @log_except(_logger)        
+    @log_except(_logger)
     def __new_connection_cb(self, action):
         self.open_connection_dialog()
-        
-    @log_except(_logger)        
+
+    @log_except(_logger)
     def __open_sftp_cb(self, action):
-        notebook = self._get_notebook()        
+        notebook = self._get_notebook()
         widget = notebook.get_nth_page(notebook.get_current_page())
         host = widget.get_host()
         port = widget.get_port()
@@ -1460,18 +1460,18 @@ class SshWindow(VteWindow):
             subprocess.Popen(['nautilus', 'sftp://%s:%s' % (host,port)])
         else:
             subprocess.Popen(['nautilus', 'sftp://%s' % (host,)])
-        
-    @log_except(_logger)        
+
+    @log_except(_logger)
     def __reconnect_cb(self, a):
-        notebook = self._get_notebook()        
+        notebook = self._get_notebook()
         widget = notebook.get_nth_page(notebook.get_current_page())
         widget.ssh_reconnect()
-        
-    @log_except(_logger)        
+
+    @log_except(_logger)
     def __reconnect_all_cb(self, a):
-        for widget in self._get_notebook().get_children():        
+        for widget in self._get_notebook().get_children():
             widget.ssh_reconnect()
-            
+
     def _do_about(self):
         dlg = HotSshAboutDialog()
         dlg.run()
@@ -1483,12 +1483,12 @@ class SshApp(VteApp):
         self.__old_sessionpath = os.path.expanduser('~/.hotwire/hotssh.session')
         self.__sessionpath = os.path.expanduser('~/.hotssh/hotssh-session.xml')
         self.__connhistory = get_history()
-        self.__local_avahi = SshAvahiMonitor() 
-        
+        self.__local_avahi = SshAvahiMonitor()
+
     @staticmethod
     def get_name():
-        return 'HotSSH'         
-                
+        return 'HotSSH'
+
     def on_shutdown(self, factory):
         super(SshApp, self).on_shutdown(factory)
         cp = get_controlpath(create=False)
@@ -1498,18 +1498,18 @@ class SshApp(VteApp):
                 shutil.rmtree(cp)
             except:
                 pass
-            
+
     def offer_load_session(self):
         savedsession = self._parse_saved_session()
         alltabs_count = 0
-        allhosts = set()        
+        allhosts = set()
         if savedsession:
             for window in savedsession:
                 for connection in window:
                     allhosts.add(connection['userhost'])
                     alltabs_count += 1
         if len(allhosts) > 0:
-            dlg = gtk.MessageDialog(parent=None, flags=0, type=gtk.MESSAGE_QUESTION, 
+            dlg = gtk.MessageDialog(parent=None, flags=0, type=gtk.MESSAGE_QUESTION,
                                     buttons=gtk.BUTTONS_CANCEL,
                                     message_format=_("Restore saved session?"))
             button = dlg.add_button(_('_Reconnect'), gtk.RESPONSE_ACCEPT)
@@ -1517,10 +1517,10 @@ class SshApp(VteApp):
             dlg.set_default_response(gtk.RESPONSE_ACCEPT)
             allhosts_count = len(allhosts)
             # Translators: %d is the number of hosts we are about to reconnect to.
-            text = gettext.ngettext('Reconnect to %d host' % (allhosts_count,), 
+            text = gettext.ngettext('Reconnect to %d host' % (allhosts_count,),
                                     'Reconnect to %d hosts' % (allhosts_count,), len(allhosts))
             dlg.format_secondary_markup(text)
-            
+
             #ls = gtk.ListStore(str)
             #gv = gtk.TreeView(ls)
             #colidx = gv.insert_column_with_attributes(-1, _('Connection'),
@@ -1528,8 +1528,8 @@ class SshApp(VteApp):
             #                                          text=0)
             #for host in allhosts:
             #    ls.append((host,))
-            #dlg.add(gv)            
-                     
+            #dlg.add(gv)
+
             resp = dlg.run()
             dlg.destroy()
             if resp == gtk.RESPONSE_ACCEPT:
@@ -1539,9 +1539,9 @@ class SshApp(VteApp):
         w.new_tab([], os.getcwd())
         w.show_all()
         w.present()
-        
+
     def _load_session(self, session):
-        factory = self.get_factory()        
+        factory = self.get_factory()
         for window in session:
             window_impl = factory.create_window()
             for connection in window:
@@ -1550,7 +1550,7 @@ class SshApp(VteApp):
                     args.extend(connection['options'])
                 widget = window_impl.new_tab(args, os.getcwd())
             window_impl.show_all()
-                
+
     #override
     @log_except(_logger)
     def _parse_saved_session(self):
@@ -1566,21 +1566,21 @@ class SshApp(VteApp):
         saved_windows = []
         current_widget = None
         for window_child in doc.documentElement.childNodes:
-            if not (window_child.nodeType == window_child.ELEMENT_NODE and window_child.nodeName == 'window'): 
+            if not (window_child.nodeType == window_child.ELEMENT_NODE and window_child.nodeName == 'window'):
                 continue
             connections = []
             for child in window_child.childNodes:
-                if not (child.nodeType == child.ELEMENT_NODE and child.nodeName == 'connection'): 
+                if not (child.nodeType == child.ELEMENT_NODE and child.nodeName == 'connection'):
                     continue
                 user = child.getAttribute('user')
                 host = child.getAttribute('host')
                 iscurrent = child.getAttribute('current')
                 options = []
                 for options_elt in child.childNodes:
-                    if not (options_elt.nodeType == child.ELEMENT_NODE and options_elt.nodeName == 'options'): 
+                    if not (options_elt.nodeType == child.ELEMENT_NODE and options_elt.nodeName == 'options'):
                         continue
                     for option_elt in child.childNodes:
-                        if not (option_elt.nodeType == child.ELEMENT_NODE and options_elt.nodeName == 'option'): 
+                        if not (option_elt.nodeType == child.ELEMENT_NODE and options_elt.nodeName == 'option'):
                             continue
                         options.append(option.firstChild.nodeValue)
                 userhost = userhost_pair_to_string(user, host)
@@ -1592,9 +1592,9 @@ class SshApp(VteApp):
                 connections.append(kwargs)
             saved_windows.append(connections)
         return saved_windows
-        
+
     #override
-    @log_except(_logger)    
+    @log_except(_logger)
     def save_session(self):
         _logger.debug("doing session save")
         tempf_path = tempfile.mktemp('.xml.tmp', 'hotssh-session', os.path.dirname(self.__sessionpath))
@@ -1607,7 +1607,7 @@ class SshApp(VteApp):
             notebook = window._get_notebook()
             current = notebook.get_nth_page(notebook.get_current_page())
             window_node = doc.createElement('window')
-            root.appendChild(window_node)            
+            root.appendChild(window_node)
             for widget in notebook:
                 connection = doc.createElement('connection')
                 window_node.appendChild(connection)
@@ -1625,8 +1625,8 @@ class SshApp(VteApp):
                     connection.appendChild(options_elt)
                     for option in options:
                         opt = doc.createElement('option')
-                        options_elt.appendChild(opt)                    
+                        options_elt.appendChild(opt)
                         opt.appendChild(doc.createTextNode(option))
         f.write(doc.toprettyxml())
         f.close()
-        os.rename(tempf_path, self.__sessionpath)            
+        os.rename(tempf_path, self.__sessionpath)
