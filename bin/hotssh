@@ -19,16 +19,6 @@
 
 import sys, os
 
-# We want to avoid running under the controlling terminal if we were passed
-# --bg, which by default comes from our sh/csh alias 
-if len(sys.argv) > 1 and sys.argv[1] == '--bg' and os.isatty(0):
-    pid = os.fork()
-    if pid == 0:
-       del sys.argv[1]
-       os.setsid()
-    else:
-       sys.exit(0)
-
 if __name__ == '__main__' and hasattr(sys.modules['__main__'], '__file__'):
     basedir = os.path.dirname(os.path.abspath(__file__))
     up_basedir = os.path.dirname(basedir)
@@ -64,6 +54,16 @@ if not exec_real_ssh:
 
 if exec_real_ssh:
 	os.execvp('ssh', ['ssh'] + sys.argv[1:])
+
+# We want to avoid running under the controlling terminal if we were passed
+# --bg, which by default comes from our sh/csh alias 
+if len(sys.argv) > 1 and sys.argv[1] == '--bg' and os.isatty(0):
+    pid = os.fork()
+    if pid == 0:
+       del sys.argv[1]
+       os.setsid()
+    else:
+       sys.exit(0)
 
 from hotssh.sshwindow import SshApp
 from hotssh.hotvte.vtewindow import VteMain
