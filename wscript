@@ -2,7 +2,8 @@
 # encoding: utf-8
 
 import sys
-import Configure, Common, python, intltool, misc
+import Configure
+import gnome, python, intltool, misc
 
 VERSION='0.2.5'
 APPNAME='hotssh'
@@ -24,28 +25,27 @@ def configure(conf):
 	conf.define('PACKAGE', 'hotssh')
 
 def build(bld):
-	obj = bld.create_obj('py')
+	obj = bld.new_task_gen('py')
 	obj.find_sources_in_dirs(['hotssh'], exts=['.py'])
-	obj.inst_dir = 'hotssh'
-	obj = bld.create_obj('py')
+	obj.install_path = 'hotssh'
+	obj = bld.new_task_gen('py')
 	obj.find_sources_in_dirs(['hotssh/hotlib'], exts=['.py'])
-	obj.inst_dir = 'hotssh/hotlib'
-	obj = bld.create_obj('py')
+	obj.install_path = 'hotssh/hotlib'
+	obj = bld.new_task_gen('py')
 	obj.find_sources_in_dirs(['hotssh/hotlib_ui'], exts=['.py'])
-	obj.inst_dir = 'hotssh/hotlib_ui'
-	obj = bld.create_obj('py')
+	obj.install_path = 'hotssh/hotlib_ui'
+	obj = bld.new_task_gen('py')
 	obj.find_sources_in_dirs(['hotssh/hotvte'], exts=['.py'])
-	obj.inst_dir = 'hotssh/hotvte'
+	obj.install_path = 'hotssh/hotvte'
 	# process desktop.in file
-	obj=bld.create_obj('intltool_in')
+	obj=bld.new_task_gen('intltool_in')
 	obj.source  = 'hotssh.desktop.in'
-	obj.destvar = 'PREFIX'
+	obj.install_path = '${PREFIX}/share/applications'
 	obj.subdir  = 'share/applications'
 	obj.podir   = 'po'
 	obj.flags   = '-d'
-	install_files('PREFIX', 'share/applications', 'hotssh.desktop')
-	install_files('PREFIX', 'share/doc/hotssh-' + VERSION, 'COPYING')
-	if bld.env()['PREFIX'] == '/usr':
-		install_files('PREFIX', '../etc/profile.d', 'hotssh.csh')
-		install_files('PREFIX', '../etc/profile.d', 'hotssh.sh')
+	bld.install_files('${PREFIX}/share/doc/hotssh-' + VERSION, 'COPYING')
+	if bld.env['PREFIX'] == '/usr':
+		bld.install_files('${PREFIX}/../etc/profile.d', 'hotssh.csh')
+		bld.install_files('${PREFIX}/../etc/profile.d', 'hotssh.sh')
 	bld.add_subdirs('bin po')
