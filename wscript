@@ -27,16 +27,16 @@ def configure(conf):
 def build(bld):
 	obj = bld.new_task_gen('py')
 	obj.find_sources_in_dirs(['hotssh'], exts=['.py'])
-	obj.install_path = 'hotssh'
+	obj.install_path = '${PYTHONDIR}/hotssh'
 	obj = bld.new_task_gen('py')
 	obj.find_sources_in_dirs(['hotssh/hotlib'], exts=['.py'])
-	obj.install_path = 'hotssh/hotlib'
+	obj.install_path = '${PYTHONDIR}/hotssh/hotlib'
 	obj = bld.new_task_gen('py')
 	obj.find_sources_in_dirs(['hotssh/hotlib_ui'], exts=['.py'])
-	obj.install_path = 'hotssh/hotlib_ui'
+	obj.install_path = '${PYTHONDIR}/hotssh/hotlib_ui'
 	obj = bld.new_task_gen('py')
 	obj.find_sources_in_dirs(['hotssh/hotvte'], exts=['.py'])
-	obj.install_path = 'hotssh/hotvte'
+	obj.install_path = '${PYTHONDIR}/hotssh/hotvte'
 	# process desktop.in file
 	obj=bld.new_task_gen('intltool_in')
 	obj.source  = 'hotssh.desktop.in'
