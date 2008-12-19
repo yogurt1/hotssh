@@ -231,6 +231,8 @@ class OpenSSHKnownHostsDB(gobject.GObject):
         if ts_size is not None and self.__hostcache_ts_size != ts_size:
             self.__hostcache = self.__read_hosts()
             self.__hostcache_ts_size = ts_size
+        else:
+            return []
         return self.__hostcache.iterkeys()
 
     def __force_host_read(self):
