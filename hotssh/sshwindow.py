@@ -859,34 +859,44 @@ class HostConnectionMonitor(gobject.GObject):
     }
     def __init__(self):
         super(HostConnectionMonitor, self).__init__()
+        
+        self._CHECK_MS = 15000
+        
+        # map userhost -> failure count
+        self._host_failures = {}
+        # map userhost -> ids
         self.__host_monitor_ids = {}
-        # map host -> various idle ids, etc
+        # map userhost -> various idle ids, etc
         self.__check_statuses = {}
-        # Map host -> w output
+        # Map userhost -> w output
         self.__check_status_output = {}
+        
 
-    def start_monitor(self, host):
-        if not (host in self.__host_monitor_ids or host in self.__check_statuses):
-            _logger.debug("adding monitor for %s", host)
-            self.__host_monitor_ids[host] = gobject.timeout_add(3000, self.__check_host, host)
+    def start_monitor(self, user, host):
+        userhost = userhost_pair_to_string(user, host)
+        if not (userhost in self.__host_monitor_ids or userhost in self.__check_statuses):
+            _logger.debug("adding monitor for %s", userhost)
+            self._host_failures[userhost] = 0
+            self.__host_monitor_ids[userhost] = gobject.timeout_add(self._CHECK_MS, self.__check_host, userhost)
 
-    def stop_monitor(self, host):
-        _logger.debug("stopping monitor for %s", host)
-        if host in self.__host_monitor_ids:
-            monid = self.__host_monitor_ids[host]
+    def stop_monitor(self, user, host):
+        userhost = userhost_pair_to_string(user, host)        
+        _logger.debug("stopping monitor for %s", userhost)
+        if userhost in self.__host_monitor_ids:
+            monid = self.__host_monitor_ids[userhost]
             gobject.source_remove(monid)
-            del self.__host_monitor_ids[host]
-        if host in self.__check_statuses:
-            del self.__check_statuses[host]
+            del self.__host_monitor_ids[userhost]
+        if userhost in self.__check_statuses:
+            del self.__check_statusesuser[userhost]
 
     def get_monitors(self):
         return self.__host_monitor_ids
 
-    def __on_check_io(self, source, condition, host):
+    def __on_check_io(self, source, condition, userhost):
         have_read = condition & gobject.IO_IN
         if have_read:
             _logger.debug("got status output")
-            self.__check_status_output[host] += os.read(source.fileno(), 8192)
+            self.__check_status_output[userhost] += os.read(source.fileno(), 8192)
         if ((condition & gobject.IO_HUP) or (condition & gobject.IO_ERR)):
             source.close()
             _logger.debug("got condition %s, cancelling status io check", condition)
@@ -894,32 +904,33 @@ class HostConnectionMonitor(gobject.GObject):
         else:
             return have_read
 
-    def __check_host(self, host):
-        _logger.debug("performing check for %s", host)
-        del self.__host_monitor_ids[host]
+    def __check_host(self, userhost):
+        _logger.debug("performing check for %s", userhost)
+        del self.__host_monitor_ids[userhost]
         cmd = list(get_base_sshcmd())
         cmd.extend(get_connection_sharing_args())
         starttime = time.time()
         # This is a hack.  Blame Adam Jackson.
-        cmd.extend(['-oBatchMode=true', host, 'uptime'])
+        cmd.extend(['-oBatchMode=true', userhost, 'uptime'])
         nullf = open(os.path.devnull, 'w')
         subproc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=nullf)
         nullf.close()
         io_watch_id = gobject.io_add_watch(subproc.stdout,
                                            gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP,
-                                           self.__on_check_io, host)
-        self.__check_status_output[host] = ""
-        child_watch_id = gobject.child_watch_add(subproc.pid, self.__on_check_exited, host)
-        timeout_id = gobject.timeout_add(7000, self.__check_timeout, host)
-        self.__check_statuses[host] = (starttime, subproc.pid, timeout_id, child_watch_id, io_watch_id)
+                                           self.__on_check_io, userhost)
+        self.__check_status_output[userhost] = ""
+        child_watch_id = gobject.child_watch_add(subproc.pid, self.__on_check_exited, userhost)
+        timeout_id = gobject.timeout_add(7000, self.__check_timeout, userhost)
+        self.__check_statuses[userhost] = [starttime, subproc.pid, timeout_id, child_watch_id, io_watch_id]
         return False
 
-    def __check_timeout(self, host):
-        _logger.debug("timeout for host=%r", host)
+    def __check_timeout(self, userhost):
+        _logger.debug("timeout for host=%r", userhost)
         try:
-            (starttime, pid, timeout_id, child_watch_id, io_watch_id) = self.__check_statuses[host]
+            (starttime, pid, timeout_id, child_watch_id, io_watch_id) = self.__check_statuses[userhost]
         except KeyError, e:
             return False
+        self.__check_statuses[2] = 0
         try:
             os.kill(pid, signal.SIGTERM)
         except OSError, e:
@@ -927,16 +938,28 @@ class HostConnectionMonitor(gobject.GObject):
             pass
         return False
 
-    def __on_check_exited(self, pid, condition, host):
-        _logger.debug("check exited, pid=%s condition=%s host=%s", pid, condition, host)
+    def __on_check_exited(self, pid, condition, userhost):
+        _logger.debug("check exited, pid=%s condition=%s host=%s", pid, condition, userhost)
         try:
-            (starttime, pid, timeout_id, child_watch_id, io_watch_id) = self.__check_statuses[host]
+            (starttime, pid, timeout_id, child_watch_id, io_watch_id) = self.__check_statuses[userhost]
         except KeyError, e:
+            _logger.debug("confused; no status for userhost=%s", userhost)
             return False
-        del self.__check_statuses[host]
-        self.__host_monitor_ids[host] = gobject.timeout_add(4000, self.__check_host, host)
-        self.emit('host-status', host, condition == 0, time.time()-starttime, self.__check_status_output[host])
-        del self.__check_status_output[host]
+        if timeout_id > 0:
+            gobject.source_remove(timeout_id)
+        del self.__check_statuses[userhost]
+        abort = False
+        if condition == 0:
+            self._host_failures[userhost] = 0
+        else:
+            self._host_failures[userhost] += 1
+            if self._host_failures[userhost] > 3:
+                _logger.debug("too many failures for host=%s", userhost)
+                abort = True
+        if not abort:
+            self.__host_monitor_ids[userhost] = gobject.timeout_add(self._CHECK_MS, self.__check_host, userhost)
+        self.emit('host-status', userhost, condition == 0, time.time()-starttime, self.__check_status_output[userhost])
+        del self.__check_status_output[userhost]
         return False
 
 _hostmonitor = HostConnectionMonitor()
@@ -1351,11 +1374,11 @@ class SshWindow(VteWindow):
             reconnect.activate()
 
     @log_except(_logger)
-    def __on_host_status(self, hostmon, host, connected, latency, status_output):
-        _logger.debug("got host status host=%s conn=%s latency=%s", host, connected, latency)
+    def __on_host_status(self, hostmon, userhost, connected, latency, status_output):
+        _logger.debug("got host status host=%s conn=%s latency=%s", userhost, connected, latency)
         for widget in self._get_notebook().get_children():
-            child_host = widget.get_host()
-            if child_host != host:
+            child_userhost = userhost_pair_to_string(widget.get_user(), widget.get_host())
+            if child_userhost != userhost:
                 continue
             widget.set_status(connected, latency, status_output)
 
@@ -1382,11 +1405,11 @@ class SshWindow(VteWindow):
         self.__sync_monitoring(new_pn=pn)
         self.__sync_status_display()
 
-    def __get_host_for_pn(self, pn):
+    def __get_userhost_for_pn(self, pn):
         notebook = self._get_notebook()
         if pn >= 0:
             widget = notebook.get_nth_page(pn)
-            return widget.get_host()
+            return userhost_pair_to_string(widget.get_user(), widget.get_host())
         return None
 
     def __stop_monitoring(self):
@@ -1394,8 +1417,9 @@ class SshWindow(VteWindow):
         pn = notebook.get_current_page()
         if pn >= 0:
             prev_widget = notebook.get_nth_page(pn)
+            prev_user = prev_widget.get_user()
             prev_host = prev_widget.get_host()
-            _hostmonitor.stop_monitor(prev_host)
+            _hostmonitor.stop_monitor(prev_user, prev_host)
             prev_widget.set_status(None, None)
 
     def __start_monitoring(self, pn=None):
@@ -1405,12 +1429,12 @@ class SshWindow(VteWindow):
         else:
             pagenum = notebook.get_current_page()
         widget = notebook.get_nth_page(pagenum)
-        _hostmonitor.start_monitor(widget.get_host())
+        _hostmonitor.start_monitor(widget.get_user(), widget.get_host())
 
     def __sync_monitoring(self, new_pn):
-        prevhost = self.__get_host_for_pn(self._get_notebook().get_current_page())
-        newhost = self.__get_host_for_pn(new_pn)
-        if prevhost != newhost:
+        prev_userhost = self.__get_userhost_for_pn(self._get_notebook().get_current_page())
+        new_userhost = self.__get_userhost_for_pn(new_pn)
+        if prev_userhost != new_userhost:
             self.__stop_monitoring()
             self.__start_monitoring(pn=new_pn)
 
