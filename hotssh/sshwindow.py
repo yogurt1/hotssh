@@ -919,7 +919,7 @@ class HostConnectionMonitor(gobject.GObject):
         except KeyError, e:
             return False
         try:
-            os.kill(pid, signal.SIGHUP)
+            os.kill(pid, signal.SIGTERM)
         except OSError, e:
             _logger.debug("failed to signal pid %s", pid, exc_info=True)
             pass
