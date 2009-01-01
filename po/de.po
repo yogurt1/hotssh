@@ -1,0 +1,269 @@
+# German translation of hotssh.
+# Mario Blättermann <mariobl@gnome.org>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-02 00:33+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Connect to a remote computer using Secure Shell"
+msgstr "Verbindung zu einem entfernten Rechner mittels Secure Shell"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Secure Shell"
+msgstr "Secure Shell"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "Jahr"
+msgstr[1] "Jahre"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "Monat"
+msgstr[1] "Monate"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "Woche"
+msgstr[1] "Wochen"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "Tag"
+msgstr[1] "Tage"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "Stunde"
+msgstr[1] "Stunden"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "Minute"
+msgstr[1] "Minuten"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "in der Zukunft"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "vor weniger als einer Minute"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "Vor %(number)d %(type)n, %(number2)n %(type2)n"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "vor %(number)d %(type)s"
+
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:250
+msgid "_Copy"
+msgstr "_Kopieren"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "Den markierten Text in die Zwischenablage kopieren"
+
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:251
+msgid "_Paste"
+msgstr "E_infügen"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "Text einfügen"
+
+#: ../hotssh/hotvte/vteterm.py:173
+msgid "Open Link"
+msgstr "Link öffnen"
+
+#: ../hotssh/hotvte/vtewindow.py:35
+msgid "Tab Search"
+msgstr "Reiter-Suche"
+
+#: ../hotssh/hotvte/vtewindow.py:242
+msgid "File"
+msgstr "Datei"
+
+#: ../hotssh/hotvte/vtewindow.py:243
+msgid "_Detach Tab"
+msgstr "Reiter _lösen"
+
+#: ../hotssh/hotvte/vtewindow.py:245
+msgid "_Close"
+msgstr "S_chließen"
+
+#: ../hotssh/hotvte/vtewindow.py:247
+msgid "_Quit"
+msgstr "_Beenden"
+
+#: ../hotssh/hotvte/vtewindow.py:249
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: ../hotssh/hotvte/vtewindow.py:252
+msgid "View"
+msgstr "Ansicht"
+
+#: ../hotssh/hotvte/vtewindow.py:253
+msgid "Help"
+msgstr "Hilfe"
+
+#: ../hotssh/hotvte/vtewindow.py:254
+msgid "_About"
+msgstr "_Info"
+
+#: ../hotssh/sshwindow.py:97
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"Eine Schnittstelle zu OpenSSH, einem Secure-Shell-Client\n"
+"\n"
+
+#: ../hotssh/sshwindow.py:337
+msgid "Options"
+msgstr "Einstellungen"
+
+#: ../hotssh/sshwindow.py:348
+msgid "Example: "
+msgstr "Beispiel:"
+
+#: ../hotssh/sshwindow.py:363
+msgid "New Secure Shell Connection"
+msgstr "Neue Secure-Shell-Verbindung"
+
+#: ../hotssh/sshwindow.py:376
+msgid "C_onnect"
+msgstr "_Verbinden"
+
+#: ../hotssh/sshwindow.py:403
+msgid "Host: "
+msgstr "Host:"
+
+#: ../hotssh/sshwindow.py:422
+msgid "User: "
+msgstr "Benutzer:"
+
+#: ../hotssh/sshwindow.py:446
+msgid "History"
+msgstr "Chronik"
+
+#: ../hotssh/sshwindow.py:458 ../hotssh/sshwindow.py:1450
+msgid "Connection"
+msgstr "Verbindung"
+
+#: ../hotssh/sshwindow.py:461
+msgid "Time"
+msgstr "Zeit"
+
+#: ../hotssh/sshwindow.py:467
+msgid "Local"
+msgstr "Lokal"
+
+#: ../hotssh/sshwindow.py:475
+msgid "Name"
+msgstr "Name"
+
+#: ../hotssh/sshwindow.py:478
+msgid "Address"
+msgstr "Adresse"
+
+#: ../hotssh/sshwindow.py:1162
+msgid "Connection closed"
+msgstr "Verbindung geschlossen"
+
+#: ../hotssh/sshwindow.py:1328
+msgid "Connecting"
+msgstr "Verbinden"
+
+#: ../hotssh/sshwindow.py:1330
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "Verbunden; %.2fs Latenz; %s"
+
+#: ../hotssh/sshwindow.py:1332
+msgid "Connection timed out"
+msgstr "Zeitüberschreitung für die Verbindung"
+
+#: ../hotssh/sshwindow.py:1334
+msgid "Checking connection"
+msgstr "Verbindung wird geprüft"
+
+#: ../hotssh/sshwindow.py:1359
+msgid "Network connection changed"
+msgstr "Netzwerkverbindung geändert"
+
+#: ../hotssh/sshwindow.py:1444
+msgid "Connect to server"
+msgstr "Verbindung zu Server"
+
+#: ../hotssh/sshwindow.py:1445
+msgid "Open a new Secure Shell connection"
+msgstr "Öffnen einer neuen Secure-Shell-Verbindung"
+
+#: ../hotssh/sshwindow.py:1446
+msgid "New tab for connection"
+msgstr "Neuer Reiter für Verbindung"
+
+#: ../hotssh/sshwindow.py:1447
+msgid "Open a new tab for the same remote computer"
+msgstr "Öffnen eines neuen Reiters für den gleichen entfernten Rechner"
+
+#: ../hotssh/sshwindow.py:1448
+msgid "Open SFTP"
+msgstr "SFTP öffnen"
+
+#: ../hotssh/sshwindow.py:1449
+msgid "Open a SFTP connection"
+msgstr "Öffnen einer SFTP-Verbindung"
+
+#: ../hotssh/sshwindow.py:1451 ../hotssh/sshwindow.py:1541
+msgid "_Reconnect"
+msgstr "Wiede_rverbinden"
+
+#: ../hotssh/sshwindow.py:1451
+msgid "Reset connection to server"
+msgstr "Verbindung mit dem Server  zurücksetzen"
+
+#: ../hotssh/sshwindow.py:1452
+msgid "R_econnect All"
+msgstr "Alle wi_ederverbinden"
+
+#: ../hotssh/sshwindow.py:1452
+msgid "Reset all connections"
+msgstr "Alle Verbindungen zurücksetzen"
+
+#: ../hotssh/sshwindow.py:1540
+msgid "Restore saved session?"
+msgstr "Gespeicherte Sitzung wiederherstellen?"
+
+#. Translators: %d is the number of hosts we are about to reconnect to.
+#: ../hotssh/sshwindow.py:1546
+#, python-format
+msgid "Reconnect to %d host"
+msgid_plural "Reconnect to %d hosts"
+msgstr[0] "Wiederverbinden mit %d Rechner"
+msgstr[1] "Wiederverbinden mit %d Rechnern"

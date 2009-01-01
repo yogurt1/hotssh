@@ -1,3 +1,8 @@
+2009-01-02  Mario Blättermann  <mariobl@svn.gnome.org>
+
+	* LINGUAS: Added 'de'.
+	* de.po: Added German translation.
+
 2008-10-08  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* LINGUAS: Added 'nb'.
