@@ -72,7 +72,7 @@ msgstr "vor weniger als einer Minute"
 #: ../hotssh/hotlib/timesince.py:83
 #, python-format
 msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
-msgstr "Vor %(number)d %(type)n, %(number2)n %(type2)n"
+msgstr "Vor %(number)d %(type)s, %(number2)d %(type2)s"
 
 #: ../hotssh/hotlib/timesince.py:86
 #, python-format
