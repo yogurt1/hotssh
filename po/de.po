@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-01-02 00:33+0100\n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2009-01-04 21:20+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -149,7 +149,7 @@ msgstr "Einstellungen"
 
 #: ../hotssh/sshwindow.py:348
 msgid "Example: "
-msgstr "Beispiel:"
+msgstr "Beispiel: "
 
 #: ../hotssh/sshwindow.py:363
 msgid "New Secure Shell Connection"
@@ -161,11 +161,11 @@ msgstr "_Verbinden"
 
 #: ../hotssh/sshwindow.py:403
 msgid "Host: "
-msgstr "Host:"
+msgstr "Host: "
 
 #: ../hotssh/sshwindow.py:422
 msgid "User: "
-msgstr "Benutzer:"
+msgstr "Benutzer: "
 
 #: ../hotssh/sshwindow.py:446
 msgid "History"
