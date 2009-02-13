@@ -152,14 +152,14 @@ class VteTerminalWidget(gtk.VBox):
         
     def __on_button_press(self, term, event):
         match = self.__term.match_check(int(event.x/term.get_char_width()), int(event.y/term.get_char_height()))
+        if not match:
+            return
+        (matchstr, mdata) = match            
+        if mdata == self.__match_http:
+            url = 'http://' + matchstr
+        else:
+            url = matchstr        
         if event.button == 1 and event.state & gtk.gdk.CONTROL_MASK:
-            if not match:
-                return
-            (matchstr, mdata) = match            
-            if mdata == self.__match_http:
-                url = 'http://' + matchstr
-            else:
-                url = matchstr
             self.__open_url(url)
             return True
         elif event.button == 3:
