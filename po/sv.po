@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Swedish translation for hotssh.
+# Copyright (C) 2008, 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the hotssh package.
+# Daniel Nylander <po@danielnylander.se>, 2008, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-25 22:31+0200\n"
-"PO-Revision-Date: 2008-07-25 22:38+0100\n"
+"POT-Creation-Date: 2009-02-15 12:36+0100\n"
+"PO-Revision-Date: 2009-02-15 12:36+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -80,7 +80,7 @@ msgid "%(number)d %(type)s ago"
 msgstr "%(number)d %(type)s sedan"
 
 #: ../hotssh/hotvte/vteterm.py:81
-#: ../hotssh/hotvte/vtewindow.py:230
+#: ../hotssh/hotvte/vtewindow.py:250
 msgid "_Copy"
 msgstr "_Kopiera"
 
@@ -89,7 +89,7 @@ msgid "Copy selected text"
 msgstr "Kopiera markerad text"
 
 #: ../hotssh/hotvte/vteterm.py:82
-#: ../hotssh/hotvte/vtewindow.py:231
+#: ../hotssh/hotvte/vtewindow.py:251
 msgid "_Paste"
 msgstr "Klistra _in"
 
@@ -105,39 +105,39 @@ msgstr "Öppna länk"
 msgid "Tab Search"
 msgstr "Fliksökning"
 
-#: ../hotssh/hotvte/vtewindow.py:222
+#: ../hotssh/hotvte/vtewindow.py:242
 msgid "File"
 msgstr "Arkiv"
 
-#: ../hotssh/hotvte/vtewindow.py:223
+#: ../hotssh/hotvte/vtewindow.py:243
 msgid "_Detach Tab"
 msgstr "_Frigör flik"
 
-#: ../hotssh/hotvte/vtewindow.py:225
+#: ../hotssh/hotvte/vtewindow.py:245
 msgid "_Close"
 msgstr "S_täng"
 
-#: ../hotssh/hotvte/vtewindow.py:227
+#: ../hotssh/hotvte/vtewindow.py:247
 msgid "_Quit"
 msgstr "A_vsluta"
 
-#: ../hotssh/hotvte/vtewindow.py:229
+#: ../hotssh/hotvte/vtewindow.py:249
 msgid "Edit"
 msgstr "Redigera"
 
-#: ../hotssh/hotvte/vtewindow.py:232
+#: ../hotssh/hotvte/vtewindow.py:252
 msgid "View"
 msgstr "Visa"
 
-#: ../hotssh/hotvte/vtewindow.py:233
+#: ../hotssh/hotvte/vtewindow.py:253
 msgid "Help"
 msgstr "Hjälp"
 
-#: ../hotssh/hotvte/vtewindow.py:234
+#: ../hotssh/hotvte/vtewindow.py:254
 msgid "_About"
 msgstr "_Om"
 
-#: ../hotssh/sshwindow.py:84
+#: ../hotssh/sshwindow.py:97
 msgid ""
 "An interface to OpenSSH, a Secure Shell client\n"
 "\n"
@@ -145,126 +145,127 @@ msgstr ""
 "Ett gränssnitt till OpenSSH, en Secure Shell-klient\n"
 "\n"
 
-#: ../hotssh/sshwindow.py:261
+#: ../hotssh/sshwindow.py:337
 msgid "Options"
 msgstr "Alternativ"
 
-#: ../hotssh/sshwindow.py:272
+#: ../hotssh/sshwindow.py:348
 msgid "Example: "
 msgstr "Exempel: "
 
-#: ../hotssh/sshwindow.py:287
+#: ../hotssh/sshwindow.py:363
 msgid "New Secure Shell Connection"
 msgstr "Ny Secure Shell-anslutning"
 
-#: ../hotssh/sshwindow.py:300
+#: ../hotssh/sshwindow.py:376
 msgid "C_onnect"
 msgstr "Ans_lut"
 
-#: ../hotssh/sshwindow.py:327
+#: ../hotssh/sshwindow.py:403
 msgid "Host: "
 msgstr "Värd: "
 
-#: ../hotssh/sshwindow.py:346
+#: ../hotssh/sshwindow.py:422
 msgid "User: "
 msgstr "Användare: "
 
-#: ../hotssh/sshwindow.py:370
+#: ../hotssh/sshwindow.py:446
 msgid "History"
 msgstr "Historik"
 
-#: ../hotssh/sshwindow.py:379
-#: ../hotssh/sshwindow.py:1126
+#: ../hotssh/sshwindow.py:458
+#: ../hotssh/sshwindow.py:1450
 msgid "Connection"
 msgstr "Anslutning"
 
-#: ../hotssh/sshwindow.py:382
+#: ../hotssh/sshwindow.py:461
 msgid "Time"
 msgstr "Tid"
 
-#: ../hotssh/sshwindow.py:388
+#: ../hotssh/sshwindow.py:467
 msgid "Local"
 msgstr "Lokal"
 
-#: ../hotssh/sshwindow.py:396
+#: ../hotssh/sshwindow.py:475
 msgid "Name"
 msgstr "Namn"
 
-#: ../hotssh/sshwindow.py:399
+#: ../hotssh/sshwindow.py:478
 msgid "Address"
 msgstr "Adress"
 
-#: ../hotssh/sshwindow.py:852
+#: ../hotssh/sshwindow.py:1162
 msgid "Connection closed"
 msgstr "Anslutning stängdes"
 
-#: ../hotssh/sshwindow.py:1005
+#: ../hotssh/sshwindow.py:1328
 msgid "Connecting"
 msgstr "Ansluter"
 
-#: ../hotssh/sshwindow.py:1007
+#: ../hotssh/sshwindow.py:1330
 #, python-format
 msgid "Connected; %.2fs latency; %s"
 msgstr "Ansluten; %.2f s latens; %s"
 
-#: ../hotssh/sshwindow.py:1009
+#: ../hotssh/sshwindow.py:1332
 msgid "Connection timed out"
 msgstr "Anslutningens tidsgräns överstegs"
 
-#: ../hotssh/sshwindow.py:1011
+#: ../hotssh/sshwindow.py:1334
 msgid "Checking connection"
 msgstr "Kontrollerar anslutning"
 
-#: ../hotssh/sshwindow.py:1036
+#: ../hotssh/sshwindow.py:1359
 msgid "Network connection changed"
 msgstr "Nätverksanslutning ändrad"
 
-#: ../hotssh/sshwindow.py:1120
-msgid "Connect to server"
-msgstr "Anslut till server"
+#: ../hotssh/sshwindow.py:1444
+msgid "Connect to server..."
+msgstr "Anslut till server..."
 
-#: ../hotssh/sshwindow.py:1121
+#: ../hotssh/sshwindow.py:1445
 msgid "Open a new Secure Shell connection"
 msgstr "Öppna en ny Secure Shell-anslutning"
 
-#: ../hotssh/sshwindow.py:1122
+#: ../hotssh/sshwindow.py:1446
 msgid "New tab for connection"
 msgstr "Ny flik för anslutning"
 
-#: ../hotssh/sshwindow.py:1123
+#: ../hotssh/sshwindow.py:1447
 msgid "Open a new tab for the same remote computer"
 msgstr "Öppna en ny flik för samma fjärrdator"
 
-#: ../hotssh/sshwindow.py:1124
+#: ../hotssh/sshwindow.py:1448
 msgid "Open SFTP"
 msgstr "Öppna SFTP"
 
-#: ../hotssh/sshwindow.py:1125
+#: ../hotssh/sshwindow.py:1449
 msgid "Open a SFTP connection"
 msgstr "Öppna en SFTP-anslutning"
 
-#: ../hotssh/sshwindow.py:1127
-#: ../hotssh/sshwindow.py:1217
+#: ../hotssh/sshwindow.py:1451
+#: ../hotssh/sshwindow.py:1541
 msgid "_Reconnect"
 msgstr "Anslut i_gen"
 
-#: ../hotssh/sshwindow.py:1127
+#: ../hotssh/sshwindow.py:1451
 msgid "Reset connection to server"
 msgstr "Nollställ anslutning till server"
 
-#: ../hotssh/sshwindow.py:1128
+#: ../hotssh/sshwindow.py:1452
 msgid "R_econnect All"
 msgstr "Anslut alla ig_en"
 
-#: ../hotssh/sshwindow.py:1128
+#: ../hotssh/sshwindow.py:1452
 msgid "Reset all connections"
 msgstr "Nollställ alla anslutningar"
 
-#: ../hotssh/sshwindow.py:1216
+#: ../hotssh/sshwindow.py:1540
 msgid "Restore saved session?"
 msgstr "Återuppta sparad session?"
 
-#: ../hotssh/sshwindow.py:1221
+#. Translators: %d is the number of hosts we are about to reconnect to.
+#: ../hotssh/sshwindow.py:1546
 #, python-format
 msgid "Reconnect to %d host"
 msgid_plural "Reconnect to %d hosts"
