@@ -887,7 +887,7 @@ class HostConnectionMonitor(gobject.GObject):
             gobject.source_remove(monid)
             del self.__host_monitor_ids[userhost]
         if userhost in self.__check_statuses:
-            del self.__check_statusesuser[userhost]
+            del self.__check_statuses[userhost]
 
     def get_monitors(self):
         return self.__host_monitor_ids
