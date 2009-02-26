@@ -1,12 +1,12 @@
 # German translation of hotssh.
-# Mario Blättermann <mariobl@gnome.org>, 2008.
+# Mario Blättermann <mariobl@gnome.org>, 2008, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-02 00:33+0100\n"
-"PO-Revision-Date: 2009-01-04 21:20+0100\n"
+"POT-Creation-Date: 2009-02-26 19:00+0100\n"
+"PO-Revision-Date: 2009-02-26 19:01+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -217,8 +217,8 @@ msgid "Network connection changed"
 msgstr "Netzwerkverbindung geändert"
 
 #: ../hotssh/sshwindow.py:1444
-msgid "Connect to server"
-msgstr "Verbindung zu Server"
+msgid "Connect to server..."
+msgstr "Verbindung zu Server …"
 
 #: ../hotssh/sshwindow.py:1445
 msgid "Open a new Secure Shell connection"
