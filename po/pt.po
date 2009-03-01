@@ -1,18 +1,18 @@
 # Portuguese translation of hotssh
-# Copyright © 2008 hotssh.
+# Copyright © 2008, 2009 hotssh.
 # This file is distributed under the same license as the hotssh package.
-# António Lima <amrlima@gmail.com>, 2008.
 #
+# António Lima <amrlima@gmail.com>, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-01 00:02+0100\n"
-"PO-Revision-Date: 2008-09-08 14:48-0100\n"
+"POT-Creation-Date: 2009-03-01 23:35+0000\n"
+"PO-Revision-Date: 2009-02-25 22:13-0100\n"
 "Last-Translator: António Lima <amrlima@gmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: PORTUGAL\n"
@@ -145,124 +145,125 @@ msgstr ""
 "Uma interface para o OpenSSH, um cliente de Consola Segura\n"
 "\n"
 
-#: ../hotssh/sshwindow.py:335
+#: ../hotssh/sshwindow.py:337
 msgid "Options"
 msgstr "Opções"
 
-#: ../hotssh/sshwindow.py:346
+#: ../hotssh/sshwindow.py:348
 msgid "Example: "
 msgstr "Exemplo: "
 
-#: ../hotssh/sshwindow.py:361
+#: ../hotssh/sshwindow.py:363
 msgid "New Secure Shell Connection"
 msgstr "Nova Ligação de Consola Segura"
 
-#: ../hotssh/sshwindow.py:374
+#: ../hotssh/sshwindow.py:376
 msgid "C_onnect"
 msgstr "_Ligar"
 
-#: ../hotssh/sshwindow.py:401
+#: ../hotssh/sshwindow.py:403
 msgid "Host: "
 msgstr "Servidor: "
 
-#: ../hotssh/sshwindow.py:420
+#: ../hotssh/sshwindow.py:422
 msgid "User: "
 msgstr "Utilizador: "
 
-#: ../hotssh/sshwindow.py:444
+#: ../hotssh/sshwindow.py:446
 msgid "History"
 msgstr "Histórico"
 
-#: ../hotssh/sshwindow.py:456 ../hotssh/sshwindow.py:1424
+#: ../hotssh/sshwindow.py:458 ../hotssh/sshwindow.py:1450
 msgid "Connection"
 msgstr "Ligação"
 
-#: ../hotssh/sshwindow.py:459
+#: ../hotssh/sshwindow.py:461
 msgid "Time"
 msgstr "Tempo"
 
-#: ../hotssh/sshwindow.py:465
+#: ../hotssh/sshwindow.py:467
 msgid "Local"
 msgstr "Local"
 
-#: ../hotssh/sshwindow.py:473
+#: ../hotssh/sshwindow.py:475
 msgid "Name"
 msgstr "Nome"
 
-#: ../hotssh/sshwindow.py:476
+#: ../hotssh/sshwindow.py:478
 msgid "Address"
 msgstr "Endereço"
 
-#: ../hotssh/sshwindow.py:1137
+#: ../hotssh/sshwindow.py:1162
 msgid "Connection closed"
 msgstr "Ligação fechada"
 
-#: ../hotssh/sshwindow.py:1303
+#: ../hotssh/sshwindow.py:1328
 msgid "Connecting"
 msgstr "A ligar"
 
-#: ../hotssh/sshwindow.py:1305
+#: ../hotssh/sshwindow.py:1330
 #, python-format
 msgid "Connected; %.2fs latency; %s"
 msgstr "Ligado; latência de %.2fs; %s"
 
-#: ../hotssh/sshwindow.py:1307
+#: ../hotssh/sshwindow.py:1332
 msgid "Connection timed out"
-msgstr "A ligação expirirou"
+msgstr "A ligação expirou"
 
-#: ../hotssh/sshwindow.py:1309
+#: ../hotssh/sshwindow.py:1334
 msgid "Checking connection"
 msgstr "A verificar a ligação"
 
-#: ../hotssh/sshwindow.py:1334
+#: ../hotssh/sshwindow.py:1359
 msgid "Network connection changed"
 msgstr "Ligação à rede alterada"
 
-#: ../hotssh/sshwindow.py:1418
-msgid "Connect to server"
-msgstr "Ligar ao servidor"
+#: ../hotssh/sshwindow.py:1444
+msgid "Connect to server..."
+msgstr "Ligar ao servidor..."
 
-#: ../hotssh/sshwindow.py:1419
+#: ../hotssh/sshwindow.py:1445
 msgid "Open a new Secure Shell connection"
 msgstr "Abrir uma nova ligação de Consola Segura"
 
-#: ../hotssh/sshwindow.py:1420
+#: ../hotssh/sshwindow.py:1446
 msgid "New tab for connection"
 msgstr "Novo separador para ligação"
 
-#: ../hotssh/sshwindow.py:1421
+#: ../hotssh/sshwindow.py:1447
 msgid "Open a new tab for the same remote computer"
 msgstr "Abrir um novo separador para o mesmo computador remoto"
 
-#: ../hotssh/sshwindow.py:1422
+#: ../hotssh/sshwindow.py:1448
 msgid "Open SFTP"
 msgstr "Abrir SFTP"
 
-#: ../hotssh/sshwindow.py:1423
+#: ../hotssh/sshwindow.py:1449
 msgid "Open a SFTP connection"
 msgstr "Abrir uma ligação SFTP"
 
-#: ../hotssh/sshwindow.py:1425 ../hotssh/sshwindow.py:1515
+#: ../hotssh/sshwindow.py:1451 ../hotssh/sshwindow.py:1541
 msgid "_Reconnect"
 msgstr "_Religar"
 
-#: ../hotssh/sshwindow.py:1425
+#: ../hotssh/sshwindow.py:1451
 msgid "Reset connection to server"
 msgstr "Reiniciar a ligação ao servidor"
 
-#: ../hotssh/sshwindow.py:1426
+#: ../hotssh/sshwindow.py:1452
 msgid "R_econnect All"
 msgstr "R_eligar Todas"
 
-#: ../hotssh/sshwindow.py:1426
+#: ../hotssh/sshwindow.py:1452
 msgid "Reset all connections"
 msgstr "Reiniciar todas as ligações"
 
-#: ../hotssh/sshwindow.py:1514
+#: ../hotssh/sshwindow.py:1540
 msgid "Restore saved session?"
 msgstr "Restaurar sessão gravada?"
 
-#: ../hotssh/sshwindow.py:1519
+#. Translators: %d is the number of hosts we are about to reconnect to.
+#: ../hotssh/sshwindow.py:1546
 #, python-format
 msgid "Reconnect to %d host"
 msgid_plural "Reconnect to %d hosts"
