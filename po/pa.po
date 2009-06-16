@@ -1,0 +1,271 @@
+# Punjabi translation of hotssh.
+# Copyright (C) 2009 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+#
+# A S Alam <aalam@users.sf.net>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=hotssh&component=general\n"
+"POT-Creation-Date: 2009-06-04 12:42+0000\n"
+"PO-Revision-Date: 2009-06-16 06:42+0530\n"
+"Last-Translator: A S Alam <aalam@users.sf.net>\n"
+"Language-Team: Punjabi/Panjabi <punjab-l10n@list.sf.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 0.3\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Connect to a remote computer using Secure Shell"
+msgstr "ਰਿਮੋਟ ਕੰਪਿਊਟਰ ਨਾਲ ਸਕਿਉਰ ਸ਼ੈੱਲ ਰਾਹੀਂ ਕੁਨੈਕਟ ਹੋਵੋ"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Secure Shell"
+msgstr "ਸਕਿਉਰ ਸ਼ੈੱਲ"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "ਸਾਲ"
+msgstr[1] "ਸਾਲ"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "ਮਹੀਨਾ"
+msgstr[1] "ਮਹੀਨੇ"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "ਹਫ਼ਤਾ"
+msgstr[1] "ਹਫ਼ਤੇ"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "ਦਿਨ"
+msgstr[1] "ਦਿਨ"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "ਘੰਟਾ"
+msgstr[1] "ਘੰਟੇ"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "ਮਿੰਟ"
+msgstr[1] "ਮਿੰਟ"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "ਭਵਿੱਖ ਵਿੱਚ"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "੧ ਮਿੰਟ ਤੋਂ ਘੱਟ ਪਹਿਲਾਂ"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "%(number)d %(type)s, %(number2)d %(type2)s ਪਹਿਲਾਂ"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "%(number)d %(type)s ਪਹਿਲਾਂ"
+
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:250
+msgid "_Copy"
+msgstr "ਕਾਪੀ ਕਰੋ(_C)"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "ਚੁਣਿਆ ਟੈਕਸਟ ਕਾਪੀ ਕਰੋ"
+
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:251
+msgid "_Paste"
+msgstr "ਚੇਪੋ(_P)"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "ਟੈਕਸਟ ਚੇਪੋ"
+
+#: ../hotssh/hotvte/vteterm.py:173
+msgid "Open Link"
+msgstr "ਲਿੰਕ ਖੋਲ੍ਹੋ"
+
+#: ../hotssh/hotvte/vtewindow.py:35
+msgid "Tab Search"
+msgstr "ਟੈਬ ਖੋਜ"
+
+#: ../hotssh/hotvte/vtewindow.py:242
+msgid "File"
+msgstr "ਫਾਇਲ"
+
+#: ../hotssh/hotvte/vtewindow.py:243
+msgid "_Detach Tab"
+msgstr "ਟੈਬ ਵੱਖ ਕਰੋ(_D)"
+
+#: ../hotssh/hotvte/vtewindow.py:245
+msgid "_Close"
+msgstr "ਬੰਦ ਕਰੋ(_C)"
+
+#: ../hotssh/hotvte/vtewindow.py:247
+msgid "_Quit"
+msgstr "ਬਾਹਰ(_Q)"
+
+#: ../hotssh/hotvte/vtewindow.py:249
+msgid "Edit"
+msgstr "ਸੋਧ"
+
+#: ../hotssh/hotvte/vtewindow.py:252
+msgid "View"
+msgstr "ਵੇਖੋ"
+
+#: ../hotssh/hotvte/vtewindow.py:253
+msgid "Help"
+msgstr "ਮੱਦਦ"
+
+#: ../hotssh/hotvte/vtewindow.py:254
+msgid "_About"
+msgstr "ਇਸ ਬਾਰੇ(_A)..."
+
+#: ../hotssh/sshwindow.py:97
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"OpenSSH, ਸੁਰੱਖਿਅਤ ਸ਼ੈੱਲ ਕਲਾਇਟ ਲਈ ਇੰਟਰਫੇਸ\n"
+"\n"
+
+#: ../hotssh/sshwindow.py:337
+msgid "Options"
+msgstr "ਚੋਣਾਂ"
+
+#: ../hotssh/sshwindow.py:348
+msgid "Example: "
+msgstr "ਉਦਾਹਰਨ: "
+
+#: ../hotssh/sshwindow.py:363
+msgid "New Secure Shell Connection"
+msgstr "ਨਵਾਂ ਸਕਿਉਰ ਸ਼ੈੱਲ ਕੁਨੈਕਸ਼ਨ"
+
+#: ../hotssh/sshwindow.py:376
+msgid "C_onnect"
+msgstr "ਕੁਨੈਕਟ ਕਰੋ(_o)"
+
+#: ../hotssh/sshwindow.py:403
+msgid "Host: "
+msgstr "ਹੋਸਟ: "
+
+#: ../hotssh/sshwindow.py:422
+msgid "User: "
+msgstr "ਯੂਜ਼ਰ: "
+
+#: ../hotssh/sshwindow.py:446
+msgid "History"
+msgstr "ਅਤੀਤ"
+
+#: ../hotssh/sshwindow.py:458 ../hotssh/sshwindow.py:1450
+msgid "Connection"
+msgstr "ਕੁਨੈਕਸ਼ਨ"
+
+#: ../hotssh/sshwindow.py:461
+msgid "Time"
+msgstr "ਟਾਈਮ"
+
+#: ../hotssh/sshwindow.py:467
+msgid "Local"
+msgstr "ਲੋਕਲ"
+
+#: ../hotssh/sshwindow.py:475
+msgid "Name"
+msgstr "ਨਾਂ"
+
+#: ../hotssh/sshwindow.py:478
+msgid "Address"
+msgstr "ਐਡਰੈੱਸ"
+
+#: ../hotssh/sshwindow.py:1162
+msgid "Connection closed"
+msgstr "ਕੁਨੈਕਸ਼ਨ ਬੰਦ ਕੀਤਾ"
+
+#: ../hotssh/sshwindow.py:1328
+msgid "Connecting"
+msgstr "ਕੁਨੈਕਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: ../hotssh/sshwindow.py:1330
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "ਕੁਨੈਕਟ ਹੈ; %.2fs ਦੇਰੀ; %s"
+
+#: ../hotssh/sshwindow.py:1332
+msgid "Connection timed out"
+msgstr "ਕੁਨੈਕਸ਼ਨ ਟਾਈਮ ਆਉਟ"
+
+#: ../hotssh/sshwindow.py:1334
+msgid "Checking connection"
+msgstr "ਕੁਨੈਕਸ਼ਨ ਚੈੱਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: ../hotssh/sshwindow.py:1359
+msgid "Network connection changed"
+msgstr "ਨੈੱਟਵਰਕ ਕੁਨੈਕਸ਼ਨ ਬਦਲਿਆ"
+
+#: ../hotssh/sshwindow.py:1444
+msgid "Connect to server..."
+msgstr "ਸਰਵਰ ਨਾਲ ਕੁਨੈਕਟ ਕਰੋ..."
+
+#: ../hotssh/sshwindow.py:1445
+msgid "Open a new Secure Shell connection"
+msgstr "ਨਵਾਂ ਸਕਿਉਰ ਸ਼ੈੱਲ ਕੁਨੈਕਸ਼ਨ ਖੋਲ੍ਹੋ"
+
+#: ../hotssh/sshwindow.py:1446
+msgid "New tab for connection"
+msgstr "ਕੁਨੈਕਸ਼ਨ ਲਈ ਨਵੀਂ ਟੈਬ"
+
+#: ../hotssh/sshwindow.py:1447
+msgid "Open a new tab for the same remote computer"
+msgstr "ਉਸੇ ਰਿਮੋਟ ਕੰਪਿਊਟਰ ਲਈ ਨਵੀਂ ਟੈਬ ਖੋਲ੍ਹੋ"
+
+#: ../hotssh/sshwindow.py:1448
+msgid "Open SFTP"
+msgstr "SFTP ਖੋਲ੍ਹੋ"
+
+#: ../hotssh/sshwindow.py:1449
+msgid "Open a SFTP connection"
+msgstr "SFTP ਕੁਨੈਕਸ਼ਨ ਖੋਲ੍ਹੋ"
+
+#: ../hotssh/sshwindow.py:1451 ../hotssh/sshwindow.py:1541
+msgid "_Reconnect"
+msgstr "ਮੁੜ-ਕੁਨੈਕਟ ਕਰੋ(_R)"
+
+#: ../hotssh/sshwindow.py:1451
+msgid "Reset connection to server"
+msgstr "ਸਰਵਰ ਨਾਲ ਕੁਨੈਕਸ਼ਨ ਰੀ-ਸੈੱਟ ਕਰੋ"
+
+#: ../hotssh/sshwindow.py:1452
+msgid "R_econnect All"
+msgstr "ਸਭ ਮੁੜ-ਕੁਨੈਕਟ(_e)"
+
+#: ../hotssh/sshwindow.py:1452
+msgid "Reset all connections"
+msgstr "ਸਭ ਕੁਨੈਕਸ਼ਨ ਰੀ-ਸੈੱਟ ਕਰੋ"
+
+#: ../hotssh/sshwindow.py:1540
+msgid "Restore saved session?"
+msgstr "ਸੰਭਾਲਿਆ ਸ਼ੈਸ਼ਨ ਮੁੜ-ਖੋਲ੍ਹਣਾ?"
+
+#. Translators: %d is the number of hosts we are about to reconnect to.
+#: ../hotssh/sshwindow.py:1546
+#, python-format
+msgid "Reconnect to %d host"
+msgid_plural "Reconnect to %d hosts"
+msgstr[0] "%d ਹੋਸਟ ਨਾਲ ਮੁੜ-ਕੁਨੈਕਟ ਕਰੋ"
+msgstr[1] "%d ਹੋਸਟ ਨਾਲ ਮੁੜ-ਕੁਨੈਕਟ ਕਰੋ"
+
