@@ -1186,7 +1186,7 @@ class SshTerminalWidget(gtk.VBox):
         return self.__term.get_vte()
 
     def get_title(self):
-        return self.get_host()
+        return userhost_pair_to_string(self.get_user(), self.get_host())
 
     def get_pixbuf(self):
         return self.__favicon_pixbuf
