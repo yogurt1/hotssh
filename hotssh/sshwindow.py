@@ -699,6 +699,21 @@ def get_connection_sharing_args():
     # TODO - openssh should really do this out of the box
     return ['-oControlMaster=auto', '-oControlPath=' + os.path.join(get_controlpath(), 'master-%r@%h:%p')]
 
+sharing_supported_local = None
+def connection_sharing_supported_local():
+    global sharing_supported_local
+    if sharing_supported_local is not None:
+        return sharing_supported_local
+    version_re = re.compile(r'OpenSSH_(\d+)\.([0-9a-zA-Z]+)')
+    version_str = subprocess.Popen(['ssh', '-V'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0]
+    match = version_re.match(version_str)
+    if not match:
+        sharing_supported_local = False
+    else:
+        major = int(match.group(1))
+        sharing_supported_local = major >= 4
+    return sharing_supported_local
+    
 class AsyncCommandWithOutput(gobject.GObject):
     __gsignals__ = {
         "timeout" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
@@ -719,7 +734,8 @@ class AsyncCommandWithOutput(gobject.GObject):
         self.__host = host
         self.__port = port
         cmd = list(cmdstart)
-        cmd.extend(get_connection_sharing_args())
+        if connection_sharing_supported_local():
+            cmd.extend(get_connection_sharing_args())
         if port:
             cmd.extend(['-p', str(port)])
         if user:
@@ -873,6 +889,9 @@ class HostConnectionMonitor(gobject.GObject):
         
 
     def start_monitor(self, user, host):
+        if not connection_sharing_supported_local():
+            _logger.debug("connection sharing not supported, skipping monitoring")
+            return 
         userhost = userhost_pair_to_string(user, host)
         if not (userhost in self.__host_monitor_ids or userhost in self.__check_statuses):
             _logger.debug("adding monitor for %s", userhost)
@@ -881,12 +900,13 @@ class HostConnectionMonitor(gobject.GObject):
 
     def stop_monitor(self, user, host):
         userhost = userhost_pair_to_string(user, host)        
-        _logger.debug("stopping monitor for %s", userhost)
         if userhost in self.__host_monitor_ids:
+            _logger.debug("stopping monitor for %s", userhost)
             monid = self.__host_monitor_ids[userhost]
             gobject.source_remove(monid)
             del self.__host_monitor_ids[userhost]
         if userhost in self.__check_statuses:
+            _logger.debug("stopping monitor for %s", userhost)
             del self.__check_statuses[userhost]
 
     def get_monitors(self):
@@ -983,6 +1003,7 @@ class SshTerminalWidget(gtk.VBox):
 
     latency = property(lambda self: self.__latency)
     status_line = property(lambda self: self.__status_output_first)
+    connection_sharing = property(lambda self: self.__connection_sharing_enabled)
     connecting_state = property(lambda self: self.__connecting_state)
     connected = property(lambda self: self.__connected)
     ssh_options = property(lambda self: self.__sshopts)
@@ -998,7 +1019,7 @@ class SshTerminalWidget(gtk.VBox):
         self.__cwd = cwd
         self.__user = inituser
         self.__host = inithost
-	self.__port = None
+        self.__port = None
         self.__sshopts = []
         self.__actions = actions
         self.__idle_start_favicon_id = 0
@@ -1009,7 +1030,7 @@ class SshTerminalWidget(gtk.VBox):
 
         self.__init_state()
 
-        enable_connection_sharing = True
+        enable_connection_sharing = connection_sharing_supported_local()
         need_arg = False
         this_is_port = False
         port_in_args = False
@@ -1076,6 +1097,7 @@ class SshTerminalWidget(gtk.VBox):
         self.__favicon_retriever = None
 
         self.__global_connection_changed = False
+        self.__connection_sharing_enabled = connection_sharing_supported_local() 
         self.__connecting_state = False
         self.__connected = None
         self.__cmd_exited = False
@@ -1126,6 +1148,8 @@ class SshTerminalWidget(gtk.VBox):
         self.__msgarea_mgr.clear()
         self.__sync_msg()
 
+        if not connection_sharing_supported_local():
+            return
         current = _openssh_hosts_db.get_favicon_for_host(self.__host, self.__port)
         if current is not None:
             (pixbufpath, mtime) = current
@@ -1324,7 +1348,9 @@ class SshWindow(VteWindow):
         if pn < 0:
             return
         widget = notebook.get_nth_page(pn)
-        if widget.connecting_state:
+        if not widget.connection_sharing:
+            text = _('Connection sharing not supported; unknown state')
+        elif widget.connecting_state:
             text = _('Connecting')
         elif widget.connected is True:
             text = _('Connected; %.2fs latency; %s') % (widget.latency, widget.status_line)
