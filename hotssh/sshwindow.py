@@ -19,7 +19,7 @@
 import os,sys,platform,logging,getopt,re
 import locale,threading,subprocess,time
 import signal,tempfile,shutil,stat,pwd
-import datetime,gettext,sha,commands,errno
+import datetime,gettext,commands,errno
 import urllib
 from StringIO import StringIO
 import xml.dom.minidom
