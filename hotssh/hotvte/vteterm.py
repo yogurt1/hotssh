@@ -95,10 +95,9 @@ class VteTerminalWidget(gtk.VBox):
         
         self.__colors_default = True
         self.__term.set_default_colors()
-        if gconf_available:
-            self.__set_gnome_colors()
-        else:
-            self.__set_gtk_colors()        
+        self.__color_notifications_added = False
+        gtk.settings_get_default().connect('notify::gtk-color-scheme', self.__reset_colors)
+        self.__reset_colors()
 
         # Use Gnome font if available
         if gconf_available:
@@ -130,6 +129,12 @@ class VteTerminalWidget(gtk.VBox):
             # For example, "top" seems to be sized correctly on the first display
             # this way            
             gobject.timeout_add(250, self.__idle_do_cmd_fork, cmd, cwd, ptyfd, initbuf)
+    
+    def __reset_colors(self, *args):
+        if gconf_available:
+            self.__set_gnome_colors()
+        else:
+            self.__set_gtk_colors()
             
     def __idle_do_cmd_fork(self, cmd, cwd, ptyfd, initbuf):
         _logger.debug("Forking cmd: %r", cmd)
@@ -233,17 +238,28 @@ class VteTerminalWidget(gtk.VBox):
     def __set_gnome_colors(self):
         gconf_client = gconf.client_get_default()        
         term_profile = '/apps/gnome-terminal/profiles/Default'
+        use_theme_key = term_profile + '/use_theme_colors'
         fg_key = term_profile + '/foreground_color'
         bg_key = term_profile + '/background_color'
         def on_color_change(*args):
             if not self.__colors_default:
                 return
-            fg = gtk.gdk.color_parse(gconf_client.get_string(fg_key))
+            use_theme = gconf_client.get_bool(use_theme_key)
+            if use_theme:
+                style = self.__term.get_style()
+                fg = style.text[gtk.STATE_NORMAL]
+                bg = style.base[gtk.STATE_NORMAL]
+            else:
+                fg = gtk.gdk.color_parse(gconf_client.get_string(fg_key))
+                bg = gtk.gdk.color_parse(gconf_client.get_string(bg_key))
             self.set_color(True, fg, isdefault=True)
-            bg = gtk.gdk.color_parse(gconf_client.get_string(bg_key))
             self.set_color(False, bg, isdefault=True)
-        gconf_client.notify_add(fg_key, on_color_change)
-        gconf_client.notify_add(bg_key, on_color_change)
+        if not self.__color_notifications_added:
+            gconf_client.add_dir(term_profile, gconf.CLIENT_PRELOAD_RECURSIVE)
+            gconf_client.notify_add(use_theme_key, on_color_change)
+            gconf_client.notify_add(fg_key, on_color_change)
+            gconf_client.notify_add(bg_key, on_color_change)
+            self.__color_notifications_added = True
         on_color_change()        
     
     def __set_gtk_colors(self):
@@ -254,7 +270,7 @@ class VteTerminalWidget(gtk.VBox):
         
     def set_color(self, is_foreground, color, isdefault=False):
         if not isdefault:
-            self.__colors_default = False            
+            self.__colors_default = False
         if is_foreground:
             self.__term.set_color_foreground(color)
             self.__term.set_color_bold(color)
