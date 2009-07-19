@@ -364,6 +364,7 @@ class ConnectDialog(gtk.Dialog):
                                             parent=parent,
                                             flags=gtk.DIALOG_DESTROY_WITH_PARENT,
                                             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
+        self.set_icon_name('hotwire-openssh')
 
         self.__history = history
         self.__local_avahi = local_avahi
