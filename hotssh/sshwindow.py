@@ -359,7 +359,7 @@ class SshOptions(gtk.Expander):
         subprocess.Popen(['gnome-terminal', '-x', 'man', 'ssh'])
 
 class ConnectDialog(gtk.Dialog):
-    def __init__(self, parent=None, history=None, local_avahi=None):
+    def __init__(self, parent=None, history=None, local_avahi=None, restore_session_data=None):
         super(ConnectDialog, self).__init__(title=_("New Secure Shell Connection"),
                                             parent=parent,
                                             flags=gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -381,10 +381,11 @@ class ConnectDialog(gtk.Dialog):
         self.set_border_width(5)
 
         self.__vbox = vbox = gtk.VBox()
+        vbox.set_spacing(6)
         self.vbox.add(self.__vbox)
         self.vbox.set_spacing(6)
 
-        self.__response_value = None
+        self.restore_session_result = False
 
         self.__viewmode = 'history'
 
@@ -395,6 +396,22 @@ class ConnectDialog(gtk.Dialog):
         self.__custom_user = False
 
         self.__hosts = _openssh_hosts_db
+        
+        if restore_session_data:
+            self.__restore_msgarea_control = MsgAreaController()
+            sessionnote_one_window = _('Restore previous session (%d tabs)?')
+            sessionnote_multi_window = _('Restore previous session (%d windows)?')
+            if len(restore_session_data) > 1:
+                session_note = sessionnote_multi_window % (len(restore_session_data), )
+            else:
+                session_note = sessionnote_one_window % (len(restore_session_data[0]), )
+            self.__restore_msgarea = self.__restore_msgarea_control.new_from_text_and_icon(gtk.STOCK_DIALOG_QUESTION, session_note)
+            self.__restore_msgarea.add_stock_button_with_text('Restore', gtk.STOCK_OPEN, gtk.RESPONSE_ACCEPT)
+            self.__restore_msgarea.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+            self.__restore_msgarea.connect('response', self.__on_session_restore_response, restore_session_data)
+            vbox.pack_start(self.__restore_msgarea_control, expand=False)
+            self.__restore_msgarea_control.pack_start(gtk.HSeparator(), expand=False)
+            vbox.show_all() 
 
         sg = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
 
@@ -416,6 +433,7 @@ class ConnectDialog(gtk.Dialog):
         self.__entry.child.set_completion(self.__entrycompletion)
         hbox.add(self.__entry)
         self.__reload_entry()
+        self.__entry.child.grab_focus()
 
         hbox = gtk.HBox()
         vbox.pack_start(hbox, expand=False)
@@ -489,6 +507,13 @@ class ConnectDialog(gtk.Dialog):
         vbox.pack_start(self.__options_expander, expand=False)
 
         self.set_default_size(640, 480)
+        
+    def __on_session_restore_response(self, msgarea, response, session_data):
+        if response != gtk.RESPONSE_ACCEPT:
+            self.__restore_msgarea_control.clear()
+            return
+        self.restore_session_result = True
+        self.response(gtk.RESPONSE_ACCEPT)
 
     @log_except(_logger)
     def __on_switch_page(self, nb, p, pn):
@@ -1249,6 +1274,8 @@ class SshWindow(VteWindow):
 </ui>
 """
 
+        self.__is_initial = 'is_initial' in kwargs
+
         self._get_notebook().connect('switch-page', self.__on_page_switch)
 
         try:
@@ -1551,47 +1578,6 @@ class SshApp(VteApp):
             except:
                 pass
 
-    def offer_load_session(self):
-        savedsession = self._parse_saved_session()
-        alltabs_count = 0
-        allhosts = set()
-        if savedsession:
-            for window in savedsession:
-                for connection in window:
-                    allhosts.add(connection['userhost'])
-                    alltabs_count += 1
-        if len(allhosts) > 0:
-            dlg = gtk.MessageDialog(parent=None, flags=0, type=gtk.MESSAGE_QUESTION,
-                                    buttons=gtk.BUTTONS_CANCEL,
-                                    message_format=_("Restore saved session?"))
-            button = dlg.add_button(_('_Reconnect'), gtk.RESPONSE_ACCEPT)
-            button.set_property('image', gtk.image_new_from_stock('gtk-connect', gtk.ICON_SIZE_BUTTON))
-            dlg.set_default_response(gtk.RESPONSE_ACCEPT)
-            allhosts_count = len(allhosts)
-            # Translators: %d is the number of hosts we are about to reconnect to.
-            text = gettext.ngettext('Reconnect to %d host' % (allhosts_count,),
-                                    'Reconnect to %d hosts' % (allhosts_count,), len(allhosts))
-            dlg.format_secondary_markup(text)
-
-            #ls = gtk.ListStore(str)
-            #gv = gtk.TreeView(ls)
-            #colidx = gv.insert_column_with_attributes(-1, _('Connection'),
-            #                                          gtk.CellRendererText(),
-            #                                          text=0)
-            #for host in allhosts:
-            #    ls.append((host,))
-            #dlg.add(gv)
-
-            resp = dlg.run()
-            dlg.destroy()
-            if resp == gtk.RESPONSE_ACCEPT:
-                self._load_session(savedsession)
-                return
-        w = self.get_factory().create_initial_window()
-        w.new_tab([], os.getcwd())
-        w.show_all()
-        w.present()
-
     def _load_session(self, session):
         factory = self.get_factory()
         for window in session:
@@ -1603,10 +1589,7 @@ class SshApp(VteApp):
                 widget = window_impl.new_tab(args, os.getcwd())
             window_impl.show_all()
 
-    #override
-    @log_except(_logger)
     def _parse_saved_session(self):
-        factory = self.get_factory()
         try:
             f = open(self.__sessionpath)
         except:
@@ -1644,6 +1627,21 @@ class SshApp(VteApp):
                 connections.append(kwargs)
             saved_windows.append(connections)
         return saved_windows
+
+    #override
+    def restore_session(self):
+        sessiondata = self._parse_saved_session()
+        win = ConnectDialog(history=self.__connhistory, local_avahi=self.__local_avahi,
+                            restore_session_data=sessiondata)
+        sshargs = win.run_get_cmd()
+        if win.restore_session_result:
+            self._load_session(sessiondata)
+        elif sshargs:
+            window = self.get_factory().create_window()
+            window.show_all()
+            window.new_tab(sshargs, os.getcwd())
+        else:
+            sys.exit()
 
     #override
     @log_except(_logger)

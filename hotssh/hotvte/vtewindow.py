@@ -584,7 +584,7 @@ widget "*hotwire-tab-close" style "hotwire-tab-close"
         factory.connect('shutdown', app.on_shutdown)
         args = sys.argv[1:]
         if len(args) == 0:
-            app.offer_load_session()
+            app.restore_session()
         else:
             w = factory.create_initial_window()
             w.new_tab(args, os.getcwd())
