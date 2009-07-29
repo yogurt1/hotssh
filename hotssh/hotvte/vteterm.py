@@ -194,16 +194,7 @@ class VteTerminalWidget(gtk.VBox):
         return []
 
     def __open_url(self, url):
-        # Older webbrowser.py didn't check gconf
-        from hotwire.sysdep import is_windows
-        if sys.version_info[0] == 2 and sys.version_info[1] < 6 and (not is_windows()):
-            try:
-                import hotwire.externals.webbrowser as webbrowser
-            except ImportError, e:
-                _logger.warn("Couldn't import hotwire.externals.webbrowser", exc_info=True)
-                import webbrowser
-        else:
-            import webbrowser            
+        import webbrowser            
         webbrowser.open(url)        
             
     def __on_selection_changed(self, *args):
