@@ -7,15 +7,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=hotssh&component=general\n"
-"POT-Creation-Date: 2009-04-17 15:33+0000\n"
-"PO-Revision-Date: 2009-06-04 14:40+0100\n"
-"Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
-"Language-Team: Polish <gnomepl@.aviary.pl>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-09 02:11+0200\n"
+"PO-Revision-Date: 2009-09-09 02:10+0200\n"
+"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
+"Language-Team: Polish <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: Poland\n"
 
@@ -88,8 +89,7 @@ msgstr "%(number)d %(type)s, %(number2)d %(type2)s temu"
 msgid "%(number)d %(type)s ago"
 msgstr "%(number)d %(type)s temu"
 
-#: ../hotssh/hotvte/vteterm.py:81
-#: ../hotssh/hotvte/vtewindow.py:250
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:250
 msgid "_Copy"
 msgstr "S_kopiuj"
 
@@ -97,8 +97,7 @@ msgstr "S_kopiuj"
 msgid "Copy selected text"
 msgstr "Kopiuje zaznaczony tekst"
 
-#: ../hotssh/hotvte/vteterm.py:82
-#: ../hotssh/hotvte/vtewindow.py:251
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:251
 msgid "_Paste"
 msgstr "Wk_lej"
 
@@ -182,8 +181,7 @@ msgstr "Użytkownik: "
 msgid "History"
 msgstr "Historia"
 
-#: ../hotssh/sshwindow.py:458
-#: ../hotssh/sshwindow.py:1450
+#: ../hotssh/sshwindow.py:458 ../hotssh/sshwindow.py:1450
 msgid "Connection"
 msgstr "Połączenie"
 
@@ -252,8 +250,7 @@ msgstr "Otwórz SFTP"
 msgid "Open a SFTP connection"
 msgstr "Otwiera połączenie SFTP"
 
-#: ../hotssh/sshwindow.py:1451
-#: ../hotssh/sshwindow.py:1541
+#: ../hotssh/sshwindow.py:1451 ../hotssh/sshwindow.py:1541
 msgid "_Reconnect"
 msgstr "_Połącz ponownie"
 
@@ -278,7 +275,6 @@ msgstr "Przywrócić zapisaną sesję?"
 #, python-format
 msgid "Reconnect to %d host"
 msgid_plural "Reconnect to %d hosts"
-msgstr[0] "Ponowne łączenie się z %d komputerem"
-msgstr[1] "Ponowne łączenie się z %d komputerami"
-msgstr[2] "Ponowne łączenie się z %d komputerami"
-
+msgstr[0] "Ponowne połączenie z %d komputerem"
+msgstr[1] "Ponowne połączenie z %d komputerami"
+msgstr[2] "Ponowne połączenie z %d komputerami"
