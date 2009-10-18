@@ -1,0 +1,266 @@
+# Chinese (China) translation for hotssh.
+# Copyright (C) 2009 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# Zhangmiao <mymzhang@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&component=general\n"
+"POT-Creation-Date: 2009-10-15 09:05+0000\n"
+"PO-Revision-Date: 2009-10-18 23:26+0800\n"
+"Last-Translator: Zhang Miao <mymzhang@gmail.com>\n"
+"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Connect to a remote computer using Secure Shell"
+msgstr "使用 SSH 连接到远程计算机"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Secure Shell"
+msgstr "SSH"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "年"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "月"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "星期"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "天"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "小时"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "分"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "将来"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "少于1分钟以前"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "%(number)d %(type)s, %(number2)d %(type2)s 以前"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "%(number)d %(type)s 以前"
+
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:250
+msgid "_Copy"
+msgstr "复制(_C)"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "复制选定文本"
+
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:251
+msgid "_Paste"
+msgstr "粘贴(_P)"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "粘贴文本"
+
+#: ../hotssh/hotvte/vteterm.py:178
+msgid "Open Link"
+msgstr "打开链接"
+
+#: ../hotssh/hotvte/vtewindow.py:35
+msgid "Tab Search"
+msgstr "标签页搜索"
+
+#: ../hotssh/hotvte/vtewindow.py:242
+msgid "File"
+msgstr "文件"
+
+#: ../hotssh/hotvte/vtewindow.py:243
+msgid "_Detach Tab"
+msgstr "拖离分页(_D)"
+
+#: ../hotssh/hotvte/vtewindow.py:245
+msgid "_Close"
+msgstr "关闭(_C)"
+
+#: ../hotssh/hotvte/vtewindow.py:247
+msgid "_Quit"
+msgstr "退出(_Q)"
+
+#: ../hotssh/hotvte/vtewindow.py:249
+msgid "Edit"
+msgstr "编辑"
+
+#: ../hotssh/hotvte/vtewindow.py:252
+msgid "View"
+msgstr "视图"
+
+#: ../hotssh/hotvte/vtewindow.py:253
+msgid "Help"
+msgstr "帮助"
+
+#: ../hotssh/hotvte/vtewindow.py:254
+msgid "_About"
+msgstr "关于(_A)"
+
+#: ../hotssh/sshwindow.py:97
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"一个 OpenSSH 界面，SSH 客户端\n"
+"\n"
+
+#: ../hotssh/sshwindow.py:337
+msgid "Options"
+msgstr "选项"
+
+#: ../hotssh/sshwindow.py:348
+msgid "Example: "
+msgstr "例子："
+
+#: ../hotssh/sshwindow.py:363
+msgid "New Secure Shell Connection"
+msgstr "新建 SSH 连接"
+
+#: ../hotssh/sshwindow.py:377
+msgid "C_onnect"
+msgstr "连接(_O)"
+
+#: ../hotssh/sshwindow.py:403
+#, python-format
+msgid "Restore previous session (%d tabs)?"
+msgstr "恢复先前的会话(%d 个标签页)？"
+
+#: ../hotssh/sshwindow.py:404
+#, python-format
+msgid "Restore previous session (%d windows)?"
+msgstr "恢复先前的会话(%d 个窗口)？"
+
+#: ../hotssh/sshwindow.py:421
+msgid "Host: "
+msgstr "主机："
+
+#: ../hotssh/sshwindow.py:441
+msgid "User: "
+msgstr "用户："
+
+#: ../hotssh/sshwindow.py:465
+msgid "History"
+msgstr "历史"
+
+#: ../hotssh/sshwindow.py:477 ../hotssh/sshwindow.py:1504
+msgid "Connection"
+msgstr "连接"
+
+#: ../hotssh/sshwindow.py:480
+msgid "Time"
+msgstr "时间"
+
+#: ../hotssh/sshwindow.py:486
+msgid "Local"
+msgstr "本地"
+
+#: ../hotssh/sshwindow.py:494
+msgid "Name"
+msgstr "名称"
+
+#: ../hotssh/sshwindow.py:497
+msgid "Address"
+msgstr "地址"
+
+#: ../hotssh/sshwindow.py:1212
+msgid "Connection closed"
+msgstr "连接关闭"
+
+#: ../hotssh/sshwindow.py:1380
+msgid "Connection sharing not supported; unknown state"
+msgstr "不支持连接共享；未知状态"
+
+#: ../hotssh/sshwindow.py:1382
+msgid "Connecting"
+msgstr "连接中"
+
+#: ../hotssh/sshwindow.py:1384
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "已连接；%.2fs 延迟；%s"
+
+#: ../hotssh/sshwindow.py:1386
+msgid "Connection timed out"
+msgstr "连接超时"
+
+#: ../hotssh/sshwindow.py:1388
+msgid "Checking connection"
+msgstr "检查连接"
+
+#: ../hotssh/sshwindow.py:1413
+msgid "Network connection changed"
+msgstr "网络连接变更"
+
+#: ../hotssh/sshwindow.py:1498
+msgid "Connect to server..."
+msgstr "连接到服务器..."
+
+#: ../hotssh/sshwindow.py:1499
+msgid "Open a new Secure Shell connection"
+msgstr "打开新的 SSH 连接"
+
+#: ../hotssh/sshwindow.py:1500
+msgid "New tab for connection"
+msgstr "新建连接标签页"
+
+#: ../hotssh/sshwindow.py:1501
+msgid "Open a new tab for the same remote computer"
+msgstr "为同一远程计算机打开新的标签页"
+
+#: ../hotssh/sshwindow.py:1502
+msgid "Open SFTP"
+msgstr "打开 SFTP"
+
+#: ../hotssh/sshwindow.py:1503
+msgid "Open a SFTP connection"
+msgstr "打开 SFTP 连接"
+
+#: ../hotssh/sshwindow.py:1505
+msgid "_Reconnect"
+msgstr "重新连接(_R)"
+
+#: ../hotssh/sshwindow.py:1505
+msgid "Reset connection to server"
+msgstr "重设到服务器的连接"
+
+#: ../hotssh/sshwindow.py:1506
+msgid "R_econnect All"
+msgstr "全部重新连接(_E)"
+
+#: ../hotssh/sshwindow.py:1506
+msgid "Reset all connections"
+msgstr "重设全部连接"
