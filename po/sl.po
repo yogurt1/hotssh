@@ -1,13 +1,15 @@
+# Slovenian translation of gturing package.
+# Copyright (C) 2001 Free Software Foundation, Inc.
 # This file is distributed under the same license as the package.
 #
-# Matej Urbančič <mateju@svn.gnome.org>, 2008 - 2009.
+# Matej Urbančič <mateju@svn.gnome.org>, 2008 - 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-26 04:10+0000\n"
-"PO-Revision-Date: 2009-10-01 08:18+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=hotssh&component=general\n"
+"POT-Creation-Date: 2009-11-21 23:40+0000\n"
+"PO-Revision-Date: 2010-01-05 09:11+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -81,7 +83,7 @@ msgstr "v prihodnosti"
 
 #: ../hotssh/hotlib/timesince.py:72
 msgid "less than 1 minute ago"
-msgstr "manj kot pred eno minuto"
+msgstr "manj kot pred 1 minuto"
 
 #: ../hotssh/hotlib/timesince.py:83
 #, python-format
@@ -100,7 +102,7 @@ msgstr "_Kopiraj"
 
 #: ../hotssh/hotvte/vteterm.py:81
 msgid "Copy selected text"
-msgstr "_Kopiraj izbrano besedilo"
+msgstr "Kopiraj izbrano besedilo"
 
 #: ../hotssh/hotvte/vteterm.py:82
 #: ../hotssh/hotvte/vtewindow.py:251
@@ -111,13 +113,13 @@ msgstr "_Prilepi"
 msgid "Paste text"
 msgstr "Prilepi besedilo"
 
-#: ../hotssh/hotvte/vteterm.py:173
+#: ../hotssh/hotvte/vteterm.py:178
 msgid "Open Link"
 msgstr "Odpri povezavo"
 
 #: ../hotssh/hotvte/vtewindow.py:35
 msgid "Tab Search"
-msgstr "Zavihek _iskanja"
+msgstr "Zavihek iskanja"
 
 #: ../hotssh/hotvte/vtewindow.py:242
 msgid "File"
@@ -125,7 +127,7 @@ msgstr "Datoteka"
 
 #: ../hotssh/hotvte/vtewindow.py:243
 msgid "_Detach Tab"
-msgstr "_Odcepi zavihek"
+msgstr "_Odpni zavihek"
 
 #: ../hotssh/hotvte/vtewindow.py:245
 msgid "_Close"
@@ -133,7 +135,7 @@ msgstr "_Zapri"
 
 #: ../hotssh/hotvte/vtewindow.py:247
 msgid "_Quit"
-msgstr "_Zaključi"
+msgstr "_Končaj"
 
 #: ../hotssh/hotvte/vtewindow.py:249
 msgid "Edit"
@@ -159,131 +161,138 @@ msgstr ""
 "Vmesnik za OpenSSH varni lupinski odjemalec\n"
 "\n"
 
-#: ../hotssh/sshwindow.py:335
+#: ../hotssh/sshwindow.py:337
 msgid "Options"
 msgstr "Možnosti"
 
-#: ../hotssh/sshwindow.py:346
+#: ../hotssh/sshwindow.py:348
 msgid "Example: "
-msgstr "Primer:"
+msgstr "Primer: "
 
-#: ../hotssh/sshwindow.py:361
+#: ../hotssh/sshwindow.py:363
 msgid "New Secure Shell Connection"
 msgstr "Nova varna lupinska povezava"
 
-#: ../hotssh/sshwindow.py:374
+#: ../hotssh/sshwindow.py:377
 msgid "C_onnect"
-msgstr "Po_veži"
+msgstr "_Povezava"
 
-#: ../hotssh/sshwindow.py:401
+#: ../hotssh/sshwindow.py:403
+#, python-format
+msgid "Restore previous session (%d tabs)?"
+msgstr "Ali naj se obnovi predhodna seja (%d zavihkov)?"
+
+#: ../hotssh/sshwindow.py:404
+#, python-format
+msgid "Restore previous session (%d windows)?"
+msgstr "Ali naj se obnovi predhodna seja (%d oken)?"
+
+#: ../hotssh/sshwindow.py:421
 msgid "Host: "
-msgstr "Gostitelj"
+msgstr "Gostitelj: "
 
-#: ../hotssh/sshwindow.py:420
+#: ../hotssh/sshwindow.py:441
 msgid "User: "
-msgstr "Uporabnik:"
+msgstr "Uporabnik: "
 
-#: ../hotssh/sshwindow.py:444
+#: ../hotssh/sshwindow.py:465
 msgid "History"
 msgstr "Zgodovina"
 
-#: ../hotssh/sshwindow.py:456
-#: ../hotssh/sshwindow.py:1424
+#: ../hotssh/sshwindow.py:477
+#: ../hotssh/sshwindow.py:1504
 msgid "Connection"
 msgstr "Povezava"
 
-#: ../hotssh/sshwindow.py:459
+#: ../hotssh/sshwindow.py:480
 msgid "Time"
 msgstr "Čas"
 
-#: ../hotssh/sshwindow.py:465
+#: ../hotssh/sshwindow.py:486
 msgid "Local"
 msgstr "Krajevno"
 
-#: ../hotssh/sshwindow.py:473
+#: ../hotssh/sshwindow.py:494
 msgid "Name"
 msgstr "Ime"
 
-#: ../hotssh/sshwindow.py:476
+#: ../hotssh/sshwindow.py:497
 msgid "Address"
 msgstr "Naslov"
 
-#: ../hotssh/sshwindow.py:1137
+#: ../hotssh/sshwindow.py:1212
 msgid "Connection closed"
 msgstr "Povezava zaprta"
 
-#: ../hotssh/sshwindow.py:1303
+#: ../hotssh/sshwindow.py:1380
+msgid "Connection sharing not supported; unknown state"
+msgstr "Souporaba povezave ni podprta; neznano stanje"
+
+#: ../hotssh/sshwindow.py:1382
 msgid "Connecting"
 msgstr "Povezovanje"
 
-#: ../hotssh/sshwindow.py:1305
+#: ../hotssh/sshwindow.py:1384
 #, python-format
 msgid "Connected; %.2fs latency; %s"
 msgstr "Povezan; %.2fs prikritost; %s"
 
-#: ../hotssh/sshwindow.py:1307
+#: ../hotssh/sshwindow.py:1386
 msgid "Connection timed out"
-msgstr "Povezava je časovno potekla"
+msgstr "Povezovanje je časovno poteklo"
 
-#: ../hotssh/sshwindow.py:1309
+#: ../hotssh/sshwindow.py:1388
 msgid "Checking connection"
 msgstr "Preverjanje povezave"
 
-#: ../hotssh/sshwindow.py:1334
+#: ../hotssh/sshwindow.py:1413
 msgid "Network connection changed"
 msgstr "Omrežna povezava je spremenjena"
 
-#: ../hotssh/sshwindow.py:1418
-msgid "Connect to server"
-msgstr "Poveži se s strežnikom"
+#: ../hotssh/sshwindow.py:1498
+msgid "Connect to server..."
+msgstr "Povezava s strežnikom ..."
 
-#: ../hotssh/sshwindow.py:1419
+#: ../hotssh/sshwindow.py:1499
 msgid "Open a new Secure Shell connection"
 msgstr "Odpri novo varno lupinsko povezavo"
 
-#: ../hotssh/sshwindow.py:1420
+#: ../hotssh/sshwindow.py:1500
 msgid "New tab for connection"
 msgstr "Nov zavihek za povezavo"
 
-#: ../hotssh/sshwindow.py:1421
+#: ../hotssh/sshwindow.py:1501
 msgid "Open a new tab for the same remote computer"
 msgstr "Pdpri nov zavihek za isti oddaljeni računalnik"
 
-#: ../hotssh/sshwindow.py:1422
+#: ../hotssh/sshwindow.py:1502
 msgid "Open SFTP"
 msgstr "Odpri SFTP"
 
-#: ../hotssh/sshwindow.py:1423
+#: ../hotssh/sshwindow.py:1503
 msgid "Open a SFTP connection"
 msgstr "Odpri SFTP povezavo"
 
-#: ../hotssh/sshwindow.py:1425
-#: ../hotssh/sshwindow.py:1515
+#: ../hotssh/sshwindow.py:1505
 msgid "_Reconnect"
 msgstr "_Ponovno poveži"
 
-#: ../hotssh/sshwindow.py:1425
+#: ../hotssh/sshwindow.py:1505
 msgid "Reset connection to server"
 msgstr "Počisti povezavo s strežnikom"
 
-#: ../hotssh/sshwindow.py:1426
+#: ../hotssh/sshwindow.py:1506
 msgid "R_econnect All"
 msgstr "Ponovno poveži _vse"
 
-#: ../hotssh/sshwindow.py:1426
+#: ../hotssh/sshwindow.py:1506
 msgid "Reset all connections"
 msgstr "Počisti vse povezave"
 
-#: ../hotssh/sshwindow.py:1514
-msgid "Restore saved session?"
-msgstr "Ali naj se obnovi shranjena seja?"
-
-#: ../hotssh/sshwindow.py:1519
-#, python-format
-msgid "Reconnect to %d host"
-msgid_plural "Reconnect to %d hosts"
-msgstr[0] "Ponovno poveži %d gostiteljev"
-msgstr[1] "Ponovno poveži %d gostitelja"
-msgstr[2] "Ponovno poveži %d gostitelja"
-msgstr[3] "Ponovno poveži %d gostitelje"
+#~ msgid "Reconnect to %d host"
+#~ msgid_plural "Reconnect to %d hosts"
+#~ msgstr[0] "Ponovno poveži %d gostiteljev"
+#~ msgstr[1] "Ponovno poveži %d gostitelja"
+#~ msgstr[2] "Ponovno poveži %d gostitelja"
+#~ msgstr[3] "Ponovno poveži %d gostitelje"
 
