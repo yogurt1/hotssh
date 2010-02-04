@@ -30,7 +30,9 @@ if __name__ == '__main__' and hasattr(sys.modules['__main__'], '__file__'):
         
 exec_real_ssh = False
 try:
-	import gtk
+    import gobject
+    gobject.set_prgname('hotssh')
+    import gtk
 except:
 	# No gtk, clearly no hotssh
 	exec_real_ssh = True
