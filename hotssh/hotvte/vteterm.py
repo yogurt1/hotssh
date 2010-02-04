@@ -95,7 +95,7 @@ class VteTerminalWidget(gtk.VBox):
         
         self.__colors_default = True
         self.__term.set_default_colors()
-        self.__color_notifications_added = False
+        self.__monitored_terminal_profiles = []
         gtk.settings_get_default().connect('notify::gtk-color-scheme', self.__reset_colors)
         self.__reset_colors()
 
@@ -228,44 +228,52 @@ class VteTerminalWidget(gtk.VBox):
         
     def __set_gnome_colors(self):
         gconf_client = gconf.client_get_default()        
-        term_profile = '/apps/gnome-terminal/profiles/Default'
-        use_theme_key = term_profile + '/use_theme_colors'
-        fg_key = term_profile + '/foreground_color'
-        bg_key = term_profile + '/background_color'
+        default_profile_key = '/apps/gnome-terminal/global/default_profile'
         def on_color_change(*args):
             if not self.__colors_default:
                 return
+            profile = gconf_client.get_string(default_profile_key)
+            term_profile = '/apps/gnome-terminal/profiles/' + profile
+            use_theme_key = term_profile + '/use_theme_colors'
+            palette_key = term_profile + '/palette'
+            fg_key = term_profile + '/foreground_color'
+            bg_key = term_profile + '/background_color'
             use_theme = gconf_client.get_bool(use_theme_key)
             if use_theme:
                 style = self.__term.get_style()
+                pal = None
                 fg = style.text[gtk.STATE_NORMAL]
                 bg = style.base[gtk.STATE_NORMAL]
             else:
+                pal = gtk.color_selection_palette_from_string(gconf_client.get_string(palette_key))
                 fg = gtk.gdk.color_parse(gconf_client.get_string(fg_key))
                 bg = gtk.gdk.color_parse(gconf_client.get_string(bg_key))
-            self.set_color(True, fg, isdefault=True)
-            self.set_color(False, bg, isdefault=True)
-        if not self.__color_notifications_added:
-            gconf_client.add_dir(term_profile, gconf.CLIENT_PRELOAD_RECURSIVE)
-            gconf_client.notify_add(use_theme_key, on_color_change)
-            gconf_client.notify_add(fg_key, on_color_change)
-            gconf_client.notify_add(bg_key, on_color_change)
-            self.__color_notifications_added = True
+            self.set_colors(fg, bg, pal, isdefault=True)
+            # We never stop monitoring this profile, but this stuff isn't going to change often,
+            # and probably no one has hundreds of profiles AND switches the default constantly.
+            if not profile in self.__monitored_terminal_profiles:
+                gconf_client.add_dir(term_profile, gconf.CLIENT_PRELOAD_RECURSIVE)
+                gconf_client.notify_add(use_theme_key, on_color_change)
+                gconf_client.notify_add(fg_key, on_color_change)
+                gconf_client.notify_add(bg_key, on_color_change)
+                self.__monitored_terminal_profiles.append(profile)
+        gconf_client.add_dir('/apps/gnome-terminal/global', gconf.CLIENT_PRELOAD_RECURSIVE)
+        gconf_client.notify_add(default_profile_key, on_color_change)
         on_color_change()        
     
     def __set_gtk_colors(self):
         fg = self.style.text[gtk.STATE_NORMAL]
         bg = self.style.base[gtk.STATE_NORMAL]
-        self.set_color(True, fg, isdefault=True)
-        self.set_color(False, bg, isdefault=True)
+        self.set_colors(True, fg, bg, isdefault=True)
         
-    def set_color(self, is_foreground, color, isdefault=False):
+    def set_colors(self, fg, bg, palette, isdefault=False):
         if not isdefault:
             self.__colors_default = False
-        if is_foreground:
-            self.__term.set_color_foreground(color)
-            self.__term.set_color_bold(color)
-            self.__term.set_color_dim(color)            
+        if palette:
+            self.__term.set_colors(fg, bg, palette)
         else:
-            self.__term.set_color_background(color)
+            self.__term.set_color_foreground(fg)
+            self.__term.set_color_bold(fg)
+            self.__term.set_color_dim(fg)            
+            self.__term.set_color_background(bg)
 
