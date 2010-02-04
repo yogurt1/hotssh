@@ -44,5 +44,6 @@ def build(bld):
 	obj.subdir  = 'share/applications'
 	obj.podir   = 'po'
 	obj.flags   = '-d'
+	bld.install_files('${PREFIX}/share/icons/hicolor/192x192/apps/', 'images/hotwire-openssh.png')
 	bld.install_files('${PREFIX}/share/doc/hotssh-' + VERSION, 'COPYING')
 	bld.add_subdirs('bin po')
