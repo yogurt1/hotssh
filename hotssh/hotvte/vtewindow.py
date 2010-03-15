@@ -21,6 +21,7 @@ import locale,threading,subprocess,time
 import signal
 
 import gtk,gobject,pango
+import gtk.gdk
 import dbus,dbus.glib,dbus.service
 
 from hotssh.hotvte.vteterm import VteTerminalWidget
@@ -453,8 +454,10 @@ class UiProxy(dbus.service.Object):
         super(UiProxy, self).__init__(dbus.service.BusName(bus_name, bus=dbus.SessionBus()), ui_opath)
         self.__winfactory = factory
         # This is a disturbing hack.  But it works.
-        def RunCommand(self, timestamp, istab, cmd, cwd):
+        def RunCommand(self, startup_id, timestamp, istab, cmd, cwd):
             _logger.debug("Handling RunCommand method invocation ts=%r cmd=%r cwd=%r)", timestamp, cmd, cwd)
+            if startup_id:
+                gtk.gdk.notify_startup_complete_with_id(startup_id)
             if istab:
                 curwin = self.__winfactory.remote_new_tab(cmd, cwd)
             else:
@@ -465,7 +468,7 @@ class UiProxy(dbus.service.Object):
                 curwin.present_with_time(timestamp)
             else:
                 curwin.present()
-        setattr(UiProxy, 'RunCommand', dbus.service.method(ui_iface, in_signature='ubass')(RunCommand))                
+        setattr(UiProxy, 'RunCommand', dbus.service.method(ui_iface, in_signature='subass')(RunCommand))                
 
 class VteRemoteControl(object):
     def __init__(self, name, bus_name=None, ui_opath=None, ui_iface=None):
@@ -485,7 +488,9 @@ class VteRemoteControl(object):
             if idx > 0:
                 idx += 5
                 startup_time = int(startup_id_env[idx:])
-        return startup_time        
+        else:
+            startup_time = 0
+        return (startup_id_env, startup_time)
         
     def single_instance(self, replace=False):
         proxy = dbus.SessionBus().get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
@@ -498,8 +503,8 @@ class VteRemoteControl(object):
             inst_iface = dbus.Interface(inst, self.__ui_iface)
             _logger.debug("Sending RunCommand to existing instance")
             # TODO support choosing tab/window
-            starttime = self.__parse_startup_id()
-            inst_iface.RunCommand(dbus.UInt32(starttime or 0), True, dbus.Array(sys.argv[1:], signature="s"), os.getcwd())
+            (startup_id, starttime) = self.__parse_startup_id()
+            inst_iface.RunCommand(startup_id, dbus.UInt32(starttime), True, dbus.Array(sys.argv[1:], signature="s"), os.getcwd())
             sys.exit(0)
             os._exit(0)
         
