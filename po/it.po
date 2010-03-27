@@ -1,15 +1,15 @@
 # Italian translation of hotssh.
 # Copyright (C) 2009 THE hotssh'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the hotssh package.
-# Francesco Marletta <francesco.marletta@tiscali.it>, 2009.
+# Francesco Marletta <francesco.marletta@tiscali.it>, 2009, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh 0.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&component=general\n"
-"POT-Creation-Date: 2009-07-19 09:29+0000\n"
-"PO-Revision-Date: 2009-07-19 12:11+0200\n"
+"POT-Creation-Date: 2010-03-15 14:32+0000\n"
+"PO-Revision-Date: 2010-02-16 14:41+0100\n"
 "Last-Translator: Francesco Marletta <francesco.marletta@tiscali.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -81,7 +81,7 @@ msgstr "%(number)d %(type)s e %(number2)d %(type2)s fa"
 msgid "%(number)d %(type)s ago"
 msgstr "%(number)d %(type)s fa"
 
-#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:250
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:251
 msgid "_Copy"
 msgstr "_Copia"
 
@@ -89,7 +89,7 @@ msgstr "_Copia"
 msgid "Copy selected text"
 msgstr "Copia il testo selezionato"
 
-#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:251
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:252
 msgid "_Paste"
 msgstr "_Incolla"
 
@@ -102,39 +102,39 @@ msgstr "Incolla il testo negli appunti"
 msgid "Open Link"
 msgstr "Apri collegamento"
 
-#: ../hotssh/hotvte/vtewindow.py:35
+#: ../hotssh/hotvte/vtewindow.py:36
 msgid "Tab Search"
 msgstr "Ricerca scheda"
 
-#: ../hotssh/hotvte/vtewindow.py:242
+#: ../hotssh/hotvte/vtewindow.py:243
 msgid "File"
 msgstr "File"
 
-#: ../hotssh/hotvte/vtewindow.py:243
+#: ../hotssh/hotvte/vtewindow.py:244
 msgid "_Detach Tab"
 msgstr "_Stacca scheda"
 
-#: ../hotssh/hotvte/vtewindow.py:245
+#: ../hotssh/hotvte/vtewindow.py:246
 msgid "_Close"
 msgstr "_Chiudi"
 
-#: ../hotssh/hotvte/vtewindow.py:247
+#: ../hotssh/hotvte/vtewindow.py:248
 msgid "_Quit"
 msgstr "_Esci"
 
-#: ../hotssh/hotvte/vtewindow.py:249
+#: ../hotssh/hotvte/vtewindow.py:250
 msgid "Edit"
 msgstr "Modifica"
 
-#: ../hotssh/hotvte/vtewindow.py:252
+#: ../hotssh/hotvte/vtewindow.py:253
 msgid "View"
 msgstr "Visualizza"
 
-#: ../hotssh/hotvte/vtewindow.py:253
+#: ../hotssh/hotvte/vtewindow.py:254
 msgid "Help"
 msgstr "Aiuto"
 
-#: ../hotssh/hotvte/vtewindow.py:254
+#: ../hotssh/hotvte/vtewindow.py:255
 msgid "_About"
 msgstr "I_nformazioni"
 
