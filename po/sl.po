@@ -1,6 +1,6 @@
-# Slovenian translation of gturing package.
+# Slovenian translation of hotssh package.
 # Copyright (C) 2001 Free Software Foundation, Inc.
-# This file is distributed under the same license as the package.
+# This file is distributed under the same license as the hotssh package.
 #
 # Matej Urbančič <mateju@svn.gnome.org>, 2008 - 2010.
 #
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=hotssh&component=general\n"
 "POT-Creation-Date: 2009-11-21 23:40+0000\n"
-"PO-Revision-Date: 2010-01-05 09:11+0100\n"
+"PO-Revision-Date: 2010-05-13 21:13+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: ../hotssh.desktop.in.h:1
 msgid "Connect to a remote computer using Secure Shell"
-msgstr "Povezava z oddaljenim računalnikom preko varne lupine"
+msgstr "Povezava preko varne lupine z oddaljenim računalnikom"
 
 #: ../hotssh.desktop.in.h:2
 msgid "Secure Shell"
@@ -222,11 +222,11 @@ msgstr "Naslov"
 
 #: ../hotssh/sshwindow.py:1212
 msgid "Connection closed"
-msgstr "Povezava zaprta"
+msgstr "Povezava je zaprta"
 
 #: ../hotssh/sshwindow.py:1380
 msgid "Connection sharing not supported; unknown state"
-msgstr "Souporaba povezave ni podprta; neznano stanje"
+msgstr "Souporaba povezave ni podprta; stanje ni znano"
 
 #: ../hotssh/sshwindow.py:1382
 msgid "Connecting"
@@ -263,7 +263,7 @@ msgstr "Nov zavihek za povezavo"
 
 #: ../hotssh/sshwindow.py:1501
 msgid "Open a new tab for the same remote computer"
-msgstr "Pdpri nov zavihek za isti oddaljeni računalnik"
+msgstr "Odpri nov zavihek za isti oddaljeni računalnik"
 
 #: ../hotssh/sshwindow.py:1502
 msgid "Open SFTP"
@@ -295,4 +295,3 @@ msgstr "Počisti vse povezave"
 #~ msgstr[1] "Ponovno poveži %d gostitelja"
 #~ msgstr[2] "Ponovno poveži %d gostitelja"
 #~ msgstr[3] "Ponovno poveži %d gostitelje"
-
