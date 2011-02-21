@@ -6,19 +6,21 @@
 #
 #
 # Jorge González <jorgegonz@svn.gnome.org>, 2009.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&component=general\n"
-"POT-Creation-Date: 2009-07-19 01:32+0000\n"
-"PO-Revision-Date: 2009-08-14 16:37+0200\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"POT-Creation-Date: 2009-08-15 00:46+0000\n"
+"PO-Revision-Date: 2011-02-21 10:09+0100\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../hotssh.desktop.in.h:1
 msgid "Connect to a remote computer using Secure Shell"
@@ -105,7 +107,7 @@ msgstr "Abrir enlace"
 
 #: ../hotssh/hotvte/vtewindow.py:35
 msgid "Tab Search"
-msgstr "Buscar solapa"
+msgstr "Buscar pestaña"
 
 #: ../hotssh/hotvte/vtewindow.py:242
 msgid "File"
@@ -113,7 +115,7 @@ msgstr "Archivo"
 
 #: ../hotssh/hotvte/vtewindow.py:243
 msgid "_Detach Tab"
-msgstr "_Desprender solapa"
+msgstr "_Desprender pestaña"
 
 #: ../hotssh/hotvte/vtewindow.py:245
 msgid "_Close"
@@ -159,121 +161,118 @@ msgstr "Ejemplo: "
 msgid "New Secure Shell Connection"
 msgstr "Nueva conexión de Shell segura"
 
-#: ../hotssh/sshwindow.py:376
+#: ../hotssh/sshwindow.py:377
 msgid "C_onnect"
 msgstr "C_onectar"
 
-#: ../hotssh/sshwindow.py:402
-#, python-format
-#| msgid "Restore saved session?"
-msgid "Restore previous session (%d tabs)?"
-msgstr "¿Restaurar la sesión anterior (%d solapas)?"
-
 #: ../hotssh/sshwindow.py:403
 #, python-format
-#| msgid "Restore saved session?"
+msgid "Restore previous session (%d tabs)?"
+msgstr "¿Restaurar la sesión anterior (%d pestañas)?"
+
+#: ../hotssh/sshwindow.py:404
+#, python-format
 msgid "Restore previous session (%d windows)?"
 msgstr "¿Restaurar la sesión anterior (%d ventanas)?"
 
-#: ../hotssh/sshwindow.py:420
+#: ../hotssh/sshwindow.py:421
 msgid "Host: "
 msgstr "Equipo: "
 
-#: ../hotssh/sshwindow.py:440
+#: ../hotssh/sshwindow.py:441
 msgid "User: "
 msgstr "Usuario: "
 
-#: ../hotssh/sshwindow.py:464
+#: ../hotssh/sshwindow.py:465
 msgid "History"
 msgstr "Histórico"
 
-#: ../hotssh/sshwindow.py:476 ../hotssh/sshwindow.py:1503
+#: ../hotssh/sshwindow.py:477 ../hotssh/sshwindow.py:1504
 msgid "Connection"
 msgstr "Conexión"
 
-#: ../hotssh/sshwindow.py:479
+#: ../hotssh/sshwindow.py:480
 msgid "Time"
 msgstr "Hora"
 
-#: ../hotssh/sshwindow.py:485
+#: ../hotssh/sshwindow.py:486
 msgid "Local"
 msgstr "Local"
 
-#: ../hotssh/sshwindow.py:493
+#: ../hotssh/sshwindow.py:494
 msgid "Name"
 msgstr "Nombre"
 
-#: ../hotssh/sshwindow.py:496
+#: ../hotssh/sshwindow.py:497
 msgid "Address"
 msgstr "Dirección"
 
-#: ../hotssh/sshwindow.py:1211
+#: ../hotssh/sshwindow.py:1212
 msgid "Connection closed"
 msgstr "Conexión cerrada"
 
-#: ../hotssh/sshwindow.py:1379
+#: ../hotssh/sshwindow.py:1380
 msgid "Connection sharing not supported; unknown state"
 msgstr "La compartición de la conexión no está soportada; estado desconocido"
 
-#: ../hotssh/sshwindow.py:1381
+#: ../hotssh/sshwindow.py:1382
 msgid "Connecting"
 msgstr "Conectando"
 
-#: ../hotssh/sshwindow.py:1383
+#: ../hotssh/sshwindow.py:1384
 #, python-format
 msgid "Connected; %.2fs latency; %s"
 msgstr "Conectado; %.2fs latencia; %s"
 
-#: ../hotssh/sshwindow.py:1385
+#: ../hotssh/sshwindow.py:1386
 msgid "Connection timed out"
 msgstr "Expiró la conexión"
 
-#: ../hotssh/sshwindow.py:1387
+#: ../hotssh/sshwindow.py:1388
 msgid "Checking connection"
 msgstr "Verificando conexión"
 
-#: ../hotssh/sshwindow.py:1412
+#: ../hotssh/sshwindow.py:1413
 msgid "Network connection changed"
 msgstr "Cambió la conexión de red"
 
-#: ../hotssh/sshwindow.py:1497
-#| msgid "Connect to server"
+#: ../hotssh/sshwindow.py:1498
 msgid "Connect to server..."
 msgstr "Conectando con el servidor…"
 
-#: ../hotssh/sshwindow.py:1498
+#: ../hotssh/sshwindow.py:1499
 msgid "Open a new Secure Shell connection"
 msgstr "Abrir una nueva conexión de Shell segura"
 
-#: ../hotssh/sshwindow.py:1499
-msgid "New tab for connection"
-msgstr "Solapa nueva para conexión"
-
 #: ../hotssh/sshwindow.py:1500
-msgid "Open a new tab for the same remote computer"
-msgstr "Abrir solapa nueva para el mismo equipo remoto"
+msgid "New tab for connection"
+msgstr "Pestaña nueva para conexión"
 
 #: ../hotssh/sshwindow.py:1501
+msgid "Open a new tab for the same remote computer"
+msgstr "Abrir pestaña nueva para el mismo equipo remoto"
+
+#: ../hotssh/sshwindow.py:1502
 msgid "Open SFTP"
 msgstr "Abrir SFTP"
 
-#: ../hotssh/sshwindow.py:1502
+#: ../hotssh/sshwindow.py:1503
 msgid "Open a SFTP connection"
 msgstr "Abrir una conexión SFTP"
 
-#: ../hotssh/sshwindow.py:1504
+#: ../hotssh/sshwindow.py:1505
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
-#: ../hotssh/sshwindow.py:1504
+#: ../hotssh/sshwindow.py:1505
 msgid "Reset connection to server"
 msgstr "Reiniciar la conexión con el servidor"
 
-#: ../hotssh/sshwindow.py:1505
+#: ../hotssh/sshwindow.py:1506
 msgid "R_econnect All"
 msgstr "R_econectar todo"
 
-#: ../hotssh/sshwindow.py:1505
+#: ../hotssh/sshwindow.py:1506
 msgid "Reset all connections"
 msgstr "Reiniciar todas las conexiones"
 
