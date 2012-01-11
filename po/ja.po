@@ -6,10 +6,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh trunk\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-11 15:02+0900\n"
-"PO-Revision-Date: 2010-02-11 15:01+0900\n"
-"Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-10-02 20:59+0000\n"
+"PO-Revision-Date: 2012-01-01 19:55+0900\n"
+"Last-Translator: Jiro Matsuzawa <jmatsuzawa@src.gnome.org>\n"
 "Language-Team: Japanese <takeshi.aihana@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +19,7 @@ msgstr ""
 
 #: ../hotssh.desktop.in.h:1
 msgid "Connect to a remote computer using Secure Shell"
-msgstr "SSH を使ってリモートのコンピュータに接続します"
+msgstr "SSH を使ってリモートのコンピューターに接続します"
 
 #: ../hotssh.desktop.in.h:2
 msgid "Secure Shell"
@@ -79,7 +80,7 @@ msgstr "%(number)d %(type)sと%(number2)d %(type2)s前"
 msgid "%(number)d %(type)s ago"
 msgstr "%(number)d %(type)s前"
 
-#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:250
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:251
 msgid "_Copy"
 msgstr "コピー(_C)"
 
@@ -87,7 +88,7 @@ msgstr "コピー(_C)"
 msgid "Copy selected text"
 msgstr "選択した文字列をクリップボードにコピーします"
 
-#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:251
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:252
 msgid "_Paste"
 msgstr "貼り付け(_P)"
 
@@ -99,39 +100,39 @@ msgstr "クリップボードから貼り付けます"
 msgid "Open Link"
 msgstr "リンクを開く"
 
-#: ../hotssh/hotvte/vtewindow.py:35
+#: ../hotssh/hotvte/vtewindow.py:36
 msgid "Tab Search"
 msgstr "タブの検索"
 
-#: ../hotssh/hotvte/vtewindow.py:242
+#: ../hotssh/hotvte/vtewindow.py:243
 msgid "File"
 msgstr "ファイル"
 
-#: ../hotssh/hotvte/vtewindow.py:243
+#: ../hotssh/hotvte/vtewindow.py:244
 msgid "_Detach Tab"
 msgstr "タブを取り外す(_D)"
 
-#: ../hotssh/hotvte/vtewindow.py:245
+#: ../hotssh/hotvte/vtewindow.py:246
 msgid "_Close"
 msgstr "閉じる(_C)"
 
-#: ../hotssh/hotvte/vtewindow.py:247
+#: ../hotssh/hotvte/vtewindow.py:248
 msgid "_Quit"
 msgstr "終了(_Q)"
 
-#: ../hotssh/hotvte/vtewindow.py:249
+#: ../hotssh/hotvte/vtewindow.py:250
 msgid "Edit"
 msgstr "編集"
 
-#: ../hotssh/hotvte/vtewindow.py:252
+#: ../hotssh/hotvte/vtewindow.py:253
 msgid "View"
 msgstr "表示"
 
-#: ../hotssh/hotvte/vtewindow.py:253
+#: ../hotssh/hotvte/vtewindow.py:254
 msgid "Help"
 msgstr "ヘルプ"
 
-#: ../hotssh/hotvte/vtewindow.py:254
+#: ../hotssh/hotvte/vtewindow.py:255
 msgid "_About"
 msgstr "情報(_A)"
 
@@ -175,7 +176,7 @@ msgstr "ホスト名: "
 
 #: ../hotssh/sshwindow.py:441
 msgid "User: "
-msgstr "ユーザ名: "
+msgstr "ユーザー名: "
 
 #: ../hotssh/sshwindow.py:465
 msgid "History"
@@ -232,7 +233,7 @@ msgstr "ネットワークの接続が変更になりました"
 
 #: ../hotssh/sshwindow.py:1498
 msgid "Connect to server..."
-msgstr "サーバへ接続..."
+msgstr "サーバーへ接続..."
 
 #: ../hotssh/sshwindow.py:1499
 msgid "Open a new Secure Shell connection"
@@ -260,7 +261,7 @@ msgstr "再接続(_R)"
 
 #: ../hotssh/sshwindow.py:1505
 msgid "Reset connection to server"
-msgstr "サーバへの接続をリセットします"
+msgstr "サーバーへの接続をリセットします"
 
 #: ../hotssh/sshwindow.py:1506
 msgid "R_econnect All"
