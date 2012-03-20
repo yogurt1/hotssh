@@ -1,0 +1,286 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Miroslav Nikolić <miroslavnikolic@rocketmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=hotssh"
+"&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-02-11 20:46+0000\n"
+"PO-Revision-Date: 2012-03-20 02:53+0200\n"
+"Last-Translator: Miroslav Nikolić <miroslavnikolic@rocketmail.com>\n"
+"Language-Team: Serbian <gnom@prevod.org>\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : "
+"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Project-Style: gnome\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Secure Shell"
+msgstr "Bezbedna školjka"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Connect to a remote computer using Secure Shell"
+msgstr "Povežite se na udaljeni računar koristeći bezbednu školjku"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "godina"
+msgstr[1] "godine"
+msgstr[2] "godina"
+msgstr[3] "godina"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "mesec"
+msgstr[1] "meseca"
+msgstr[2] "meseci"
+msgstr[3] "mesec"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "sedmica"
+msgstr[1] "sedmice"
+msgstr[2] "sedmica"
+msgstr[3] "sedmica"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "dan"
+msgstr[1] "dana"
+msgstr[2] "dana"
+msgstr[3] "dan"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "sat"
+msgstr[1] "sata"
+msgstr[2] "sati"
+msgstr[3] "sat"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minut"
+msgstr[1] "minuta"
+msgstr[2] "minuta"
+msgstr[3] "minut"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "u budućnosti"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "Pre manje od jednog minuta"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "%(number)d %(type)s, pre %(number2)d %(type2)s"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "Pre %(number)d %(type)s"
+
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:251
+msgid "_Copy"
+msgstr "U_množi"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "Umnožite izabrani tekst"
+
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:252
+msgid "_Paste"
+msgstr "U_baci"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "Ubacite tekst"
+
+#: ../hotssh/hotvte/vteterm.py:178
+msgid "Open Link"
+msgstr "Otvori vezu"
+
+#: ../hotssh/hotvte/vtewindow.py:36
+msgid "Tab Search"
+msgstr "Pretraga jezička"
+
+#: ../hotssh/hotvte/vtewindow.py:243
+msgid "File"
+msgstr "Datoteka"
+
+#: ../hotssh/hotvte/vtewindow.py:244
+msgid "_Detach Tab"
+msgstr "_Otkači jezičak"
+
+#: ../hotssh/hotvte/vtewindow.py:246
+msgid "_Close"
+msgstr "_Zatvori"
+
+#: ../hotssh/hotvte/vtewindow.py:248
+msgid "_Quit"
+msgstr "_Izađi"
+
+#: ../hotssh/hotvte/vtewindow.py:250
+msgid "Edit"
+msgstr "Uređivanje"
+
+#: ../hotssh/hotvte/vtewindow.py:253
+msgid "View"
+msgstr "Pregled"
+
+#: ../hotssh/hotvte/vtewindow.py:254
+msgid "Help"
+msgstr "Pomoć"
+
+#: ../hotssh/hotvte/vtewindow.py:255
+msgid "_About"
+msgstr "_O programu"
+
+#: ../hotssh/sshwindow.py:97
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"Sučelje za OpenSSH, klijent bezbedne školjke\n"
+"\n"
+
+#: ../hotssh/sshwindow.py:337
+msgid "Options"
+msgstr "Mogućnosti"
+
+#: ../hotssh/sshwindow.py:348
+msgid "Example: "
+msgstr "Primer: "
+
+#: ../hotssh/sshwindow.py:363
+msgid "New Secure Shell Connection"
+msgstr "Nova veza bezbedne školjke"
+
+#: ../hotssh/sshwindow.py:377
+msgid "C_onnect"
+msgstr "Poveži _se"
+
+#: ../hotssh/sshwindow.py:403
+#, python-format
+msgid "Restore previous session (%d tabs)?"
+msgstr "Da povratim prethodnu sesiju (%d jezička)?"
+
+#: ../hotssh/sshwindow.py:404
+#, python-format
+msgid "Restore previous session (%d windows)?"
+msgstr "Da povratim prethodnu sesiju (%d prozora)?"
+
+#: ../hotssh/sshwindow.py:421
+msgid "Host: "
+msgstr "Računar: "
+
+#: ../hotssh/sshwindow.py:441
+msgid "User: "
+msgstr "Korisnik: "
+
+#: ../hotssh/sshwindow.py:465
+msgid "History"
+msgstr "Istorijat"
+
+#: ../hotssh/sshwindow.py:477 ../hotssh/sshwindow.py:1504
+msgid "Connection"
+msgstr "Veza"
+
+#: ../hotssh/sshwindow.py:480
+msgid "Time"
+msgstr "Vreme"
+
+#: ../hotssh/sshwindow.py:486
+msgid "Local"
+msgstr "Lokalno"
+
+#: ../hotssh/sshwindow.py:494
+msgid "Name"
+msgstr "Naziv"
+
+#: ../hotssh/sshwindow.py:497
+msgid "Address"
+msgstr "Adresa"
+
+#: ../hotssh/sshwindow.py:1212
+msgid "Connection closed"
+msgstr "Veza je zatvorena"
+
+#: ../hotssh/sshwindow.py:1380
+msgid "Connection sharing not supported; unknown state"
+msgstr "Deljenje veze nije podržano; nepoznato stanje"
+
+#: ../hotssh/sshwindow.py:1382
+msgid "Connecting"
+msgstr "Povezujem se"
+
+#: ../hotssh/sshwindow.py:1384
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "Povezani ste; %.2fs kašnjenje; %s"
+
+#: ../hotssh/sshwindow.py:1386
+msgid "Connection timed out"
+msgstr "Vreme za povezivanje je isteklo"
+
+#: ../hotssh/sshwindow.py:1388
+msgid "Checking connection"
+msgstr "Proveravam vezu"
+
+#: ../hotssh/sshwindow.py:1413
+msgid "Network connection changed"
+msgstr "Mrežna veza je izmenjena"
+
+#: ../hotssh/sshwindow.py:1498
+msgid "Connect to server..."
+msgstr "Poveži se na server..."
+
+#: ../hotssh/sshwindow.py:1499
+msgid "Open a new Secure Shell connection"
+msgstr "Otvorite novu vezu bezbedne školjke"
+
+#: ../hotssh/sshwindow.py:1500
+msgid "New tab for connection"
+msgstr "Novi jezičak za vezu"
+
+#: ../hotssh/sshwindow.py:1501
+msgid "Open a new tab for the same remote computer"
+msgstr "Otvorite novi jezičak za isti udaljeni računar "
+
+#: ../hotssh/sshwindow.py:1502
+msgid "Open SFTP"
+msgstr "Otvori SFTP"
+
+#: ../hotssh/sshwindow.py:1503
+msgid "Open a SFTP connection"
+msgstr "Otvorite SFTP vezu"
+
+#: ../hotssh/sshwindow.py:1505
+msgid "_Reconnect"
+msgstr "Poveži _ponovo"
+
+#: ../hotssh/sshwindow.py:1505
+msgid "Reset connection to server"
+msgstr "Povratite vezu sa serverom"
+
+#: ../hotssh/sshwindow.py:1506
+msgid "R_econnect All"
+msgstr "Ponovo poveži _sve"
+
+#: ../hotssh/sshwindow.py:1506
+msgid "Reset all connections"
+msgstr "Povratite sve veze"
