@@ -1,0 +1,274 @@
+# Greek translation for hotssh.
+# Copyright (C) 2012 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# Tom Tryfonidis <tomtryf@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-03-20 03:12+0000\n"
+"PO-Revision-Date: 2012-06-19 10:37+0200\n"
+"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
+"Language-Team: Greek <team@lists.gnome.gr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../hotssh.desktop.in.h:1
+msgid "Secure Shell"
+msgstr "Ασφαλές κέλυφος (SSH)"
+
+#: ../hotssh.desktop.in.h:2
+msgid "Connect to a remote computer using Secure Shell"
+msgstr ""
+"Συνδεθείτε σε έναν απομακρυσμένο υπολογιστή χρησιμοποιώντας ασφαλές κέλυφος "
+"(SSH)"
+
+#: ../hotssh/hotlib/timesince.py:48
+msgid "year"
+msgid_plural "years"
+msgstr[0] "χρόνος"
+msgstr[1] "χρόνια"
+
+#: ../hotssh/hotlib/timesince.py:49
+msgid "month"
+msgid_plural "months"
+msgstr[0] "μήνας"
+msgstr[1] "μήνες"
+
+#: ../hotssh/hotlib/timesince.py:50
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "εβδομάδα"
+msgstr[1] "εβδομάδες"
+
+#: ../hotssh/hotlib/timesince.py:51
+msgid "day"
+msgid_plural "days"
+msgstr[0] "ημέρα"
+msgstr[1] "ημέρες"
+
+#: ../hotssh/hotlib/timesince.py:52
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "ώρα"
+msgstr[1] "ώρες"
+
+#: ../hotssh/hotlib/timesince.py:53
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "λεπτό"
+msgstr[1] "λεπτά"
+
+#. d is in the future compared to now, stop processing.
+#: ../hotssh/hotlib/timesince.py:70
+msgid "in the future"
+msgstr "στο μέλλον"
+
+#: ../hotssh/hotlib/timesince.py:72
+msgid "less than 1 minute ago"
+msgstr "λιγότερο από ένα λεπτό πριν"
+
+#: ../hotssh/hotlib/timesince.py:83
+#, python-format
+msgid "%(number)d %(type)s, %(number2)d %(type2)s ago"
+msgstr "πριν %(number)d %(type)s, %(number2)d %(type2)s"
+
+#: ../hotssh/hotlib/timesince.py:86
+#, python-format
+msgid "%(number)d %(type)s ago"
+msgstr "πριν από %(number)d %(type)s"
+
+#: ../hotssh/hotvte/vteterm.py:81 ../hotssh/hotvte/vtewindow.py:251
+msgid "_Copy"
+msgstr "Αντιγρα_φή"
+
+#: ../hotssh/hotvte/vteterm.py:81
+msgid "Copy selected text"
+msgstr "Αντιγραφή επιλεγμένου κειμένου"
+
+#: ../hotssh/hotvte/vteterm.py:82 ../hotssh/hotvte/vtewindow.py:252
+msgid "_Paste"
+msgstr "Επ_ικόλληση"
+
+#: ../hotssh/hotvte/vteterm.py:82
+msgid "Paste text"
+msgstr "Επικόλληση κειμένου"
+
+#: ../hotssh/hotvte/vteterm.py:178
+msgid "Open Link"
+msgstr "Άνοιγμα συνδέσμου"
+
+#: ../hotssh/hotvte/vtewindow.py:36
+msgid "Tab Search"
+msgstr "Καρτέλα αναζήτησης"
+
+#: ../hotssh/hotvte/vtewindow.py:243
+msgid "File"
+msgstr "Αρχείο"
+
+#: ../hotssh/hotvte/vtewindow.py:244
+msgid "_Detach Tab"
+msgstr "Από_σπαση καρτέλας"
+
+#: ../hotssh/hotvte/vtewindow.py:246
+msgid "_Close"
+msgstr "_Κλείσιμο"
+
+#: ../hotssh/hotvte/vtewindow.py:248
+msgid "_Quit"
+msgstr "Έ_ξοδος"
+
+#: ../hotssh/hotvte/vtewindow.py:250
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+#: ../hotssh/hotvte/vtewindow.py:253
+msgid "View"
+msgstr "Προβολή"
+
+#: ../hotssh/hotvte/vtewindow.py:254
+msgid "Help"
+msgstr "Βοήθεια"
+
+#: ../hotssh/hotvte/vtewindow.py:255
+msgid "_About"
+msgstr "_Περί"
+
+#: ../hotssh/sshwindow.py:97
+msgid ""
+"An interface to OpenSSH, a Secure Shell client\n"
+"\n"
+msgstr ""
+"Μια διεπαφή για το OpenSSH, ένας πελάτης Secure Shell\n"
+"\n"
+
+#: ../hotssh/sshwindow.py:337
+msgid "Options"
+msgstr "Επιλογές"
+
+#: ../hotssh/sshwindow.py:348
+msgid "Example: "
+msgstr "Παράδειγμα:"
+
+#: ../hotssh/sshwindow.py:363
+msgid "New Secure Shell Connection"
+msgstr "Νέα σύνδεση Secure Shell"
+
+#: ../hotssh/sshwindow.py:377
+msgid "C_onnect"
+msgstr "_Σύνδεση"
+
+#: ../hotssh/sshwindow.py:403
+#, python-format
+msgid "Restore previous session (%d tabs)?"
+msgstr "Επαναφορά προηγούμενης συνεδρίας (%d καρτέλες);"
+
+#: ../hotssh/sshwindow.py:404
+#, python-format
+msgid "Restore previous session (%d windows)?"
+msgstr "Επαναφορά προηγούμενης συνεδρίας (%d παράθυρα);"
+
+#: ../hotssh/sshwindow.py:421
+msgid "Host: "
+msgstr "Σύστημα:"
+
+#: ../hotssh/sshwindow.py:441
+msgid "User: "
+msgstr "Χρήστης:"
+
+#: ../hotssh/sshwindow.py:465
+msgid "History"
+msgstr "Ιστορικό"
+
+#: ../hotssh/sshwindow.py:477 ../hotssh/sshwindow.py:1504
+msgid "Connection"
+msgstr "Σύνδεση"
+
+#: ../hotssh/sshwindow.py:480
+msgid "Time"
+msgstr "Χρόνος"
+
+#: ../hotssh/sshwindow.py:486
+msgid "Local"
+msgstr "Τοπικά"
+
+#: ../hotssh/sshwindow.py:494
+msgid "Name"
+msgstr "Όνομα"
+
+#: ../hotssh/sshwindow.py:497
+msgid "Address"
+msgstr "Διεύθυνση"
+
+#: ../hotssh/sshwindow.py:1212
+msgid "Connection closed"
+msgstr "Η σύνδεση έκλεισε"
+
+#: ../hotssh/sshwindow.py:1380
+msgid "Connection sharing not supported; unknown state"
+msgstr "Δεν υποστηρίζεται ο διαμοιρασμός της σύνδεσης, άγνωστη κατάσταση"
+
+#: ../hotssh/sshwindow.py:1382
+msgid "Connecting"
+msgstr "Γίνεται σύνδεση"
+
+#: ../hotssh/sshwindow.py:1384
+#, python-format
+msgid "Connected; %.2fs latency; %s"
+msgstr "Συνδέθηκε; %.2fs latency; %s  "
+
+#: ../hotssh/sshwindow.py:1386
+msgid "Connection timed out"
+msgstr "Η σύνδεση έληξε"
+
+#: ../hotssh/sshwindow.py:1388
+msgid "Checking connection"
+msgstr "Γίνεται έλεγχος της σύνδεσης"
+
+#: ../hotssh/sshwindow.py:1413
+msgid "Network connection changed"
+msgstr "Άλλαξε η σύνδεση του δικτύου"
+
+#: ../hotssh/sshwindow.py:1498
+msgid "Connect to server..."
+msgstr "Σύνδεση στον εξυπηρετητή..."
+
+#: ../hotssh/sshwindow.py:1499
+msgid "Open a new Secure Shell connection"
+msgstr "Ανοίξτε μια νέα σύνδεση Secure Shell"
+
+#: ../hotssh/sshwindow.py:1500
+msgid "New tab for connection"
+msgstr "Νέα καρτέλα για τη σύνδεση"
+
+#: ../hotssh/sshwindow.py:1501
+msgid "Open a new tab for the same remote computer"
+msgstr "Ανοίξτε μια νέα καρτέλα για τον ίδιο απομακρυσμένο υπολογιστή"
+
+#: ../hotssh/sshwindow.py:1502
+msgid "Open SFTP"
+msgstr "Άνοιγμα SFTP"
+
+#: ../hotssh/sshwindow.py:1503
+msgid "Open a SFTP connection"
+msgstr "Ανοίξτε μια σύνδεση SFTP"
+
+#: ../hotssh/sshwindow.py:1505
+msgid "_Reconnect"
+msgstr "_Επανασύνδεση"
+
+#: ../hotssh/sshwindow.py:1505
+msgid "Reset connection to server"
+msgstr "Επαναφορά σύνδεσης στον εξυπηρετητή"
+
+#: ../hotssh/sshwindow.py:1506
+msgid "R_econnect All"
+msgstr "Επ_ανασύνδεση όλων"
+
+#: ../hotssh/sshwindow.py:1506
+msgid "Reset all connections"
+msgstr "Επαναφορά όλων των συνδέσεων"
