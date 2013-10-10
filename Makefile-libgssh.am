@@ -12,6 +12,7 @@ libgssh_la_SOURCES = $(gssh_headers) \
 	$(NULL)
 
 libgssh_la_CFLAGS = $(AM_CFLAGS) $(BUILDDEP_LIBGSSH_CFLAGS) -I$(srcdir)/libgsystem -I$(srcdir)/libgssh
+libgssh_la_LDFLAGS = -avoid-version -Bsymbolic-functions -export-symbols-regexp '^gssh_' -no-undefined -export-dynamic
 libgssh_la_LIBADD = $(BUILDDEP_LIBGSSH_LIBS) libgsystem.la
 
 gssh-enum-types.h: $(libgssh_headers) libgssh/gssh-enum-types.h.template
