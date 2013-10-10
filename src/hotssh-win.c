@@ -1,6 +1,6 @@
 #include "hotssh-app.h"
 #include "hotssh-win.h"
-#include "gssh-connection.h"
+#include "gssh.h"
 
 #include "libgsystem.h"
 
@@ -52,6 +52,8 @@ struct _HotSshWindowPrivate
   GSshConnection *connection;
   GSshChannel *channel;
 
+  gboolean need_pty_size_request;
+  gboolean sent_pty_size_request;
   gboolean have_outstanding_write;
   gboolean have_outstanding_auth;
   GQueue write_queue;
@@ -424,6 +426,61 @@ on_connect_cancel (GtkButton     *button,
 }
 
 static void
+send_pty_size_request (HotSshWindow             *self);
+
+static void
+on_pty_size_complete (GObject                    *src,
+		      GAsyncResult               *result,
+		      gpointer                    user_data)
+{
+  HotSshWindow *self = user_data;
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  GError *local_error = NULL;
+
+  g_debug ("pty size request complete");
+  priv->sent_pty_size_request = FALSE;
+
+  if (!gssh_channel_request_pty_size_finish (priv->channel, result, &local_error))
+    goto out;
+
+  if (priv->need_pty_size_request)
+    send_pty_size_request (self);
+
+ out:
+  if (local_error)
+    page_transition_take_error (self, local_error);
+}
+
+static void
+send_pty_size_request (HotSshWindow             *self)
+{
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  guint width = vte_terminal_get_column_count ((VteTerminal*)priv->terminal);
+  guint height = vte_terminal_get_row_count ((VteTerminal*)priv->terminal);
+  
+  priv->need_pty_size_request = FALSE;
+  priv->sent_pty_size_request = TRUE;
+  gssh_channel_request_pty_size_async (priv->channel, width, height,
+				       priv->cancellable, on_pty_size_complete, self);
+}
+
+static void
+on_terminal_size_allocate (GtkWidget    *widget,
+			   GdkRectangle *allocation,
+			   gpointer      user_data)
+{
+  HotSshWindow *self = user_data;
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+
+  if (priv->channel)
+    {
+      priv->need_pty_size_request = TRUE;
+      if (!priv->sent_pty_size_request)
+	send_pty_size_request (self);
+    }
+}
+
+static void
 hotssh_window_init (HotSshWindow *self)
 {
   HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
@@ -438,6 +495,7 @@ hotssh_window_init (HotSshWindow *self)
   g_signal_connect_swapped (priv->password_submit, "clicked", G_CALLBACK (submit_password), self);
 
   priv->terminal = vte_terminal_new ();
+  g_signal_connect ((GObject*)priv->terminal, "size-allocate", G_CALLBACK (on_terminal_size_allocate), self);
   g_signal_connect ((GObject*)priv->terminal, "commit", G_CALLBACK (on_terminal_commit), self);
   gtk_box_pack_start ((GtkBox*)priv->terminal_box, (GtkWidget*)priv->terminal, TRUE, TRUE, 0);
   gtk_widget_show_all (priv->terminal_box);

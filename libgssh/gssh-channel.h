@@ -28,3 +28,14 @@
 typedef struct _GSshChannelClass    GSshChannelClass;
 
 GType                   gssh_channel_get_type     (void);
+
+void gssh_channel_request_pty_size_async (GSshChannel         *self,
+                                          guint                width,
+                                          guint                height,
+                                          GCancellable        *cancellable,
+                                          GAsyncReadyCallback  callback,
+                                          gpointer             user_data);
+
+gboolean gssh_channel_request_pty_size_finish (GSshChannel         *self,
+                                               GAsyncResult        *res,
+                                               GError             **error);

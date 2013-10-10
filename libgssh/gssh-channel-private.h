@@ -30,7 +30,12 @@ struct _GSshChannel
   GIOStream parent;
 
   GSshConnection *connection;
+  gboolean have_pty;
   LIBSSH2_CHANNEL *libsshchannel;
+
+  GTask *pty_size_task;
+  guint pty_width;
+  guint pty_height;
   
   GSshChannelInputStream *input_stream;
   GSshChannelOutputStream *output_stream;
@@ -41,5 +46,9 @@ struct _GSshChannelClass
   GIOStreamClass parent_class;
 };
 
-GSshChannel       *_gssh_channel_new (GSshConnection *connection,
-                                          LIBSSH2_CHANNEL *libsshchannel);
+GSshChannel       *_gssh_channel_new (GSshConnection  *connection,
+                                      gboolean         have_pty,
+                                      LIBSSH2_CHANNEL *libsshchannel);
+
+
+void _gssh_channel_iteration (GSshChannel    *self);

@@ -297,7 +297,7 @@ process_channels (GSshConnection   *self,
 
                 g_assert (rc == 0);
 
-                new_channel = _gssh_channel_new (self, data->libssh2channel);
+                new_channel = _gssh_channel_new (self, TRUE, data->libssh2channel);
                 g_hash_table_insert (self->channels, new_channel, new_channel);
 
                 g_task_return_pointer (task, new_channel, g_object_unref);

@@ -86,6 +86,65 @@ gssh_channel_close_finish (GIOStream     *stream,
   return G_IO_STREAM_CLASS (gssh_channel_parent_class)->close_finish (stream, result, error);
 }
 
+void
+_gssh_channel_iteration (GSshChannel              *self)
+{
+  int rc;
+  GError *local_error = NULL;
+
+  if (self->pty_size_task)
+    {
+      GTask *orig_pty_size_task = self->pty_size_task;
+      rc = libssh2_channel_request_pty_size (self->libsshchannel,
+                                             self->pty_width, self->pty_height);
+      if (rc == LIBSSH2_ERROR_EAGAIN)
+        ;
+      else 
+        {
+          self->pty_size_task = NULL;
+          if (rc < 0)
+            {
+              _gssh_set_error_from_libssh2 (&local_error, "Failed to set pty size",
+                                            self->connection->session);
+              g_task_return_error (orig_pty_size_task, local_error);
+            }
+          else
+            {
+              g_assert (rc == 0);
+              g_task_return_boolean (orig_pty_size_task, TRUE);
+            }
+          g_object_unref (orig_pty_size_task);
+        }
+    }
+}
+
+void
+gssh_channel_request_pty_size_async (GSshChannel         *self,
+                                     guint                width,
+                                     guint                height,
+                                     GCancellable        *cancellable,
+                                     GAsyncReadyCallback  callback,
+                                     gpointer             user_data)
+{
+  g_return_if_fail (self->have_pty);
+  g_return_if_fail (self->pty_size_task == NULL);
+
+  self->pty_size_task = g_task_new (self, cancellable, callback, user_data);
+  self->pty_width = width;
+  self->pty_height = height;
+
+  _gssh_channel_iteration (self);
+}
+
+gboolean
+gssh_channel_request_pty_size_finish (GSshChannel         *self,
+                                      GAsyncResult        *res,
+                                      GError             **error)
+{
+  g_return_val_if_fail (g_task_is_valid (res, self), FALSE);
+  return g_task_propagate_boolean (G_TASK (res), error);
+}
+
 static void
 gssh_channel_init (GSshChannel *self)
 {
@@ -114,14 +173,16 @@ gssh_channel_class_init (GSshChannelClass *class)
 }
 
 GSshChannel *
-_gssh_channel_new (GSshConnection *connection,
-                     LIBSSH2_CHANNEL *libsshchannel)
+_gssh_channel_new (GSshConnection   *connection,
+                   gboolean         have_pty,
+                   LIBSSH2_CHANNEL *libsshchannel)
 {
   GSshChannel *self = (GSshChannel*)g_object_new (GSSH_TYPE_CHANNEL, NULL);
   /* We don't hold a ref; if the connection goes away, it will ensure
    * this pointer is zeroed.
    */
   self->connection = connection; 
+  self->have_pty = have_pty; 
   self->libsshchannel = libsshchannel; 
   return self;
 }
