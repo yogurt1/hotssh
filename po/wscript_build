@@ -1,2 +1,0 @@
-obj=bld.new_task_gen('intltool_po')
-obj.appname='hotssh'

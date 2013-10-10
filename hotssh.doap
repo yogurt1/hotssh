@@ -1,17 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
          xmlns:foaf="http://xmlns.com/foaf/0.1/"
          xmlns:gnome="http://api.gnome.org/doap-extensions#"
          xmlns="http://usefulinc.com/ns/doap#">
 
-  <name xml:lang="en">hotssh</name>
-  <shortdesc xml:lang="en">HotSSH</shortdesc>
-  <homepage rdf:resource="http://www.gnome.org/projects/hotssh" />
+  <name>HotSSH</name>
+  <shortname>HotSSH</shortname>
+
+  <shortdesc xml:lang="en">SSH client</shortdesc>
+
+  <description xml:lang="en">A SSH client for GNOME.</description>
+
+  <homepage rdf:resource="http://git.gnome.org/browse/hotssh" />
+  <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
+
+  <programming-language>C</programming-language>
 
   <maintainer>
     <foaf:Person>
       <foaf:name>Colin Walters</foaf:name>
+      <foaf:mbox rdf:resource="mailto:walters@verbum.org"/>
       <gnome:userid>walters</gnome:userid>
     </foaf:Person>
   </maintainer>
+
+  <repository>
+    <GitRepository>
+      <browse rdf:resource="http://git.gnome.org/browse/hotssh"/>
+      <location rdf:resource="git://git.gnome.org/hotssh"/>
+    </GitRepository>
+  </repository>
+
 </Project>

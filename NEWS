@@ -1,9 +1,0 @@
-= Changes in HotSSH 0.2.5 =
-
-- Favicon support (http://cgwalters.livejournal.com/19030.html)
-- Use ~/.hotssh directory for data, other bugfixes
-- Some build system tweaks, new README file
-- New/updated translations:
- - Arabic (Djihed Afifi)
- - Catalan (Gil Forcada)
- - Swedish (Daniel Nylander)

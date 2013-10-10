@@ -1,9 +1,0 @@
-[Desktop Entry]
-_Name=Secure Shell
-_Comment=Connect to a remote computer using Secure Shell
-Exec=hotssh
-Terminal=false
-Type=Application
-Icon=hotwire-openssh
-Categories=GTK;Network;
-StartupNotify=true

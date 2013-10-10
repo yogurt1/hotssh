@@ -1,0 +1,26 @@
+bin_PROGRAMS += hotssh
+
+hotssh_headers = $(addprefix src/,hotssh-app.h hotssh-win.h hotssh-prefs.h)
+
+hotssh_SOURCES = $(hotssh_headers) \
+	src/main.c \
+	src/hotssh-app.c \
+	src/hotssh-win.c \
+	src/hotssh-prefs.c \
+	$(NULL)
+
+hotssh_CFLAGS = $(AM_CFLAGS) $(BUILDDEP_HOTSSHAPP_CFLAGS) -I$(srcdir)/libgsystem -I$(srcdir)/libgssh -I$(srcdir)/src
+hotssh_LDADD = $(BUILDDEP_HOTSSHAPP_LIBS) libgssh.la libgsystem.la
+
+resources.c: src/hotssh.gresource.xml $(shell glib-compile-resources --sourcedir=$(srcdir)/src --generate-dependencies $(srcdir)/src/hotssh.gresource.xml)
+	$(AM_V_GEN) glib-compile-resources $< \
+		--target=$@ --sourcedir=$(srcdir)/src --generate-source
+hotssh_SOURCES += resources.c
+BUILT_SOURCES += resources.c gschemas.compiled
+
+gsettings_SCHEMAS += src/org.gnome.hotssh.gschema.xml
+
+@GSETTINGS_RULES@
+
+gschemas.compiled: src/org.gnome.hotssh.gschema.xml
+	glib-compile-schemas .
