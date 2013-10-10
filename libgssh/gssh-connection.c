@@ -18,6 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
+
 #include "gssh-connection-private.h"
 #include "gssh-channel-private.h"
 #include "gssh-enum-types.h"
@@ -481,6 +483,7 @@ on_socket_client_connected (GObject         *src,
   GSshConnection *self = user_data;
   GError *local_error = NULL;
   GError **error = &local_error;
+  gs_free char *version_str = NULL;
 
   g_assert (src == (GObject*)self->socket_client);
 
@@ -500,6 +503,9 @@ on_socket_client_connected (GObject         *src,
     }
 
   libssh2_session_set_blocking (self->session, 0);
+  version_str = g_strdup_printf ("SSH-2.0-libgssh_%s_libssh2_%s",
+                                 PACKAGE_VERSION, libssh2_version (0));
+  libssh2_session_banner_set (self->session, version_str);
 
   state_transition (self, GSSH_CONNECTION_STATE_HANDSHAKING);
 
