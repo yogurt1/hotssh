@@ -190,6 +190,9 @@ _gssh_channel_input_stream_iteration (GSshChannelInputStream     *self)
   GError *local_error = NULL;
   GTask *prev_task = self->read_task;
 
+  if (!prev_task)
+    return;
+
   g_assert (!self->is_closed);
   rc = libssh2_channel_read (self->channel->libsshchannel,
                              self->buf, self->count);

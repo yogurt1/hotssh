@@ -235,6 +235,9 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
         const guint8 *data;
         GTask *prev_write_task = self->write_task;
 
+        if (!prev_write_task)
+          return;
+
         data = g_bytes_get_data (self->buf, &bufsize);
         rc = libssh2_channel_write (self->channel->libsshchannel,
                                     (const char*)data, bufsize);
