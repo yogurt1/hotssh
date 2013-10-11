@@ -33,6 +33,7 @@ typedef enum /*< prefix=GSSH_CONNECTION_STATE >*/
     GSSH_CONNECTION_STATE_DISCONNECTED,
     GSSH_CONNECTION_STATE_CONNECTING,
     GSSH_CONNECTION_STATE_HANDSHAKING,
+    GSSH_CONNECTION_STATE_PREAUTH,
     GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED,
     GSSH_CONNECTION_STATE_CONNECTED,
     GSSH_CONNECTION_STATE_ERROR
@@ -57,6 +58,10 @@ void                    gssh_connection_handshake_async (GSshConnection    *self
 gboolean                gssh_connection_handshake_finish (GSshConnection    *self,
                                                             GAsyncResult        *result,
                                                             GError             **error);
+
+GBytes *                gssh_connection_preauth_get_fingerprint_sha1 (GSshConnection *self);
+
+void                    gssh_connection_preauth_continue (GSshConnection *self);
 
 const char*const*       gssh_connection_get_authentication_mechanisms (GSshConnection   *self);
 

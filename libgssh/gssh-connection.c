@@ -66,7 +66,7 @@ reset_state (GSshConnection               *self)
 
   g_assert (self->state == GSSH_CONNECTION_STATE_DISCONNECTED ||
             self->state == GSSH_CONNECTION_STATE_ERROR);
-  g_clear_object (&self->connection_task);
+  g_clear_object (&self->handshake_task);
   g_clear_pointer (&self->open_channel_exec_tasks, g_hash_table_unref);
   self->open_channel_exec_tasks = g_hash_table_new_full (NULL, NULL, NULL, g_object_unref);
   g_clear_pointer (&self->channel_tasks, g_hash_table_unref);
@@ -85,13 +85,13 @@ reset_state (GSshConnection               *self)
   /* This hash doesn't hold a ref */
   self->channels = g_hash_table_new_full (NULL, NULL, NULL, NULL);
 
+  g_clear_pointer (&self->remote_hostkey_sha1, g_bytes_unref);
   g_clear_error (&self->cached_error);
   g_clear_object (&self->socket);
   if (self->socket_source)
     g_source_destroy (self->socket_source);
   g_clear_pointer (&self->socket_source, g_source_unref);
   g_clear_pointer (&self->authschemes, g_strfreev);
-  self->handshake_state = GSSH_CONNECTION_HANDSHAKE_STATE_STARTING;
 }
 
 static void
@@ -117,10 +117,10 @@ state_transition_take_error (GSshConnection       *self,
 {
   g_debug ("caught error: %s", error->message);
 
-  if (self->connection_task)
+  if (self->handshake_task)
     {
-      g_task_return_error (self->connection_task, error);
-      g_clear_object (&self->connection_task);
+      g_task_return_error (self->handshake_task, error);
+      g_clear_object (&self->handshake_task);
     }
   else
     {
@@ -332,60 +332,60 @@ gssh_connection_iteration (GSshConnection   *self,
     case GSSH_CONNECTION_STATE_HANDSHAKING:
       {
 	int socket_fd = g_socket_get_fd (self->socket);
-        switch (self->handshake_state)
+        if ((rc = libssh2_session_handshake (self->session, socket_fd)) == LIBSSH2_ERROR_EAGAIN)
           {
-          case GSSH_CONNECTION_HANDSHAKE_STATE_STARTING:
-            {
-              g_debug ("handshake on socket fd=%d", socket_fd);
-              if ((rc = libssh2_session_handshake (self->session, socket_fd)) == LIBSSH2_ERROR_EAGAIN)
-                {
-                  recalculate_socket_state (self);
-                  return;
-                }
-              if (rc)
-                {
-                  _gssh_set_error_from_libssh2 (error, "Failed to handshake SSH2 session", self->session);
-                  state_transition_take_error (self, local_error);
-                  return;
-                }
-              self->handshake_state = GSSH_CONNECTION_HANDSHAKE_STATE_AUTHLIST;
-              goto repeat;
-            }
-          case GSSH_CONNECTION_HANDSHAKE_STATE_AUTHLIST:
-            {
-              const char *authschemes;
-
-              authschemes = libssh2_userauth_list (self->session,
-                                                   self->username,
-                                                   strlen (self->username));
-              if (authschemes == NULL)
-                {
-                  if (libssh2_userauth_authenticated (self->session))
-                    {
-                      /* Unusual according to the docs, but it's
-                       * possible for the remote server to be
-                       * configured without auth.
-                       */
-                      state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
-                      goto repeat;
-                    }
-                  else if (libssh2_session_last_error (self->session, NULL, NULL, 0) == LIBSSH2_ERROR_EAGAIN)
-                    {
-                      recalculate_socket_state (self);
-                      return;
-                    }
-                  else
-                    {
-                      _gssh_set_error_from_libssh2 (error, "Failed to list auth mechanisms", self->session);
-                      state_transition_take_error (self, local_error);
-                      return;
-                    }
-                }
-              self->authschemes = g_strsplit (authschemes, ",", 0);
-              state_transition (self, GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
-              goto repeat;
-            }
+            recalculate_socket_state (self);
+            return;
           }
+        if (rc)
+          {
+            _gssh_set_error_from_libssh2 (error, "Failed to handshake SSH2 session", self->session);
+            g_task_return_error (self->handshake_task, local_error);
+            g_clear_object (&self->handshake_task);
+            return;
+          }
+        self->remote_hostkey_sha1 = g_bytes_new (libssh2_hostkey_hash (self->session, LIBSSH2_HOSTKEY_HASH_SHA1), 20);
+        g_task_return_boolean (self->handshake_task, TRUE);
+        g_clear_object (&self->handshake_task);
+        state_transition (self, GSSH_CONNECTION_STATE_PREAUTH);
+        goto repeat;
+      }
+    case GSSH_CONNECTION_STATE_PREAUTH:
+      {
+        const char *authschemes;
+
+        if (!self->preauth_continue)
+          break;
+
+        authschemes = libssh2_userauth_list (self->session,
+                                             self->username,
+                                             strlen (self->username));
+        if (authschemes == NULL)
+          {
+            if (libssh2_userauth_authenticated (self->session))
+              {
+                /* Unusual according to the docs, but it's
+                 * possible for the remote server to be
+                 * configured without auth.
+                 */
+                state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
+                goto repeat;
+              }
+            else if (libssh2_session_last_error (self->session, NULL, NULL, 0) == LIBSSH2_ERROR_EAGAIN)
+              {
+                recalculate_socket_state (self);
+                return;
+              }
+            else
+              {
+                _gssh_set_error_from_libssh2 (error, "Failed to list auth mechanisms", self->session);
+                state_transition_take_error (self, local_error);
+                return;
+              }
+          }
+        self->authschemes = g_strsplit (authschemes, ",", 0);
+        state_transition (self, GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
+        goto repeat;
       }
       break;
     case GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED:
@@ -468,7 +468,7 @@ on_socket_ready (GSocket *socket,
       return FALSE;
     }
 
-  g_debug ("socket ready: state %d handshake_state: %d", self->state, self->handshake_state);
+  g_debug ("socket ready: state %d", self->state);
 
   gssh_connection_iteration (self, condition);
 
@@ -522,6 +522,34 @@ GSshConnectionState
 gssh_connection_get_state (GSshConnection        *self)
 {
   return self->state;
+}
+
+/**
+ * gssh_connection_preauth_get_fingerprint_sha1:
+ * @self: Self
+ *
+ * Returns: (transfer none): 20 bytes for the remote host's SHA1 fingerprint
+ */
+GBytes *
+gssh_connection_preauth_get_fingerprint_sha1 (GSshConnection *self)
+{
+  return self->remote_hostkey_sha1;
+}
+
+/**
+ * gssh_connection_preauth_continue:
+ * @self: Self
+ *
+ * Call this function after having verified the host key fingerprint
+ * to continue the connection.
+ */
+void
+gssh_connection_preauth_continue (GSshConnection *self)
+{
+  g_return_if_fail (self->state == GSSH_CONNECTION_STATE_PREAUTH);
+  g_return_if_fail (!self->preauth_continue);
+  self->preauth_continue = TRUE;
+  gssh_connection_iteration_default (self);
 }
 
 const char*const*
@@ -580,8 +608,7 @@ gssh_connection_handshake_async (GSshConnection    *self,
 
   state_transition (self, GSSH_CONNECTION_STATE_CONNECTING);
 
-  self->connection_task = g_task_new (self, cancellable, callback, user_data);
-
+  self->handshake_task = g_task_new (self, cancellable, callback, user_data);
   g_socket_client_connect_async (self->socket_client, self->address, cancellable,
 				 on_socket_client_connected, self);
 }

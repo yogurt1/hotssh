@@ -23,6 +23,7 @@ typedef struct _HotSshWindowPrivate HotSshWindowPrivate;
 typedef enum {
   HOTSSH_WINDOW_PAGE_NEW_CONNECTION,
   HOTSSH_WINDOW_PAGE_INTERSTITAL,
+  HOTSSH_WINDOW_PAGE_AUTH,
   HOTSSH_WINDOW_PAGE_TERMINAL
 } HotSshWindowPage;
 
@@ -42,6 +43,10 @@ struct _HotSshWindowPrivate
   GtkWidget *password_entry;
   GtkWidget *password_submit;
   GtkWidget *connect_cancel_button;
+  GtkWidget *auth_cancel_button;
+  GtkWidget *hostkey_container;
+  GtkWidget *hostkey_fingerprint_label;
+  GtkWidget *approve_hostkey_button;
   GtkWidget *disconnect_button;
   GtkWidget *terminal_box;
 
@@ -92,8 +97,9 @@ state_reset_for_new_connection (HotSshWindow                *self)
   vte_terminal_reset ((VteTerminal*)priv->terminal, TRUE, TRUE);
   gtk_entry_set_text ((GtkEntry*)priv->password_entry, "");
   reset_focus_state (self);
-  gtk_widget_hide (priv->password_container);
+  gtk_label_set_text ((GtkLabel*)priv->connection_text, "");
   gtk_widget_show (priv->connection_text_container);
+  gtk_widget_hide (priv->hostkey_container);
   gtk_widget_set_sensitive (priv->password_container, TRUE);
   g_debug ("reset state done");
 }
@@ -188,6 +194,9 @@ on_open_shell_complete (GObject           *src,
 }
 
 static void
+iterate_authentication_modes (HotSshWindow          *self);
+
+static void
 on_connection_state_notify (GSshConnection   *conn,
 			    GParamSpec         *pspec,
 			    gpointer            user_data)
@@ -205,8 +214,16 @@ on_connection_state_notify (GSshConnection   *conn,
       break;
     case GSSH_CONNECTION_STATE_CONNECTING:
     case GSSH_CONNECTION_STATE_HANDSHAKING:
+    case GSSH_CONNECTION_STATE_PREAUTH:
+      page_transition (self, HOTSSH_WINDOW_PAGE_INTERSTITAL);
+      break;
     case GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED:
+      page_transition (self, HOTSSH_WINDOW_PAGE_AUTH);
+      iterate_authentication_modes (self);
+      break;
     case GSSH_CONNECTION_STATE_ERROR:
+      gtk_widget_hide (priv->hostkey_container);
+      gtk_widget_show (priv->connection_text_container);
       page_transition (self, HOTSSH_WINDOW_PAGE_INTERSTITAL);
       break;
     case GSSH_CONNECTION_STATE_CONNECTED:
@@ -277,13 +294,37 @@ on_connection_handshake (GObject         *object,
 			 gpointer         user_data)
 {
   HotSshWindow *self = HOTSSH_WINDOW (user_data);
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
   GError *local_error = NULL;
   GError **error = &local_error;
+  GBytes *hostkey_sha1_binary;
+  GString *buf;
+  guint i;
+  const guint8 *binbuf;
+  gsize len;
+  gs_free char *hostkey_sha1_text = NULL;
 
   if (!gssh_connection_handshake_finish ((GSshConnection*)object, result, error))
     goto out;
 
-  iterate_authentication_modes (self);
+  g_debug ("handshake complete");
+
+  hostkey_sha1_binary = gssh_connection_preauth_get_fingerprint_sha1 (priv->connection);
+  binbuf = g_bytes_get_data (hostkey_sha1_binary, &len);
+  buf = g_string_new ("");
+  for (i = 0; i < len; i++)
+    {
+      g_string_append_printf (buf, "%02X", binbuf[i]);
+      if (i < len - 1)
+	g_string_append_c (buf, ':');
+    }
+  hostkey_sha1_text = g_string_free (buf, FALSE);
+
+  gtk_label_set_text ((GtkLabel*)priv->hostkey_fingerprint_label,
+		      hostkey_sha1_text);
+  gtk_widget_hide (priv->connection_text_container);
+  gtk_widget_show (priv->hostkey_container);
+  page_transition (self, HOTSSH_WINDOW_PAGE_INTERSTITAL);
 
  out:
   if (local_error)
@@ -322,8 +363,9 @@ on_connect (GtkButton     *button,
   g_signal_connect_object (priv->connection, "notify::state",
 			   G_CALLBACK (on_connection_state_notify),
 			   self, 0);
+  g_debug ("connected, beginning handshake");
   gssh_connection_handshake_async (priv->connection, priv->cancellable,
-				     on_connection_handshake, self);
+				   on_connection_handshake, self);
 }
 
 static void
@@ -426,6 +468,16 @@ on_connect_cancel (GtkButton     *button,
 }
 
 static void
+on_approve_hostkey_clicked (GtkButton     *button,
+			    gpointer       user_data)
+{
+  HotSshWindow *self = user_data;
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+
+  gssh_connection_preauth_continue (priv->connection);
+}
+
+static void
 send_pty_size_request (HotSshWindow             *self);
 
 static void
@@ -490,6 +542,8 @@ hotssh_window_init (HotSshWindow *self)
 
   g_signal_connect (priv->connect_button, "clicked", G_CALLBACK (on_connect), self);
   g_signal_connect (priv->connect_cancel_button, "clicked", G_CALLBACK (on_connect_cancel), self);
+  g_signal_connect (priv->auth_cancel_button, "clicked", G_CALLBACK (on_connect_cancel), self);
+  g_signal_connect (priv->approve_hostkey_button, "clicked", G_CALLBACK (on_approve_hostkey_clicked), self);
   g_signal_connect (priv->disconnect_button, "clicked", G_CALLBACK (on_disconnect), self);
   g_signal_connect_swapped (priv->password_entry, "activate", G_CALLBACK (submit_password), self);
   g_signal_connect_swapped (priv->password_submit, "clicked", G_CALLBACK (submit_password), self);
@@ -534,6 +588,10 @@ hotssh_window_class_init (HotSshWindowClass *class)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, password_entry);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, password_submit);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, connect_cancel_button);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, auth_cancel_button);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, hostkey_container);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, hostkey_fingerprint_label);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, approve_hostkey_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, disconnect_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, terminal_box);
 }

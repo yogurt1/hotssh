@@ -23,21 +23,16 @@
 #include "gssh-connection.h"
 #include <libssh2.h>
 
-typedef enum {
-  GSSH_CONNECTION_HANDSHAKE_STATE_STARTING,
-  GSSH_CONNECTION_HANDSHAKE_STATE_AUTHLIST
-} GSshConnectionHandshakeState;
-
 struct _GSshConnection
 {
   GObject parent;
 
   GSshConnectionState state;
-  GSshConnectionHandshakeState handshake_state;
 
   guint select_inbound : 1;
   guint select_outbound : 1;
-  guint unused : 30;
+  guint preauth_continue : 1;
+  guint unused : 29;
 
   char *username;
 
@@ -47,6 +42,7 @@ struct _GSshConnection
   GHashTable *channels;
 
   GError *cached_error;
+  GBytes *remote_hostkey_sha1;
   GMainContext *maincontext;
   GSocketClient *socket_client;
   GSocket *socket;
@@ -56,7 +52,7 @@ struct _GSshConnection
   GCancellable *cancellable;
   char *password;
 
-  GTask *connection_task;
+  GTask *handshake_task;
   GTask *auth_task;
   GHashTable *open_channel_exec_tasks;
   GHashTable *channel_tasks;
