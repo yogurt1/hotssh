@@ -4,12 +4,8 @@
   <menu id="menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Words</attribute>
-        <attribute name="action">win.show-words</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Lines</attribute>
-        <attribute name="action">win.show-lines</attribute>
+        <attribute name="label" translatable="yes">_New Tab</attribute>
+        <attribute name="action">win.new-tab</attribute>
       </item>
     </section>
   </menu>

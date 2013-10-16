@@ -1,10 +1,16 @@
 bin_PROGRAMS += hotssh
 
-hotssh_headers = $(addprefix src/,hotssh-app.h hotssh-win.h hotssh-prefs.h)
+hotssh_headers = $(addprefix src/, \
+	hotssh-app.h \
+	hotssh-tab.h \
+	hotssh-win.h \
+	hotssh-prefs.h \
+	)
 
 hotssh_SOURCES = $(hotssh_headers) \
 	src/main.c \
 	src/hotssh-app.c \
+	src/hotssh-tab.c \
 	src/hotssh-win.c \
 	src/hotssh-prefs.c \
 	$(NULL)

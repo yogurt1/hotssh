@@ -147,7 +147,7 @@ hotssh_app_command_line (GApplication              *app,
   g_option_context_free (context);
       
   win = hotssh_window_new (HOTSSH_APP (app));
-  hotssh_window_prefill (win, host, username);
+  gtk_widget_show_all ((GtkWidget*)win);
   gtk_window_present (GTK_WINDOW (win));
 
   return 0;

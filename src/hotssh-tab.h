@@ -20,14 +20,14 @@
 
 #pragma once
 
-#include "hotssh-app.h"
+#include <gtk/gtk.h>
 
-#define HOTSSH_TYPE_WINDOW (hotssh_window_get_type ())
-#define HOTSSH_WINDOW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), HOTSSH_TYPE_WINDOW, HotSshWindow))
+#define HOTSSH_TYPE_TAB (hotssh_tab_get_type ())
+#define HOTSSH_TAB(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), HOTSSH_TYPE_TAB, HotSshTab))
 
-typedef struct _HotSshWindow         HotSshWindow;
-typedef struct _HotSshWindowClass    HotSshWindowClass;
+typedef struct _HotSshTab         HotSshTab;
+typedef struct _HotSshTabClass    HotSshTabClass;
 
 
-GType                   hotssh_window_get_type     (void);
-HotSshWindow       *hotssh_window_new          (HotSshApp *app);
+GType                   hotssh_tab_get_type     (void);
+HotSshTab              *hotssh_tab_new          (void);
