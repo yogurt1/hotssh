@@ -7,6 +7,16 @@
     <property name="title" translatable="yes">HotSSH</property>
     <property name="default_width">600</property>
     <property name="default_height">400</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header-bar">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="show-close-button">True</property>
+        <style>
+          <class name="titlebar"/>
+        </style>
+      </object>
+    </child>
     <child>
       <object class="GtkNotebook" id="toplevel_notebook">
         <property name="visible">True</property>
