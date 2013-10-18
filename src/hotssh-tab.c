@@ -387,9 +387,8 @@ on_connect (GtkButton     *button,
 
 static void
 on_disconnect (GtkButton     *button,
-	       HotSshTab  *self)
+	       HotSshTab     *self)
 {
-  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
   gtk_notebook_set_current_page ((GtkNotebook*)self, 0);
 }
@@ -577,7 +576,6 @@ static void
 hotssh_tab_dispose (GObject *object)
 {
   HotSshTab *self = HOTSSH_TAB (object);
-  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
 
   page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
 
@@ -613,4 +611,18 @@ HotSshTab *
 hotssh_tab_new (void)
 {
   return g_object_new (HOTSSH_TYPE_TAB, NULL);
+}
+
+HotSshTab *
+hotssh_tab_new_channel  (HotSshTab *source)
+{
+  HotSshTab *tab = hotssh_tab_new ();
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (tab);
+  HotSshTabPrivate *source_priv = hotssh_tab_get_instance_private (source);
+
+  state_reset_for_new_connection (tab);
+  priv->connection = g_object_ref (source_priv->connection);
+  on_connection_state_notify (priv->connection, NULL, tab);
+
+  return tab;
 }

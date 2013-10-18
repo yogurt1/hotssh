@@ -31,3 +31,4 @@ typedef struct _HotSshTabClass    HotSshTabClass;
 
 GType                   hotssh_tab_get_type     (void);
 HotSshTab              *hotssh_tab_new          (void);
+HotSshTab              *hotssh_tab_new_channel  (HotSshTab *source);

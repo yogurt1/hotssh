@@ -5,7 +5,7 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">_New Tab</attribute>
-        <attribute name="action">win.new-tab</attribute>
+        <attribute name="action">win.new-channel</attribute>
       </item>
     </section>
   </menu>
