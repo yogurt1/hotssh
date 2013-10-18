@@ -196,7 +196,8 @@ process_channel_reads (GSshConnection   *self)
   while (g_hash_table_iter_next (&hiter, &hkey, &hvalue))
     {
       GSshChannel *channel = hkey;
-      _gssh_channel_input_stream_iteration (channel->input_stream);
+      if (channel->input_stream)
+        _gssh_channel_input_stream_iteration (channel->input_stream);
     }
 }
 
@@ -210,7 +211,8 @@ process_channel_writes (GSshConnection   *self)
   while (g_hash_table_iter_next (&hiter, &hkey, &hvalue))
     {
       GSshChannel *channel = hkey;
-      _gssh_channel_output_stream_iteration (channel->output_stream);
+      if (channel->output_stream)
+        _gssh_channel_output_stream_iteration (channel->output_stream);
     }
 }
 
