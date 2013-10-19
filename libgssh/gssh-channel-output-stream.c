@@ -239,9 +239,9 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
           return;
 
         data = g_bytes_get_data (self->buf, &bufsize);
-        rc = libssh2_channel_write (self->channel->libsshchannel,
-                                    (const char*)data, bufsize);
-        if (rc == LIBSSH2_ERROR_EAGAIN)
+        rc = ssh_channel_write (self->channel->libsshchannel,
+                                (const char*)data, bufsize);
+        if (rc == 0)
           break;
 
         /* This special dance is required because we may have
@@ -254,8 +254,8 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
           }
         else
           {
-            _gssh_set_error_from_libssh2 (&local_error, "Failed to write",
-                                            self->channel->connection->session);
+            _gssh_set_error_from_libssh (&local_error, "Failed to write",
+                                         self->channel->connection->session);
             g_task_return_error (prev_write_task, local_error);
           }
         g_object_unref (prev_write_task);
@@ -263,17 +263,17 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
       break;
     case GSSH_CHANNEL_OUTPUT_STREAM_STATE_REQUESTED_EOF:
       {
-        rc = libssh2_channel_send_eof (self->channel->libsshchannel);
-        if (rc == LIBSSH2_ERROR_EAGAIN)
+        rc = ssh_channel_send_eof (self->channel->libsshchannel);
+        if (rc == SSH_AGAIN)
           break;
-        else if (rc == 0)
+        else if (rc == SSH_OK)
           {
             self->state = GSSH_CHANNEL_OUTPUT_STREAM_STATE_SENT_EOF;
           }
         else
           {
-            _gssh_set_error_from_libssh2 (&local_error, "Failed to close",
-                                            self->channel->connection->session);
+            _gssh_set_error_from_libssh (&local_error, "Failed to close",
+                                         self->channel->connection->session);
             g_task_return_error (self->close_task, local_error);
             g_clear_object (&self->close_task);
             break;
@@ -281,7 +281,7 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
       }
       /* Fall though */
     case GSSH_CHANNEL_OUTPUT_STREAM_STATE_SENT_EOF:
-      rc = libssh2_channel_eof (self->channel->libsshchannel);
+      rc = ssh_channel_is_eof (self->channel->libsshchannel);
       if (rc == 1)
         {
           g_task_return_boolean (self->close_task, TRUE);
@@ -293,14 +293,7 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
           break;
         }
       else
-        {
-          g_assert (rc < 0);
-          _gssh_set_error_from_libssh2 (&local_error, "Failed await closed state",
-                                          self->channel->connection->session);
-          g_task_return_error (self->close_task, local_error);
-          g_clear_object (&self->close_task);
-          break;
-        }
+        g_assert_not_reached ();
       /* Fall through */
     case GSSH_CHANNEL_OUTPUT_STREAM_STATE_RECEIVED_EOF:
       /* Nothing */

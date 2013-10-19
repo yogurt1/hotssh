@@ -95,17 +95,17 @@ _gssh_channel_iteration (GSshChannel              *self)
   if (self->pty_size_task)
     {
       GTask *orig_pty_size_task = self->pty_size_task;
-      rc = libssh2_channel_request_pty_size (self->libsshchannel,
-                                             self->pty_width, self->pty_height);
-      if (rc == LIBSSH2_ERROR_EAGAIN)
+      rc = ssh_channel_request_pty_size (self->libsshchannel, "xterm",
+                                         self->pty_width, self->pty_height);
+      if (rc == SSH_AGAIN)
         ;
       else 
         {
           self->pty_size_task = NULL;
           if (rc < 0)
             {
-              _gssh_set_error_from_libssh2 (&local_error, "Failed to set pty size",
-                                            self->connection->session);
+              _gssh_set_error_from_libssh (&local_error, "Failed to set pty size",
+                                           self->connection->session);
               g_task_return_error (orig_pty_size_task, local_error);
             }
           else
@@ -175,7 +175,7 @@ gssh_channel_class_init (GSshChannelClass *class)
 GSshChannel *
 _gssh_channel_new (GSshConnection   *connection,
                    gboolean         have_pty,
-                   LIBSSH2_CHANNEL *libsshchannel)
+                   ssh_channel      libsshchannel)
 {
   GSshChannel *self = (GSshChannel*)g_object_new (GSSH_TYPE_CHANNEL, NULL);
   /* We don't hold a ref; if the connection goes away, it will ensure

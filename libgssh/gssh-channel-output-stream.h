@@ -21,7 +21,7 @@
 #pragma once
 
 #include "gssh-channel.h"
-#include <libssh2.h>
+#include <libssh/libssh.h>
 
 #define GSSH_TYPE_CHANNEL_OUTPUT_STREAM (_gssh_channel_output_stream_get_type ())
 #define GSSH_CHANNEL_OUTPUT_STREAM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GSSH_TYPE_CHANNEL_OUTPUT_STREAM, GSshChannelOutputStream))

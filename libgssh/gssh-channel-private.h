@@ -31,7 +31,7 @@ struct _GSshChannel
 
   GSshConnection *connection;
   gboolean have_pty;
-  LIBSSH2_CHANNEL *libsshchannel;
+  ssh_channel libsshchannel;
 
   GTask *pty_size_task;
   guint pty_width;
@@ -48,7 +48,7 @@ struct _GSshChannelClass
 
 GSshChannel       *_gssh_channel_new (GSshConnection  *connection,
                                       gboolean         have_pty,
-                                      LIBSSH2_CHANNEL *libsshchannel);
+                                      ssh_channel      libsshchannel);
 
 
 void _gssh_channel_iteration (GSshChannel    *self);
