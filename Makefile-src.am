@@ -30,3 +30,10 @@ gsettings_SCHEMAS += src/org.gnome.hotssh.gschema.xml
 
 gschemas.compiled: src/org.gnome.hotssh.gschema.xml
 	glib-compile-schemas .
+
+desktopdir=$(datadir)/applications
+desktop_DATA = src/hotssh.desktop
+
+scalableiconsdir = $(datadir)/icons/hicolor/scalable/apps/
+scalableicons_DATA = src/hotssh.svg
+

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=HotSSH
+GenericName=Secure Shell
+Keywords=Secure Shell;
+Exec=hotssh
+Terminal=false
+StartupNotify=true
+Type=Application
+Icon=hotssh
+Categories=GNOME;GTK;
