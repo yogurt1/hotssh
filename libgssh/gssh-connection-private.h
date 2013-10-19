@@ -21,7 +21,7 @@
 #pragma once
 
 #include "gssh-connection.h"
-#include <libssh2.h>
+#include <libssh/libssh.h>
 
 struct _GSshConnection
 {
@@ -29,16 +29,18 @@ struct _GSshConnection
 
   GSshConnectionState state;
 
+  guint paused : 1;
   guint select_inbound : 1;
   guint select_outbound : 1;
+  guint tried_userauth_none : 1;
   guint preauth_continue : 1;
-  guint unused : 29;
+  guint unused : 27;
 
   char *username;
 
-  char **authschemes;
+  GPtrArray *authschemes;
 
-  LIBSSH2_SESSION *session;
+  ssh_session session;
   GHashTable *channels;
 
   GError *cached_error;
@@ -66,6 +68,6 @@ struct _GSshConnectionClass
 typedef struct _GSshConnectionPrivate GSshConnectionPrivate;
 
 void
-_gssh_set_error_from_libssh2 (GError         **error,
-                                const char      *prefix,
-                                LIBSSH2_SESSION *session);
+_gssh_set_error_from_libssh (GError         **error,
+                             const char      *prefix,
+                             ssh_session      session);

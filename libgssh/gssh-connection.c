@@ -43,18 +43,17 @@ typedef enum {
 typedef struct {
   char *exec_command; /* If NULL, then shell */
   GSshConnectionChannelCreationState state;
-  LIBSSH2_CHANNEL *libssh2channel;
+  ssh_channel libsshchannel;
 } GSshConnectionChannelCreationData;
 
 G_DEFINE_TYPE(GSshConnection, gssh_connection, G_TYPE_OBJECT);
 
 void
-_gssh_set_error_from_libssh2 (GError         **error,
-                                const char      *prefix,
-                                LIBSSH2_SESSION *session)
+_gssh_set_error_from_libssh (GError         **error,
+                             const char      *prefix,
+                             ssh_session      session)
 {
-  char *errmsg = NULL;
-  libssh2_session_last_error (session, &errmsg, NULL, FALSE);
+  const char *errmsg = ssh_get_error (session);
   g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED, "%s: %s", prefix, errmsg);
 }
 
@@ -91,7 +90,7 @@ reset_state (GSshConnection               *self)
   if (self->socket_source)
     g_source_destroy (self->socket_source);
   g_clear_pointer (&self->socket_source, g_source_unref);
-  g_clear_pointer (&self->authschemes, g_strfreev);
+  g_clear_pointer (&self->authschemes, g_ptr_array_unref);
 }
 
 static void
@@ -155,10 +154,13 @@ on_socket_ready (GSocket *socket,
 static void
 recalculate_socket_state (GSshConnection   *self)
 {
-  int directions = libssh2_session_block_directions (self->session);
-  guint block_inbound = (directions & LIBSSH2_SESSION_BLOCK_INBOUND) ? 1 : 0;
-  guint block_outbound = (directions & LIBSSH2_SESSION_BLOCK_OUTBOUND) ? 1 : 0;
+  int status = ssh_get_poll_flags (self->session);
+  guint block_inbound = (status & SSH_READ_PENDING) > 0;
+  guint block_outbound = (status & SSH_WRITE_PENDING) > 0;
   GIOCondition conditions = G_IO_HUP | G_IO_ERR;
+
+  if (self->paused)
+    block_inbound = block_outbound = 0;
 
   if (block_inbound == self->select_inbound &&
       block_outbound == self->select_outbound &&
@@ -170,7 +172,7 @@ recalculate_socket_state (GSshConnection   *self)
     conditions |= G_IO_IN;
   self->select_outbound = block_outbound;
   if (self->select_outbound)
-    conditions |= G_IO_IN;
+    conditions |= G_IO_OUT;
   
   if (self->socket_source)
     { 
@@ -242,69 +244,70 @@ process_channels (GSshConnection   *self,
         {
         case GSSH_CONNECTION_CHANNEL_CREATION_STATE_OPEN_SESSION:
           {
-            data->libssh2channel = libssh2_channel_open_session (self->session);
-            if (data->libssh2channel == NULL)
+            if (!data->libsshchannel)
+              data->libsshchannel = ssh_channel_new (self->session);
+            g_assert (data->libsshchannel);  /* Should only fail on OOM */
+            rc = ssh_channel_open_session (data->libsshchannel);
+            if (rc == SSH_OK)
+              ;
+            else if (rc == SSH_AGAIN)
               {
-                if (libssh2_session_last_error (self->session, NULL, NULL, 0) == LIBSSH2_ERROR_EAGAIN)
-                  break;
-                else
-                  {
-                    _gssh_set_error_from_libssh2 (&local_error, "Failed to open session: ", self->session);
-                    g_task_return_error (task, local_error);
-                    g_hash_table_iter_remove (&hiter);
-                    break;
-                  }
+                break;
+              }
+            else
+              {
+                _gssh_set_error_from_libssh (&local_error, "Failed to open session: ", self->session);
+                g_task_return_error (task, local_error);
+                g_hash_table_iter_remove (&hiter);
+                break;
               }
             data->state = GSSH_CONNECTION_CHANNEL_CREATION_STATE_REQUEST_PTY;
             /* Fall through */
           }
         case GSSH_CONNECTION_CHANNEL_CREATION_STATE_REQUEST_PTY:
           {
-            rc = libssh2_channel_request_pty (data->libssh2channel, "xterm");
-            if (rc == LIBSSH2_ERROR_EAGAIN)
-              break;
-            else if (rc < 0)
+            rc = ssh_channel_request_pty (data->libsshchannel);
+            if (rc == SSH_OK)
               {
-                _gssh_set_error_from_libssh2 (&local_error, "Failed to open session: ", self->session);
+                data->state = GSSH_CONNECTION_CHANNEL_CREATION_STATE_EXEC;
+              }
+            else if (rc == SSH_AGAIN)
+              break;
+            else
+              {
+                _gssh_set_error_from_libssh (&local_error, "Failed to open session: ", self->session);
                 g_task_return_error (task, local_error);
                 g_hash_table_iter_remove (&hiter);
                 break;
-              }
-            else
-              {
-                g_assert (rc == 0);
-                data->state = GSSH_CONNECTION_CHANNEL_CREATION_STATE_EXEC;
               }
             /* Fall through */
           } 
         case GSSH_CONNECTION_CHANNEL_CREATION_STATE_EXEC:
           {
             if (data->exec_command == NULL)
-              rc = libssh2_channel_shell (data->libssh2channel);
+              rc = ssh_channel_request_shell (data->libsshchannel);
             else
-              rc = libssh2_channel_process_startup (data->libssh2channel,
-                                                    "exec", 4,
-                                                    data->exec_command,
-                                                    strlen (data->exec_command));
-            if (rc == LIBSSH2_ERROR_EAGAIN)
-              break;
-            else if (rc < 0)
-              {
-                _gssh_set_error_from_libssh2 (&local_error, "Failed to exec: ", self->session);
-                g_task_return_error (task, local_error);
-                g_hash_table_iter_remove (&hiter);
-                break;
-              }
-            else
+              rc = ssh_channel_request_exec (data->libsshchannel,
+                                             data->exec_command);
+            if (rc == SSH_OK)
               {
                 GSshChannel *new_channel; 
 
                 g_assert (rc == 0);
 
-                new_channel = _gssh_channel_new (self, TRUE, data->libssh2channel);
+                new_channel = _gssh_channel_new (self, TRUE, data->libsshchannel);
                 g_hash_table_insert (self->channels, new_channel, new_channel);
 
                 g_task_return_pointer (task, new_channel, g_object_unref);
+                g_hash_table_iter_remove (&hiter);
+                break;
+              }
+            else if (rc == SSH_AGAIN)
+              break;
+            else
+              {
+                _gssh_set_error_from_libssh (&local_error, "Failed to exec: ", self->session);
+                g_task_return_error (task, local_error);
                 g_hash_table_iter_remove (&hiter);
                 break;
               }
@@ -313,9 +316,54 @@ process_channels (GSshConnection   *self,
     }
 }
 
+static gboolean
+set_hostkey_sha1 (GSshConnection           *self,
+                  GError                  **error)
+{
+  gboolean ret = FALSE;
+  int rc;
+  ssh_key key = NULL;
+  char *key_b64;
+  guint8 *key_raw;
+  gsize key_len;
+  guint8 sha1buf[20];
+  gsize sha1len = sizeof (sha1buf);
+  GChecksum *csum;
+
+  rc = ssh_get_publickey (self->session, &key);
+  if (rc != SSH_OK)
+    {
+      _gssh_set_error_from_libssh (error, "Failed to get public key", self->session);
+      goto out;
+    }
+
+  rc = ssh_pki_export_pubkey_base64 (key, &key_b64);
+  if (rc != SSH_OK)
+    {
+      _gssh_set_error_from_libssh (error, "Failed to export public key", self->session);
+      goto out;
+    }
+
+  key_raw = g_base64_decode (key_b64, &key_len);
+  g_assert (key_raw);
+
+  csum = g_checksum_new (G_CHECKSUM_SHA1);
+  g_checksum_update (csum, key_raw, key_len);
+  g_checksum_get_digest (csum, sha1buf, &sha1len);
+  g_assert (sha1len == sizeof (sha1buf));
+
+  self->remote_hostkey_sha1 = g_bytes_new (sha1buf, sha1len);
+
+  ret = TRUE;
+ out:
+  if (key)
+    ssh_key_free (key);
+  return ret;
+}
+
 static void
-gssh_connection_iteration (GSshConnection   *self,
-                             GIOCondition        condition)
+gssh_connection_iteration_internal (GSshConnection   *self,
+                                    GIOCondition        condition)
 {
   GError *local_error = NULL;
   GError **error = &local_error;
@@ -333,96 +381,127 @@ gssh_connection_iteration (GSshConnection   *self,
       break;
     case GSSH_CONNECTION_STATE_HANDSHAKING:
       {
-	int socket_fd = g_socket_get_fd (self->socket);
-        if ((rc = libssh2_session_handshake (self->session, socket_fd)) == LIBSSH2_ERROR_EAGAIN)
+        rc = ssh_connect (self->session);
+        if (rc == SSH_OK)
           {
-            recalculate_socket_state (self);
+            if (!set_hostkey_sha1 (self, error))
+              {
+                g_task_return_error (self->handshake_task, local_error);
+                g_clear_object (&self->handshake_task);
+                return;
+              }
+          }
+        else if (rc == SSH_AGAIN)
+          {
             return;
           }
-        if (rc)
+        else
           {
-            _gssh_set_error_from_libssh2 (error, "Failed to handshake SSH2 session", self->session);
+            _gssh_set_error_from_libssh (error, "Failed to handshake SSH2 session", self->session);
             g_task_return_error (self->handshake_task, local_error);
             g_clear_object (&self->handshake_task);
             return;
           }
-        self->remote_hostkey_sha1 = g_bytes_new (libssh2_hostkey_hash (self->session, LIBSSH2_HOSTKEY_HASH_SHA1), 20);
+        
         g_task_return_boolean (self->handshake_task, TRUE);
         g_clear_object (&self->handshake_task);
+
         state_transition (self, GSSH_CONNECTION_STATE_PREAUTH);
-        goto repeat;
+        /* Fall through */
       }
     case GSSH_CONNECTION_STATE_PREAUTH:
       {
-        const char *authschemes;
-
-        if (!self->preauth_continue)
-          break;
-
-        authschemes = libssh2_userauth_list (self->session,
-                                             self->username,
-                                             strlen (self->username));
-        if (authschemes == NULL)
+        int method;
+        if (!self->tried_userauth_none)
           {
-            if (libssh2_userauth_authenticated (self->session))
+            /* Now try the NONE authentication; if it succeeds we jump
+             * directly to authenticated.
+             */
+            rc = ssh_userauth_none (self->session, NULL);
+            if (rc == SSH_AUTH_AGAIN)
               {
-                /* Unusual according to the docs, but it's
-                 * possible for the remote server to be
-                 * configured without auth.
-                 */
+                return;
+              }
+            else if (rc == SSH_AUTH_SUCCESS)
+              {
                 state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
                 goto repeat;
               }
-            else if (libssh2_session_last_error (self->session, NULL, NULL, 0) == LIBSSH2_ERROR_EAGAIN)
+            else if (rc == SSH_AUTH_ERROR)
               {
-                recalculate_socket_state (self);
+                _gssh_set_error_from_libssh (error, "NONE authentication failed", self->session);
+                g_task_return_error (self->handshake_task, local_error);
+                g_clear_object (&self->handshake_task);
                 return;
               }
             else
               {
-                _gssh_set_error_from_libssh2 (error, "Failed to list auth mechanisms", self->session);
-                state_transition_take_error (self, local_error);
-                return;
+                g_assert (rc == SSH_AUTH_DENIED);
+                self->tried_userauth_none = TRUE;
               }
           }
-        self->authschemes = g_strsplit (authschemes, ",", 0);
+
+        g_clear_pointer (&self->authschemes, g_ptr_array_unref);
+        self->authschemes = g_ptr_array_new ();
+        method = ssh_userauth_list (self->session, NULL);
+
+        if (method & SSH_AUTH_METHOD_PASSWORD)
+          g_ptr_array_add (self->authschemes, "password");
+        if (method & SSH_AUTH_METHOD_GSSAPI_MIC)
+          g_ptr_array_add (self->authschemes, "gssapi-mic");
+        if (method & SSH_AUTH_METHOD_PUBLICKEY)
+          g_ptr_array_add (self->authschemes, "publickey");
+        if (method & SSH_AUTH_METHOD_HOSTBASED)
+          g_ptr_array_add (self->authschemes, "hostbased");
+        if (method & SSH_AUTH_METHOD_INTERACTIVE)
+          g_ptr_array_add (self->authschemes, "keyboard-interactive");
+
+        g_ptr_array_add (self->authschemes, NULL);
+
+        if (!self->preauth_continue)
+          {
+            self->paused = TRUE;
+            break;
+          }
+
         state_transition (self, GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
-        goto repeat;
+        /* Fall through */
       }
-      break;
     case GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED:
       {
+        int method;
+
+        method = ssh_userauth_list (self->session, NULL);
         /* User should have connected to notify:: state and
          * watch for AUTHENTICATION_REQUIRED, then call
          * gssh_connection_auth_password_async().
          */
         if (self->auth_task != NULL)
           {
-            if (self->password)
+            if ((method & SSH_AUTH_METHOD_PASSWORD) && self->password)
               {
-                rc = libssh2_userauth_password (self->session, self->username, self->password);
-                if (rc == LIBSSH2_ERROR_EAGAIN)
+                rc = ssh_userauth_password (self->session, NULL, self->password);
+                if (rc == SSH_AUTH_AGAIN)
                   {
-                    recalculate_socket_state (self);
+                    return;
                   }
-                else if (rc == LIBSSH2_ERROR_AUTHENTICATION_FAILED)
+                else if (rc == SSH_AUTH_ERROR)
+                  {
+                    _gssh_set_error_from_libssh (error, "Failed to password auth", self->session);
+                    g_task_return_error (self->auth_task, local_error);
+                    g_clear_object (&self->auth_task);
+                  }
+                else if (rc == SSH_AUTH_DENIED)
                   {
                     g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED,
                                          "Authentication failed");
                     g_task_return_error (self->auth_task, local_error);
                   }
-                else if (rc == LIBSSH2_ERROR_PASSWORD_EXPIRED)
+                else if (rc == SSH_AUTH_PARTIAL)
                   {
-                    g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED,
-                                         "Password expired");
+                    g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PARTIAL_INPUT,
+                                         "Need to continue authentication");
                     g_task_return_error (self->auth_task, local_error);
-                    g_clear_object (&self->auth_task);
-                  }
-                else if (rc)
-                  {
-                    _gssh_set_error_from_libssh2 (error, "Failed to password auth", self->session);
-                    g_task_return_error (self->auth_task, local_error);
-                    g_clear_object (&self->auth_task);
                   }
                 else
                   {
@@ -445,6 +524,14 @@ gssh_connection_iteration (GSshConnection   *self,
     case GSSH_CONNECTION_STATE_ERROR:
       break;
     }
+}
+
+static void
+gssh_connection_iteration (GSshConnection   *self,
+                           GIOCondition        condition)
+{
+  gssh_connection_iteration_internal (self, condition);
+  recalculate_socket_state (self);
 }
 
 static void
@@ -485,7 +572,7 @@ on_socket_client_connected (GObject         *src,
   GSshConnection *self = user_data;
   GError *local_error = NULL;
   GError **error = &local_error;
-  gs_free char *version_str = NULL;
+  int fd;
 
   g_assert (src == (GObject*)self->socket_client);
 
@@ -496,22 +583,23 @@ on_socket_client_connected (GObject         *src,
 
   self->socket = g_socket_connection_get_socket (self->socketconn);
 
-  self->session = libssh2_session_init ();
+  self->session = ssh_new ();
+  ssh_set_log_level (SSH_LOG_FUNCTIONS);
   if (!self->session)
     {
       g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED,
                            "Failed to initialize SSH2 session");
       goto out;
     }
+  
+  fd = g_socket_get_fd (self->socket);
 
-  libssh2_session_set_blocking (self->session, 0);
-  version_str = g_strdup_printf ("SSH-2.0-libgssh_%s_libssh2_%s",
-                                 PACKAGE_VERSION, libssh2_version (0));
-  libssh2_session_banner_set (self->session, version_str);
+  ssh_set_blocking (self->session, 0);
+  ssh_options_set (self->session, SSH_OPTIONS_FD, &fd);
+  ssh_options_set (self->session, SSH_OPTIONS_USER, self->username);
 
   state_transition (self, GSSH_CONNECTION_STATE_HANDSHAKING);
 
-  recalculate_socket_state (self);
   gssh_connection_iteration_default (self);
 
   return;
@@ -551,13 +639,14 @@ gssh_connection_preauth_continue (GSshConnection *self)
   g_return_if_fail (self->state == GSSH_CONNECTION_STATE_PREAUTH);
   g_return_if_fail (!self->preauth_continue);
   self->preauth_continue = TRUE;
+  self->paused = FALSE;
   gssh_connection_iteration_default (self);
 }
 
 const char*const*
 gssh_connection_get_authentication_mechanisms (GSshConnection   *self)
 {
-  return (const char *const*)self->authschemes;
+  return (const char *const*)self->authschemes->pdata;
 }
 
 void

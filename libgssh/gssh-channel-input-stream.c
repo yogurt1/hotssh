@@ -194,9 +194,9 @@ _gssh_channel_input_stream_iteration (GSshChannelInputStream     *self)
     return;
 
   g_assert (!self->is_closed);
-  rc = libssh2_channel_read (self->channel->libsshchannel,
-                             self->buf, self->count);
-  if (rc == LIBSSH2_ERROR_EAGAIN)
+  rc = ssh_channel_read_nonblocking (self->channel->libsshchannel,
+                                     self->buf, self->count, 0);
+  if (rc == 0)
     return;
 
   /* This special dance is required because we may have reentered via
@@ -209,8 +209,8 @@ _gssh_channel_input_stream_iteration (GSshChannelInputStream     *self)
     }
   else
     {
-      _gssh_set_error_from_libssh2 (&local_error, "Failed to read",
-                                      self->channel->connection->session);
+      _gssh_set_error_from_libssh (&local_error, "Failed to read",
+                                   self->channel->connection->session);
       g_task_return_error (prev_task, local_error);
     }
   g_object_unref (prev_task);

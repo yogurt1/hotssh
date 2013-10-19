@@ -75,12 +75,8 @@ hotssh_app_startup (GApplication *app)
 {
   GtkBuilder *builder;
   GMenuModel *app_menu;
-  int rc;
 
   G_APPLICATION_CLASS (hotssh_app_parent_class)->startup (app);
-
-  rc = libssh2_init (0);
-  g_assert (rc == 0);
 
   g_action_map_add_action_entries (G_ACTION_MAP (app),
                                    app_entries, G_N_ELEMENTS (app_entries),
