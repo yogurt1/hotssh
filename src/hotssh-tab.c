@@ -64,7 +64,6 @@ struct _HotSshTabPrivate
   GtkWidget *hostkey_container;
   GtkWidget *hostkey_fingerprint_label;
   GtkWidget *approve_hostkey_button;
-  GtkWidget *disconnect_button;
   GtkWidget *terminal_box;
 
   /* State */
@@ -386,14 +385,6 @@ on_connect (GtkButton     *button,
 }
 
 static void
-on_disconnect (GtkButton     *button,
-	       HotSshTab     *self)
-{
-  page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
-  gtk_notebook_set_current_page ((GtkNotebook*)self, 0);
-}
-
-static void
 process_write_queue (HotSshTab        *self);
 
 static void
@@ -565,7 +556,6 @@ hotssh_tab_init (HotSshTab *self)
   g_signal_connect (priv->connect_cancel_button, "clicked", G_CALLBACK (on_connect_cancel), self);
   g_signal_connect (priv->auth_cancel_button, "clicked", G_CALLBACK (on_connect_cancel), self);
   g_signal_connect (priv->approve_hostkey_button, "clicked", G_CALLBACK (on_approve_hostkey_clicked), self);
-  g_signal_connect (priv->disconnect_button, "clicked", G_CALLBACK (on_disconnect), self);
   g_signal_connect_swapped (priv->password_entry, "activate", G_CALLBACK (submit_password), self);
   g_signal_connect_swapped (priv->password_submit, "clicked", G_CALLBACK (submit_password), self);
 
@@ -609,7 +599,6 @@ hotssh_tab_class_init (HotSshTabClass *class)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, hostkey_container);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, hostkey_fingerprint_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, approve_hostkey_button);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, disconnect_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, terminal_box);
 
   GTK_WIDGET_CLASS (class)->grab_focus = hotssh_tab_grab_focus;
@@ -633,4 +622,11 @@ hotssh_tab_new_channel  (HotSshTab *source)
   on_connection_state_notify (priv->connection, NULL, tab);
 
   return tab;
+}
+
+void
+hotssh_tab_disconnect  (HotSshTab *self)
+{
+  page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
+  gtk_notebook_set_current_page ((GtkNotebook*)self, 0);
 }

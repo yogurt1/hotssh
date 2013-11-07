@@ -30,10 +30,14 @@ static void new_tab_activated (GSimpleAction    *action,
 static void new_channel_activated (GSimpleAction    *action,
                                    GVariant         *parameter,
                                    gpointer          user_data);
+static void disconnect_activated (GSimpleAction    *action,
+                                  GVariant         *parameter,
+                                  gpointer          user_data);
 
 static GActionEntry win_entries[] = {
   { "new-tab", new_tab_activated, NULL, NULL, NULL },
-  { "new-channel", new_channel_activated, NULL, NULL, NULL }
+  { "new-channel", new_channel_activated, NULL, NULL, NULL },
+  { "disconnect", disconnect_activated, NULL, NULL, NULL }
 };
 
 struct _HotSshWindow
@@ -163,6 +167,19 @@ new_tab_activated (GSimpleAction    *action,
   HotSshWindow *self = user_data;
 
   hotssh_win_append_tab (self, FALSE);
+}
+
+static void
+disconnect_activated (GSimpleAction    *action,
+                      GVariant         *parameter,
+                      gpointer          user_data)
+{
+  HotSshWindow *self = user_data;
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  guint i = gtk_notebook_get_current_page ((GtkNotebook*)priv->main_notebook);
+  HotSshTab *current_tab = (HotSshTab*)gtk_notebook_get_nth_page ((GtkNotebook*)priv->main_notebook, i);
+
+  hotssh_tab_disconnect (current_tab);
 }
 
 static void
