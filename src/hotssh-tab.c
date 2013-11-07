@@ -560,6 +560,7 @@ hotssh_tab_init (HotSshTab *self)
   g_signal_connect_swapped (priv->password_submit, "clicked", G_CALLBACK (submit_password), self);
 
   priv->terminal = vte_terminal_new ();
+  vte_terminal_set_audible_bell ((VteTerminal*)priv->terminal, FALSE);  /* Audible bell is a terrible idea */
   g_signal_connect ((GObject*)priv->terminal, "size-allocate", G_CALLBACK (on_terminal_size_allocate), self);
   g_signal_connect ((GObject*)priv->terminal, "commit", G_CALLBACK (on_terminal_commit), self);
   gtk_box_pack_start ((GtkBox*)priv->terminal_box, (GtkWidget*)priv->terminal, TRUE, TRUE, 0);
