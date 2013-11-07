@@ -131,6 +131,7 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
   HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
   GtkWidget *label;
   HotSshTab *tab;
+  int idx;
 
   if (new_channel)
     {
@@ -146,12 +147,11 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
   g_object_set_data ((GObject*)tab, "window", self);
   label = create_tab_label (self, tab);
   
-  gtk_notebook_append_page ((GtkNotebook*)priv->main_notebook,
-			    (GtkWidget*)tab,
-			    (GtkWidget*)label);
-
-  gtk_widget_show_all (priv->main_notebook);
-
+  idx = gtk_notebook_append_page ((GtkNotebook*)priv->main_notebook,
+                                  (GtkWidget*)tab,
+                                  (GtkWidget*)label);
+  gtk_widget_show_all (tab);
+  gtk_notebook_set_current_page ((GtkNotebook*)priv->main_notebook, idx);
   gtk_widget_grab_focus ((GtkWidget*)tab);
 }
 
