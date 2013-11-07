@@ -549,6 +549,12 @@ on_terminal_size_allocate (GtkWidget    *widget,
 }
 
 static void
+hotssh_tab_grab_focus (GtkWidget *widget)
+{
+  reset_focus_state ((HotSshTab*)widget);
+}
+
+static void
 hotssh_tab_init (HotSshTab *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
@@ -605,6 +611,8 @@ hotssh_tab_class_init (HotSshTabClass *class)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, approve_hostkey_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, disconnect_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, terminal_box);
+
+  GTK_WIDGET_CLASS (class)->grab_focus = hotssh_tab_grab_focus;
 }
 
 HotSshTab *
