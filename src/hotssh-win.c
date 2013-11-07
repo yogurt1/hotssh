@@ -151,6 +151,8 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
 			    (GtkWidget*)label);
 
   gtk_widget_show_all (priv->main_notebook);
+
+  gtk_widget_grab_focus ((GtkWidget*)tab);
 }
 
 static void
