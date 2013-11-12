@@ -39,8 +39,7 @@ typedef struct _HotSshPrefsPrivate HotSshPrefsPrivate;
 struct _HotSshPrefsPrivate
 {
   GSettings *settings;
-  GtkWidget *font;
-  GtkWidget *transition;
+  GtkWidget *match_system_terminal_style;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE(HotSshPrefs, hotssh_prefs, GTK_TYPE_DIALOG)
@@ -60,11 +59,8 @@ hotssh_prefs_init (HotSshPrefs *prefs)
   gtk_widget_init_template (GTK_WIDGET (prefs));
   priv->settings = g_settings_new ("org.gnome.hotssh");
 
-  g_settings_bind (priv->settings, "font",
-                   priv->font, "font",
-                   G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (priv->settings, "transition",
-                   priv->transition, "active-id",
+  g_settings_bind (priv->settings, "match-system-terminal-style",
+                   priv->match_system_terminal_style, "active",
                    G_SETTINGS_BIND_DEFAULT);
 }
 
@@ -86,8 +82,7 @@ hotssh_prefs_class_init (HotSshPrefsClass *class)
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (class),
                                                "/org/gnome/hotssh/prefs.ui");
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshPrefs, font);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshPrefs, transition);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshPrefs, match_system_terminal_style);
 
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (class), preferences_closed);
 }

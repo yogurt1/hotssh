@@ -48,6 +48,7 @@ typedef enum {
 
 struct _HotSshTabPrivate
 {
+  GSettings *settings;
   GtkWidget *terminal;
 
   /* Bound via template */
@@ -549,6 +550,8 @@ static void
 hotssh_tab_init (HotSshTab *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+
+  priv->settings = g_settings_new ("org.gnome.hotssh");
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
