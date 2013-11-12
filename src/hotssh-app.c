@@ -24,8 +24,6 @@
 
 #include "libgsystem.h"
 
-#include <libssh2.h>
-
 struct _HotSshApp
 {
   GtkApplication parent;

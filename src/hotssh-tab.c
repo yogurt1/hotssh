@@ -23,9 +23,9 @@
 
 #include "libgsystem.h"
 
-#include <libssh2.h>
 #include <vte/vte.h>
 #include <stdio.h>
+#include <string.h>
 
 struct _HotSshTab
 {
