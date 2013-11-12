@@ -541,6 +541,24 @@ on_terminal_size_allocate (GtkWidget    *widget,
 }
 
 static void
+hotssh_tab_style_updated (GtkWidget      *widget)
+{
+  HotSshTab   *self = (HotSshTab*)widget;
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  GtkStyleContext *context;
+  GdkRGBA fg, bg;
+
+  GTK_WIDGET_CLASS (hotssh_tab_parent_class)->style_updated (widget);
+
+  context = gtk_widget_get_style_context (widget);
+  gtk_style_context_get_color (context, GTK_STATE_FLAG_NORMAL, &fg);
+  gtk_style_context_get_background_color (context, GTK_STATE_FLAG_NORMAL, &bg);
+
+  vte_terminal_set_color_foreground_rgba ((VteTerminal*)priv->terminal, &fg);
+  vte_terminal_set_color_background_rgba ((VteTerminal*)priv->terminal, &bg);
+}
+
+static void
 hotssh_tab_grab_focus (GtkWidget *widget)
 {
   reset_focus_state ((HotSshTab*)widget);
@@ -563,6 +581,7 @@ hotssh_tab_init (HotSshTab *self)
   g_signal_connect_swapped (priv->password_submit, "clicked", G_CALLBACK (submit_password), self);
 
   priv->terminal = vte_terminal_new ();
+  hotssh_tab_style_updated ((GtkWidget *) self);
   vte_terminal_set_audible_bell ((VteTerminal*)priv->terminal, FALSE);  /* Audible bell is a terrible idea */
   g_signal_connect ((GObject*)priv->terminal, "size-allocate", G_CALLBACK (on_terminal_size_allocate), self);
   g_signal_connect ((GObject*)priv->terminal, "commit", G_CALLBACK (on_terminal_commit), self);
@@ -606,6 +625,7 @@ hotssh_tab_class_init (HotSshTabClass *class)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, terminal_box);
 
   GTK_WIDGET_CLASS (class)->grab_focus = hotssh_tab_grab_focus;
+  GTK_WIDGET_CLASS (class)->style_updated = hotssh_tab_style_updated;
 }
 
 HotSshTab *
