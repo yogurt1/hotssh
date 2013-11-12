@@ -154,7 +154,7 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
   idx = gtk_notebook_append_page ((GtkNotebook*)priv->main_notebook,
                                   (GtkWidget*)tab,
                                   (GtkWidget*)label);
-  gtk_widget_show_all (tab);
+  gtk_widget_show_all ((GtkWidget*)tab);
   gtk_notebook_set_current_page ((GtkNotebook*)priv->main_notebook, idx);
   gtk_widget_grab_focus ((GtkWidget*)tab);
 }
