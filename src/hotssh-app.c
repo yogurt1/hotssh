@@ -19,6 +19,7 @@
  */
 
 #include "hotssh-app.h"
+#include "hotssh-search-provider.h"
 #include "hotssh-win.h"
 #include "hotssh-prefs.h"
 
@@ -27,6 +28,7 @@
 struct _HotSshApp
 {
   GtkApplication parent;
+  HotSshSearchProvider *search_provider;
 };
 
 struct _HotSshAppClass
@@ -71,10 +73,13 @@ static GActionEntry app_entries[] =
 static void
 hotssh_app_startup (GApplication *app)
 {
+  HotSshApp *hotssh_app = HOTSSH_APP (app);
   GtkBuilder *builder;
   GMenuModel *app_menu;
 
   G_APPLICATION_CLASS (hotssh_app_parent_class)->startup (app);
+
+  hotssh_app->search_provider = hotssh_search_provider_new (hotssh_app);
 
   g_action_map_add_action_entries (G_ACTION_MAP (app),
                                    app_entries, G_N_ELEMENTS (app_entries),

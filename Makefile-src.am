@@ -1,16 +1,34 @@
 bin_PROGRAMS += hotssh
 
+hotssh_dbus_h_files =
+hotssh_dbus_c_files =
+
+hotssh-search-glue.c hotssh-search-glue.h: Makefile-src.am src/org.gnome.ShellSearchProvider2.xml
+	$(AM_V_GEN)gdbus-codegen					\
+		--c-namespace=HotSshSearch				\
+		--interface-prefix=org.gnome				\
+		--generate-c-code=hotssh-search-glue			\
+		$(srcdir)/src/org.gnome.ShellSearchProvider2.xml
+hotssh_dbus_h_files += hotssh-search-glue.h
+hotssh_dbus_c_files += hotssh-search-glue.c
+
+BUILT_SOURCES += $(hotssh_dbus_h_files) $(hotssh_dbus_c_files)
+
 hotssh_headers = $(addprefix src/, \
 	hotssh-app.h \
+	hotssh-search-provider.h \
 	hotssh-tab.h \
 	hotssh-password-interaction.h \
 	hotssh-win.h \
 	hotssh-prefs.h \
-	)
+	) \
+	$(hotssh_dbus_h_files)
 
 hotssh_SOURCES = $(hotssh_headers) \
+	$(hotssh_dbus_c_files) \
 	src/main.c \
 	src/hotssh-app.c \
+	src/hotssh-search-provider.c \
 	src/hotssh-tab.c \
 	src/hotssh-password-interaction.c \
 	src/hotssh-win.c \
@@ -33,6 +51,9 @@ gsettingsschema_DATA = src/org.gnome.hotssh.gschema.xml
 
 desktopdir=$(datadir)/applications
 desktop_DATA = src/hotssh.desktop
+
+searchproviderdir = $(datadir)/gnome-shell/search-providers
+searchprovider_DATA = src/hotssh-search-provider.ini
 
 scalableiconsdir = $(datadir)/icons/hicolor/scalable/apps/
 scalableicons_DATA = src/hotssh.svg
