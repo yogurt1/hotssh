@@ -412,6 +412,13 @@ gssh_connection_iteration_internal (GSshConnection   *self,
     case GSSH_CONNECTION_STATE_PREAUTH:
       {
         int method;
+
+        if (!self->preauth_continue)
+          {
+            self->paused = TRUE;
+            break;
+          }
+
         if (!self->tried_userauth_none)
           {
             /* Now try the NONE authentication; if it succeeds we jump
@@ -457,12 +464,6 @@ gssh_connection_iteration_internal (GSshConnection   *self,
           g_ptr_array_add (self->authschemes, "keyboard-interactive");
 
         g_ptr_array_add (self->authschemes, NULL);
-
-        if (!self->preauth_continue)
-          {
-            self->paused = TRUE;
-            break;
-          }
 
         state_transition (self, GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
         /* Fall through */
