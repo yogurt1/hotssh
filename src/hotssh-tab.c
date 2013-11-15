@@ -79,6 +79,7 @@ struct _HotSshTabPrivate
   HotSshTabPage active_page;
   guint authmechanism_index;
 
+  char *hostname;
   GSocketConnectable *address;
   GSshConnection *connection;
   GSshChannel *channel;
@@ -119,6 +120,7 @@ state_reset_for_new_connection (HotSshTab                *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   g_debug ("reset state");
+  g_clear_pointer (&priv->hostname, g_free);
   g_clear_object (&priv->address);
   g_clear_object (&priv->connection);
   g_clear_object (&priv->cancellable);
@@ -442,6 +444,8 @@ on_connect (GtkButton     *button,
       return;
     }
 
+  priv->hostname = g_strdup (hostname);
+
   g_clear_object (&priv->connection);
   priv->connection = gssh_connection_new (priv->address, username); 
   gssh_connection_set_interaction (priv->connection, (GTlsInteraction*)priv->password_interaction);
@@ -745,4 +749,11 @@ hotssh_tab_disconnect  (HotSshTab *self)
 {
   page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
   gtk_notebook_set_current_page ((GtkNotebook*)self, 0);
+}
+
+const char *
+hotssh_tab_get_hostname (HotSshTab *self)
+{
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  return priv->hostname;
 }

@@ -23,6 +23,10 @@
 
 #include "hotssh-search-provider.h"
 #include "hotssh-search-glue.h"
+#include "hotssh-tab.h"
+#include "hotssh-win.h"
+
+#include "libgsystem.h"
 
 struct _HotSshSearchProvider
 {
@@ -46,28 +50,78 @@ struct _HotSshSearchProviderPrivate
 G_DEFINE_TYPE_WITH_PRIVATE(HotSshSearchProvider, hotssh_search_provider, G_TYPE_OBJECT)
 
 static char **
+get_open_servers (HotSshSearchProvider *search_provider)
+{
+  HotSshSearchProviderPrivate *priv = hotssh_search_provider_get_instance_private (search_provider);
+  gs_unref_hashtable GHashTable *servers = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+  GList *windows;
+  GList *l;
+  gchar **result;
+  GHashTableIter iter;
+  gpointer key;
+  int i;
+
+  windows = gtk_application_get_windows (GTK_APPLICATION (priv->app));
+  for (l = windows; l; l = l->next)
+    {
+      if (HOTSSH_IS_WINDOW (l->data))
+        {
+          HotSshWindow *window = l->data;
+          GList *tabs = hotssh_window_get_tabs (window);
+          GList *ll;
+
+          for (ll = tabs; ll; ll = ll->next)
+            {
+              HotSshTab *tab = ll->data;
+              const char *hostname = hotssh_tab_get_hostname (tab);
+              if (hostname != NULL)
+                g_hash_table_replace (servers, g_strdup (hostname), GUINT_TO_POINTER (1));
+            }
+
+          g_list_free (tabs);
+        }
+    }
+
+  result = g_new (char *, g_hash_table_size (servers) + 1);
+
+  i = 0;
+  g_hash_table_iter_init (&iter, servers);
+  while (g_hash_table_iter_next (&iter, &key, NULL))
+    {
+      result[i] = g_strdup (key);
+      i++;
+    }
+  result[i] = NULL;
+
+  return result;
+}
+
+static char **
 get_results (HotSshSearchProvider *search_provider,
              char                **terms)
 {
-  char **term;
-  gboolean match = TRUE;
+  gs_strfreev char **open_servers = get_open_servers (search_provider);
+  GPtrArray *matches = g_ptr_array_new ();
+  char **server;
 
-  for (term = terms; *term; term++)
+  for (server = open_servers; *server; server++)
     {
-      if (strstr ("foo.example.com", *term) == NULL)
-        match = FALSE;
+      char **term;
+      gboolean match = TRUE;
+
+      for (term = terms; *term; term++)
+        {
+          if (strstr (*server, *term) == NULL)
+            match = FALSE;
+        }
+
+      if (match)
+        g_ptr_array_add (matches, g_strdup (*server));
     }
 
-  if (match)
-    {
-      const char * const results[] = { "foo.example.com", NULL };
-      return g_strdupv ((char **)results);
-    }
-  else
-    {
-      const char * const results[] = { NULL };
-      return g_strdupv ((char **)results);
-    }
+  g_ptr_array_add (matches, NULL);
+
+  return (char **)g_ptr_array_free (matches, FALSE);
 }
 
 static gboolean
@@ -76,9 +130,8 @@ handle_get_initial_result_set (HotSshSearchShellSearchProvider2 *skeleton,
                                char                            **terms,
                                HotSshSearchProvider             *search_provider)
 {
-  char **results = get_results (search_provider, terms);
+  gs_strfreev char **results = get_results (search_provider, terms);
   hot_ssh_search_shell_search_provider2_complete_get_initial_result_set (skeleton, invocation, (const char * const *)results);
-  g_strfreev (results);
 
   return TRUE;
 }
@@ -90,9 +143,8 @@ handle_get_subsearch_result_set (HotSshSearchShellSearchProvider2 *skeleton,
                                  char                            **terms,
                                  HotSshSearchProvider             *search_provider)
 {
-  char **results = get_results (search_provider, terms);
+  gs_strfreev char **results = get_results (search_provider, terms);
   hot_ssh_search_shell_search_provider2_complete_get_subsearch_result_set (skeleton, invocation, (const char * const *)results);
-  g_strfreev (results);
 
   return TRUE;
 }
@@ -111,30 +163,23 @@ handle_get_result_metas (HotSshSearchShellSearchProvider2 *skeleton,
   for (p = identifiers; *p; p++)
     {
       const char *id = *p;
-      if (g_strcmp0 (id, "foo.example.com") == 0)
-        {
-          GVariantBuilder *b2 = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
-          GIcon *icon;
-          GVariant *serialized_icon;
-          gchar *string_icon;
+      GVariantBuilder *b2 = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
+      gs_unref_object GIcon *icon;
+      gs_unref_variant GVariant *serialized_icon;
+      gs_free gchar *string_icon;
 
-          g_variant_builder_add (b2, "{sv}", "id", g_variant_new_string (id));
-          g_variant_builder_add (b2, "{sv}", "name", g_variant_new_string ("foo.example.com"));
+      g_variant_builder_add (b2, "{sv}", "id", g_variant_new_string (id));
+      g_variant_builder_add (b2, "{sv}", "name", g_variant_new_string (id));
 
-          icon = g_themed_icon_new ("gnome-terminal");
+      icon = g_themed_icon_new ("hotssh");
 
-          serialized_icon = g_icon_serialize (icon);
-          g_variant_builder_add (b2, "{sv}", "icon", serialized_icon);
-          g_variant_unref (serialized_icon);
-          string_icon = g_icon_to_string (icon);
-          g_variant_builder_add (b2, "{sv}", "gicon", g_variant_new_string (string_icon));
-          g_free (string_icon);
+      serialized_icon = g_icon_serialize (icon);
+      g_variant_builder_add (b2, "{sv}", "icon", serialized_icon);
 
-          g_object_unref (icon);
+      string_icon = g_icon_to_string (icon);
+      g_variant_builder_add (b2, "{sv}", "gicon", g_variant_new_string (string_icon));
 
-          g_variant_builder_add_value (b1, g_variant_builder_end (b2));
-        }
-
+      g_variant_builder_add_value (b1, g_variant_builder_end (b2));
     }
 
   metas = g_variant_builder_end (b1);
@@ -151,9 +196,34 @@ handle_activate_result (HotSshSearchShellSearchProvider2 *skeleton,
                         guint                             timestamp,
                         HotSshSearchProvider             *search_provider)
 {
-  if (g_strcmp0 (identifier, "foo.example.com") == 0)
+  HotSshSearchProviderPrivate *priv = hotssh_search_provider_get_instance_private (search_provider);
+  GList *windows;
+  GList *l;
+  gboolean found = FALSE;
+
+  windows = gtk_application_get_windows (GTK_APPLICATION (priv->app));
+  for (l = windows; l && !found; l = l->next)
     {
-      g_print ("Open up the Foo server!\n");
+      if (HOTSSH_IS_WINDOW (l->data))
+        {
+          HotSshWindow *window = l->data;
+          GList *tabs = hotssh_window_get_tabs (window);
+          GList *ll;
+
+          for (ll = tabs; ll && !found; ll = ll->next)
+            {
+              HotSshTab *tab = ll->data;
+              const char *hostname = hotssh_tab_get_hostname (tab);
+              if (g_strcmp0 (hostname, identifier) == 0)
+                {
+                  hotssh_window_activate_tab (window, tab);
+                  gtk_window_present_with_time ((GtkWindow *)window, timestamp);
+                  found = TRUE;
+                }
+            }
+
+          g_list_free (tabs);
+        }
     }
 
   hot_ssh_search_shell_search_provider2_complete_activate_result (skeleton, invocation);

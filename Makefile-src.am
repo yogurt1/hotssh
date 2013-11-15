@@ -13,6 +13,7 @@ hotssh_dbus_h_files += hotssh-search-glue.h
 hotssh_dbus_c_files += hotssh-search-glue.c
 
 BUILT_SOURCES += $(hotssh_dbus_h_files) $(hotssh_dbus_c_files)
+CLEANFILES += hotssh-search-glue.h hotssh-search-glue.c
 
 hotssh_headers = $(addprefix src/, \
 	hotssh-app.h \

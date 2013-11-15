@@ -244,3 +244,28 @@ hotssh_window_new (HotSshApp *app)
 {
   return g_object_new (HOTSSH_TYPE_WINDOW, "application", app, NULL);
 }
+
+GList *
+hotssh_window_get_tabs (HotSshWindow *self)
+{
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  GList *tabs = NULL;
+  gint n_pages, i;
+
+  n_pages = gtk_notebook_get_n_pages ((GtkNotebook*)priv->main_notebook);
+  for (i = 0; i < n_pages; i++)
+    tabs = g_list_prepend (tabs, gtk_notebook_get_nth_page ((GtkNotebook*)priv->main_notebook, i));
+
+  return g_list_reverse (tabs);
+}
+
+void
+hotssh_window_activate_tab (HotSshWindow *self,
+                            HotSshTab    *tab)
+{
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  guint index;
+
+  index = find_tab_index (self, tab);
+  gtk_notebook_set_current_page ((GtkNotebook*)priv->main_notebook, index);
+}
