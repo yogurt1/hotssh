@@ -34,6 +34,11 @@ static const GSshConnectionAuthMechanism default_authentication_order[] = {
   GSSH_CONNECTION_AUTH_MECHANISM_PASSWORD
 };
 
+enum {
+  PROP_0,
+  PROP_HOSTNAME
+};
+
 struct _HotSshTab
 {
   GtkNotebook parent;
@@ -121,6 +126,7 @@ state_reset_for_new_connection (HotSshTab                *self)
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   g_debug ("reset state");
   g_clear_pointer (&priv->hostname, g_free);
+  g_object_notify ((GObject*)self, "hostname");
   g_clear_object (&priv->address);
   g_clear_object (&priv->connection);
   g_clear_object (&priv->cancellable);
@@ -445,6 +451,7 @@ on_connect (GtkButton     *button,
     }
 
   priv->hostname = g_strdup (hostname);
+  g_object_notify ((GObject*)self, "hostname");
 
   g_clear_object (&priv->connection);
   priv->connection = gssh_connection_new (priv->address, username); 
@@ -659,6 +666,26 @@ hotssh_tab_grab_focus (GtkWidget *widget)
 }
 
 static void
+hotssh_tab_get_property (GObject    *object,
+                         guint       prop_id,
+                         GValue     *value,
+                         GParamSpec *pspec)
+{
+  HotSshTab *self = (HotSshTab*) (object);
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+
+  switch (prop_id)
+    {
+    case PROP_HOSTNAME:
+      g_value_set_string (value, priv->hostname);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void
 hotssh_tab_init (HotSshTab *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
@@ -700,6 +727,7 @@ hotssh_tab_dispose (GObject *object)
 static void
 hotssh_tab_class_init (HotSshTabClass *class)
 {
+  G_OBJECT_CLASS (class)->get_property = hotssh_tab_get_property;
   G_OBJECT_CLASS (class)->dispose = hotssh_tab_dispose;
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (class),
@@ -722,6 +750,12 @@ hotssh_tab_class_init (HotSshTabClass *class)
 
   GTK_WIDGET_CLASS (class)->grab_focus = hotssh_tab_grab_focus;
   GTK_WIDGET_CLASS (class)->style_updated = hotssh_tab_style_updated;
+
+  g_object_class_install_property (G_OBJECT_CLASS (class),
+                                   PROP_HOSTNAME,
+                                   g_param_spec_string ("hostname", "Hostname", "",
+							NULL,
+                                                        G_PARAM_READABLE));
 }
 
 HotSshTab *

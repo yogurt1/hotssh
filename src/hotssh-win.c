@@ -105,7 +105,7 @@ create_tab_label (HotSshWindow       *self,
   GtkImage *close_image;
 
   label_box = (GtkContainer*)gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-  label = (GtkLabel*)gtk_label_new ("Unconnected");
+  label = (GtkLabel*)gtk_label_new ("");
   gtk_label_set_single_line_mode (label, TRUE);
   gtk_misc_set_alignment ((GtkMisc*)label, 0.0, 0.5);
   gtk_misc_set_padding ((GtkMisc*)label, 0, 0);
@@ -126,7 +126,20 @@ create_tab_label (HotSshWindow       *self,
   gtk_box_pack_start ((GtkBox*)label_box, (GtkWidget*)close_button, FALSE, FALSE, 0);
 
   gtk_widget_show_all ((GtkWidget*)label_box);
+  g_object_set_data ((GObject*)label_box, "label-text", label);
   return (GtkWidget*)label_box;
+}
+
+static void
+on_tab_hostname_changed (HotSshTab           *tab,
+                         GParamSpec          *pspec,
+                         HotSshWindow        *self)
+{
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  GtkWidget *label_box = gtk_notebook_get_tab_label ((GtkNotebook*)priv->main_notebook, (GtkWidget*)tab);
+  GtkLabel *real_label = GTK_LABEL (g_object_get_data ((GObject*)label_box, "label-text"));
+  const char *hostname = hotssh_tab_get_hostname (tab);
+  gtk_label_set_text (real_label, hostname ? hostname : "Disconnected");
 }
 
 static void
@@ -150,10 +163,11 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
 
   g_object_set_data ((GObject*)tab, "window", self);
   label = create_tab_label (self, tab);
-  
+  g_signal_connect ((GObject*)tab, "notify::hostname", G_CALLBACK (on_tab_hostname_changed), self);
   idx = gtk_notebook_append_page ((GtkNotebook*)priv->main_notebook,
                                   (GtkWidget*)tab,
                                   (GtkWidget*)label);
+  on_tab_hostname_changed (tab, NULL, self);
   gtk_widget_show_all ((GtkWidget*)tab);
   gtk_notebook_set_current_page ((GtkNotebook*)priv->main_notebook, idx);
   gtk_widget_grab_focus ((GtkWidget*)tab);
