@@ -34,15 +34,25 @@ typedef enum /*< prefix=GSSH_CONNECTION_STATE >*/
     GSSH_CONNECTION_STATE_CONNECTING,
     GSSH_CONNECTION_STATE_HANDSHAKING,
     GSSH_CONNECTION_STATE_PREAUTH,
+    GSSH_CONNECTION_STATE_NEGOTIATE_AUTH,
     GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED,
     GSSH_CONNECTION_STATE_CONNECTED,
     GSSH_CONNECTION_STATE_ERROR
   } GSshConnectionState;
 
+typedef enum {
+  GSSH_CONNECTION_AUTH_MECHANISM_NONE,
+  GSSH_CONNECTION_AUTH_MECHANISM_PASSWORD,
+  GSSH_CONNECTION_AUTH_MECHANISM_PUBLICKEY,
+  GSSH_CONNECTION_AUTH_MECHANISM_GSSAPI_MIC
+} GSshConnectionAuthMechanism;
+
 GType                   gssh_connection_get_type     (void);
 
 GSshConnection       *gssh_connection_new (GSocketConnectable  *address,
                                                const char          *username);
+
+const char * gssh_connection_auth_mechanism_to_string (GSshConnectionAuthMechanism  mech);
 
 GSocketClient          *gssh_connection_get_socket_client (GSshConnection *self);
 
@@ -51,29 +61,41 @@ GSshConnectionState   gssh_connection_get_state (GSshConnection        *self);
 void                    gssh_connection_reset (GSshConnection      *self);
 
 void                    gssh_connection_handshake_async (GSshConnection    *self,
-                                                           GCancellable        *cancellable,
-                                                           GAsyncReadyCallback  callback,
-                                                           gpointer             user_data);
+                                                         GCancellable        *cancellable,
+                                                         GAsyncReadyCallback  callback,
+                                                         gpointer             user_data);
 
 gboolean                gssh_connection_handshake_finish (GSshConnection    *self,
-                                                            GAsyncResult        *result,
-                                                            GError             **error);
+                                                          GAsyncResult        *result,
+                                                          GError             **error);
+
+void                    gssh_connection_set_interaction (GSshConnection   *self,
+                                                         GTlsInteraction  *interaction);
 
 GBytes *                gssh_connection_preauth_get_fingerprint_sha1 (GSshConnection *self);
 
-void                    gssh_connection_preauth_continue (GSshConnection *self);
+void                    gssh_connection_negotiate_async (GSshConnection      *self,
+                                                         GCancellable        *cancellable,
+                                                         GAsyncReadyCallback  callback,
+                                                         gpointer             user_data);
 
-const char*const*       gssh_connection_get_authentication_mechanisms (GSshConnection   *self);
+gboolean                gssh_connection_negotiate_finish (GSshConnection      *self,
+                                                          GAsyncResult        *res,
+                                                          GError             **error);
 
-void                    gssh_connection_auth_password_async (GSshConnection    *self,
-                                                               const char          *password,
-                                                               GCancellable        *cancellable,
-                                                               GAsyncReadyCallback  callback,
-                                                               gpointer             user_data);
+void                    gssh_connection_get_authentication_mechanisms (GSshConnection              *self,
+                                                                       guint                      **out_authmechanisms,
+                                                                       guint                       *out_len);
 
-gboolean                gssh_connection_auth_password_finish (GSshConnection    *self,
-                                                                GAsyncResult        *result,
-                                                                GError             **error);
+void                    gssh_connection_auth_async (GSshConnection               *self,
+                                                    GSshConnectionAuthMechanism   authmech,
+                                                    GCancellable                 *cancellable,
+                                                    GAsyncReadyCallback           callback,
+                                                    gpointer                      user_data);
+
+gboolean                gssh_connection_auth_finish (GSshConnection      *self,
+                                                     GAsyncResult        *result,
+                                                     GError             **error);
 
 void                    gssh_connection_open_shell_async (GSshConnection         *self,
                                                             GCancellable             *cancellable,

@@ -32,13 +32,15 @@ struct _GSshConnection
   guint paused : 1;
   guint select_inbound : 1;
   guint select_outbound : 1;
-  guint tried_userauth_none : 1;
   guint preauth_continue : 1;
+  guint tried_userauth_none : 1;
   guint unused : 27;
 
   char *username;
 
-  GPtrArray *authschemes;
+  GTlsInteraction *interaction;
+
+  GArray *authmechanisms;
 
   ssh_session session;
   GHashTable *channels;
@@ -55,7 +57,9 @@ struct _GSshConnection
   char *password;
 
   GTask *handshake_task;
+  GSshConnectionAuthMechanism current_authmech;
   GTask *auth_task;
+  GTask *negotiate_task;
   GHashTable *open_channel_exec_tasks;
   GHashTable *channel_tasks;
 };

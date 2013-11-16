@@ -65,7 +65,9 @@ reset_state (GSshConnection               *self)
 
   g_assert (self->state == GSSH_CONNECTION_STATE_DISCONNECTED ||
             self->state == GSSH_CONNECTION_STATE_ERROR);
+  g_clear_object (&self->interaction);
   g_clear_object (&self->handshake_task);
+  g_clear_object (&self->negotiate_task);
   g_clear_pointer (&self->open_channel_exec_tasks, g_hash_table_unref);
   self->open_channel_exec_tasks = g_hash_table_new_full (NULL, NULL, NULL, g_object_unref);
   g_clear_pointer (&self->channel_tasks, g_hash_table_unref);
@@ -90,7 +92,8 @@ reset_state (GSshConnection               *self)
   if (self->socket_source)
     g_source_destroy (self->socket_source);
   g_clear_pointer (&self->socket_source, g_source_unref);
-  g_clear_pointer (&self->authschemes, g_ptr_array_unref);
+  g_clear_pointer (&self->authmechanisms, g_array_unref);
+  g_clear_pointer (&self->password, g_free);
 }
 
 static void
@@ -361,13 +364,34 @@ set_hostkey_sha1 (GSshConnection           *self,
   return ret;
 }
 
+static inline void
+garray_append_uint (GArray *array, guint val)
+{
+  g_array_append_val (array, val);
+}
+
+/* This evil function is necessary because we can recurse into the
+ * iteration function via g_task_return_error() calling the callback
+ * immediately.
+ */
+static void
+return_task_error_and_clear (GTask  **taskptr,
+                             GError  *error)
+{
+  GTask *task = *taskptr;
+
+  *taskptr = NULL;
+  g_task_return_error (task, error);
+  g_object_unref (task);
+}
+
 static void
 gssh_connection_iteration_internal (GSshConnection   *self,
                                     GIOCondition        condition)
 {
   GError *local_error = NULL;
   GError **error = &local_error;
-  int rc;
+  int rc = -1;
 
  repeat:
 
@@ -386,8 +410,7 @@ gssh_connection_iteration_internal (GSshConnection   *self,
           {
             if (!set_hostkey_sha1 (self, error))
               {
-                g_task_return_error (self->handshake_task, local_error);
-                g_clear_object (&self->handshake_task);
+                return_task_error_and_clear (&self->handshake_task, local_error);
                 return;
               }
           }
@@ -398,8 +421,7 @@ gssh_connection_iteration_internal (GSshConnection   *self,
         else
           {
             _gssh_set_error_from_libssh (error, "Failed to handshake SSH2 session", self->session);
-            g_task_return_error (self->handshake_task, local_error);
-            g_clear_object (&self->handshake_task);
+            return_task_error_and_clear (&self->handshake_task, local_error);
             return;
           }
         
@@ -411,9 +433,59 @@ gssh_connection_iteration_internal (GSshConnection   *self,
       }
     case GSSH_CONNECTION_STATE_PREAUTH:
       {
+        self->paused = TRUE;
+        break;
+      }
+    case GSSH_CONNECTION_STATE_NEGOTIATE_AUTH:
+      {
         int method;
 
-        if (!self->preauth_continue)
+        rc = ssh_userauth_none (self->session, NULL);
+        if (rc == SSH_AUTH_AGAIN)
+          {
+            return;
+          }
+        else if (rc == SSH_AUTH_SUCCESS)
+          {
+            state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
+            goto repeat;
+          }
+        else if (rc == SSH_AUTH_ERROR)
+          {
+            _gssh_set_error_from_libssh (error, "NONE authentication failed", self->session);
+            return_task_error_and_clear (&self->auth_task, local_error);
+          }
+        else
+          {
+            g_assert (rc == SSH_AUTH_DENIED);
+            /* Fall through if NONE failed */
+          }
+
+        g_clear_pointer (&self->authmechanisms, g_ptr_array_unref);
+        self->authmechanisms = g_array_new (FALSE, TRUE, sizeof (guint));
+        method = ssh_userauth_list (self->session, NULL);
+
+        if (method & SSH_AUTH_METHOD_PASSWORD)
+          garray_append_uint (self->authmechanisms, GSSH_CONNECTION_AUTH_MECHANISM_PASSWORD);
+        if (method & SSH_AUTH_METHOD_GSSAPI_MIC)
+          garray_append_uint (self->authmechanisms, GSSH_CONNECTION_AUTH_MECHANISM_GSSAPI_MIC);
+        if (method & SSH_AUTH_METHOD_PUBLICKEY)
+          garray_append_uint (self->authmechanisms, GSSH_CONNECTION_AUTH_MECHANISM_PUBLICKEY);
+        if (method & SSH_AUTH_METHOD_HOSTBASED)
+          ;
+        if (method & SSH_AUTH_METHOD_INTERACTIVE)
+          ;
+
+        state_transition (self, GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
+        /* Fall through */
+      }
+    case GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED:
+      {
+        /* User should have connected to notify:: state and
+         * watch for AUTHENTICATION_REQUIRED, then call
+         * gssh_connection_auth_async().
+         */
+        if (self->auth_task == NULL)
           {
             self->paused = TRUE;
             break;
@@ -421,101 +493,108 @@ gssh_connection_iteration_internal (GSshConnection   *self,
 
         if (!self->tried_userauth_none)
           {
+            self->tried_userauth_none = TRUE;
             /* Now try the NONE authentication; if it succeeds we jump
              * directly to authenticated.
              */
-            rc = ssh_userauth_none (self->session, NULL);
-            if (rc == SSH_AUTH_AGAIN)
-              {
-                return;
-              }
-            else if (rc == SSH_AUTH_SUCCESS)
-              {
-                state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
-                goto repeat;
-              }
-            else if (rc == SSH_AUTH_ERROR)
-              {
-                _gssh_set_error_from_libssh (error, "NONE authentication failed", self->session);
-                g_task_return_error (self->handshake_task, local_error);
-                g_clear_object (&self->handshake_task);
-                return;
-              }
-            else
-              {
-                g_assert (rc == SSH_AUTH_DENIED);
-                self->tried_userauth_none = TRUE;
-              }
           }
 
-        g_clear_pointer (&self->authschemes, g_ptr_array_unref);
-        self->authschemes = g_ptr_array_new ();
-        method = ssh_userauth_list (self->session, NULL);
+        g_debug ("Trying authentication mechanism '%s'",
+                 gssh_connection_auth_mechanism_to_string (self->current_authmech));
 
-        if (method & SSH_AUTH_METHOD_PASSWORD)
-          g_ptr_array_add (self->authschemes, "password");
-        if (method & SSH_AUTH_METHOD_GSSAPI_MIC)
-          g_ptr_array_add (self->authschemes, "gssapi-mic");
-        if (method & SSH_AUTH_METHOD_PUBLICKEY)
-          g_ptr_array_add (self->authschemes, "publickey");
-        if (method & SSH_AUTH_METHOD_HOSTBASED)
-          g_ptr_array_add (self->authschemes, "hostbased");
-        if (method & SSH_AUTH_METHOD_INTERACTIVE)
-          g_ptr_array_add (self->authschemes, "keyboard-interactive");
-
-        g_ptr_array_add (self->authschemes, NULL);
-
-        state_transition (self, GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
-        /* Fall through */
-      }
-    case GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED:
-      {
-        int method;
-
-        method = ssh_userauth_list (self->session, NULL);
-        /* User should have connected to notify:: state and
-         * watch for AUTHENTICATION_REQUIRED, then call
-         * gssh_connection_auth_password_async().
-         */
-        if (self->auth_task != NULL)
+        switch (self->current_authmech)
           {
-            if ((method & SSH_AUTH_METHOD_PASSWORD) && self->password)
+          case GSSH_CONNECTION_AUTH_MECHANISM_NONE:
+            /* Handled above */
+            break;
+          case GSSH_CONNECTION_AUTH_MECHANISM_PASSWORD:
+            if (!self->interaction)
               {
-                rc = ssh_userauth_password (self->session, NULL, self->password);
-                if (rc == SSH_AUTH_AGAIN)
-                  {
-                    return;
-                  }
-                else if (rc == SSH_AUTH_ERROR)
-                  {
-                    _gssh_set_error_from_libssh (error, "Failed to password auth", self->session);
-                    g_task_return_error (self->auth_task, local_error);
-                    g_clear_object (&self->auth_task);
-                  }
-                else if (rc == SSH_AUTH_DENIED)
-                  {
-                    g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED,
-                                         "Authentication failed");
-                    g_task_return_error (self->auth_task, local_error);
-                  }
-                else if (rc == SSH_AUTH_PARTIAL)
-                  {
-                    g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PARTIAL_INPUT,
-                                         "Need to continue authentication");
-                    g_task_return_error (self->auth_task, local_error);
-                  }
-                else
-                  {
-                    g_task_return_boolean (self->auth_task, TRUE);
-                    g_clear_object (&self->auth_task);
-                    state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
-                    goto repeat;
-                  }
+                g_warning ("Password authentication requested, but gssh_connection_set_interaction() was not called");
+                g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                                     "No password interaction available");
+                return_task_error_and_clear (&self->auth_task, local_error);
+                return;
               }
             else
               {
-                g_assert_not_reached ();
+                if (!self->password)
+                  {
+                    gs_unref_object GTlsPassword *password =
+                      g_tls_password_new (G_TLS_PASSWORD_NONE, "SSH");
+                    GTlsInteractionResult result = 
+                      g_tls_interaction_invoke_ask_password (self->interaction, password,
+                                                             g_task_get_cancellable (self->auth_task),
+                                                             &local_error);
+                    if (result == G_TLS_INTERACTION_FAILED)
+                      {
+                        return_task_error_and_clear (&self->auth_task, local_error);
+                        return;
+                      }
+                    else
+                      {
+                        gsize password_len;
+                        const guint8 *password_value;
+                        GString *password_str;
+
+                        g_assert (result == G_TLS_INTERACTION_HANDLED);
+
+                        password_value = g_tls_password_get_value (password, &password_len);
+
+                        if (!g_utf8_validate ((char*)password_value, password_len, NULL))
+                          {
+                            g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                                                 "Password is not UTF-8");
+                            return_task_error_and_clear (&self->auth_task, local_error);
+                            return;
+                          }
+
+                        password_str = g_string_new ("");
+                        g_string_append_len (password_str, (char*)password_value, password_len);
+                        self->password = g_string_free (password_str, FALSE);
+                      }
+                  }
+                                                       
+                rc = ssh_userauth_password (self->session, NULL, self->password);
               }
+            break;
+          case GSSH_CONNECTION_AUTH_MECHANISM_PUBLICKEY:
+            rc = ssh_userauth_publickey_auto (self->session, NULL, NULL);
+            break;
+          case GSSH_CONNECTION_AUTH_MECHANISM_GSSAPI_MIC:
+            rc = ssh_userauth_gssapi (self->session);
+            break;
+          }
+
+        if (rc == SSH_AUTH_AGAIN)
+          ;
+        else if (rc == SSH_AUTH_ERROR)
+          {
+            gs_free char *msg = g_strdup_printf ("Failed to authenticate via mechanism '%s'",
+                                                 gssh_connection_auth_mechanism_to_string (self->current_authmech));
+            _gssh_set_error_from_libssh (error, msg, self->session);
+            return_task_error_and_clear (&self->auth_task, local_error);
+            g_clear_pointer (&self->password, g_free);
+          }
+        else if (rc == SSH_AUTH_DENIED)
+          {
+            g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED,
+                                 "Authentication failed");
+            return_task_error_and_clear (&self->auth_task, local_error);
+            g_clear_pointer (&self->password, g_free);
+          }
+        else if (rc == SSH_AUTH_PARTIAL)
+          {
+            g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PARTIAL_INPUT,
+                                 "Need to continue authentication");
+            return_task_error_and_clear (&self->auth_task, local_error);
+          }
+        else
+          {
+            g_task_return_boolean (self->auth_task, TRUE);
+            g_clear_object (&self->auth_task);
+            state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
+            goto repeat;
           }
         break;
       }
@@ -563,6 +642,23 @@ on_socket_ready (GSocket *socket,
   gssh_connection_iteration (self, condition);
 
   return TRUE;
+}
+
+const char *
+gssh_connection_auth_mechanism_to_string (GSshConnectionAuthMechanism  mech)
+{
+  switch (mech)
+    {
+    case GSSH_CONNECTION_AUTH_MECHANISM_NONE:
+      return "none";
+    case GSSH_CONNECTION_AUTH_MECHANISM_PASSWORD:
+      return "password";
+    case GSSH_CONNECTION_AUTH_MECHANISM_PUBLICKEY:
+      return "publickey";
+    case GSSH_CONNECTION_AUTH_MECHANISM_GSSAPI_MIC:
+      return "gssapi-mic";
+    }
+  g_assert_not_reached ();
 }
 
 static void
@@ -627,52 +723,91 @@ gssh_connection_preauth_get_fingerprint_sha1 (GSshConnection *self)
   return self->remote_hostkey_sha1;
 }
 
+void
+gssh_connection_set_interaction (GSshConnection   *self,
+                                 GTlsInteraction  *interaction)
+{
+  g_clear_object (&self->interaction);
+  self->interaction = g_object_ref (interaction);
+}
+
+
 /**
- * gssh_connection_preauth_continue:
+ * gssh_connection_negotiate_async:
  * @self: Self
+ * @cancellable: Cancellable:
+ * @callback: Callback
+ * @user_data: User data
  *
- * Call this function after having verified the host key fingerprint
- * to continue the connection.
+ * After a handshake is complete, the connection will be in
+ * %GSSH_CONNECTION_NEGOTIATE_ASYNC.  You should then retrieve the
+ * host key with gssh_connection_preauth_get_fingerprint_sha1(),
+ * and verify it.
+ *
+ * Once that is complete, invoke this function to continue the
+ * connection process.
  */
 void
-gssh_connection_preauth_continue (GSshConnection *self)
+gssh_connection_negotiate_async (GSshConnection      *self,
+                                 GCancellable        *cancellable,
+                                 GAsyncReadyCallback  callback,
+                                 gpointer             user_data)
 {
   g_return_if_fail (self->state == GSSH_CONNECTION_STATE_PREAUTH);
-  g_return_if_fail (!self->preauth_continue);
-  self->preauth_continue = TRUE;
+  state_transition (self, GSSH_CONNECTION_STATE_NEGOTIATE_AUTH);
   self->paused = FALSE;
   gssh_connection_iteration_default (self);
 }
 
-const char*const*
-gssh_connection_get_authentication_mechanisms (GSshConnection   *self)
+gboolean
+gssh_connection_negotiate_finish (GSshConnection      *self,
+                                  GAsyncResult        *res,
+                                  GError             **error)
 {
-  return (const char *const*)self->authschemes->pdata;
+  g_return_val_if_fail (g_task_is_valid (res, self), FALSE);
+  return g_task_propagate_boolean (G_TASK (res), error);
+}
+
+/**
+ * gssh_connection_get_authentication_mechanisms:
+ * @self: Self
+ * @out_authmechanisms: (out) (array len=out_len) (element-type guint): Array of #GSshConnectionAuthMechanism
+ * @out_len: (out): Length
+ *
+ * Return a list of available authentication mechanisms, in no
+ * particular order.
+ */
+void
+gssh_connection_get_authentication_mechanisms (GSshConnection              *self,
+                                               guint                      **out_authmechanisms,
+                                               guint                       *out_len)
+{
+  g_return_if_fail (self->state == GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
+
+  *out_authmechanisms = (guint*)self->authmechanisms->data;
+  *out_len = self->authmechanisms->len;
 }
 
 void
-gssh_connection_auth_password_async (GSshConnection    *self,
-                                       const char          *password,
-                                       GCancellable        *cancellable,
-                                       GAsyncReadyCallback  callback,
-                                       gpointer             user_data)
+gssh_connection_auth_async (GSshConnection               *self,
+                            GSshConnectionAuthMechanism   mechanism,
+                            GCancellable                 *cancellable,
+                            GAsyncReadyCallback           callback,
+                            gpointer                      user_data)
 {
   g_return_if_fail (self->state == GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
   g_return_if_fail (self->auth_task == NULL);
-
-  if (self->password)
-    g_free (self->password);
-  self->password = g_strdup (password);
-
-  self->auth_task = g_task_new (self, cancellable, callback, user_data);
   
+  self->auth_task = g_task_new (self, cancellable, callback, user_data);
+  self->current_authmech = mechanism;
+  self->paused = FALSE;
   gssh_connection_iteration_default (self);
 }
 
 gboolean
-gssh_connection_auth_password_finish (GSshConnection    *self,
-                                        GAsyncResult        *result,
-                                        GError             **error)
+gssh_connection_auth_finish (GSshConnection    *self,
+                             GAsyncResult        *result,
+                             GError             **error)
 {
   g_return_val_if_fail (g_task_is_valid (result, self), FALSE);
   return g_task_propagate_boolean (G_TASK (result), error);
@@ -876,3 +1011,4 @@ gssh_connection_new (GSocketConnectable   *address,
                        "maincontext", g_main_context_get_thread_default (),
                        NULL);
 }
+

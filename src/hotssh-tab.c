@@ -19,6 +19,7 @@
  */
 
 #include "hotssh-tab.h"
+#include "hotssh-password-interaction.h"
 #include "gssh.h"
 
 #include "libgsystem.h"
@@ -26,6 +27,12 @@
 #include <vte/vte.h>
 #include <stdio.h>
 #include <string.h>
+
+static const GSshConnectionAuthMechanism default_authentication_order[] = {
+  GSSH_CONNECTION_AUTH_MECHANISM_PUBLICKEY,
+  /*  GSSH_CONNECTION_AUTH_MECHANISM_GSSAPI_MIC,  Seems broken */
+  GSSH_CONNECTION_AUTH_MECHANISM_PASSWORD
+};
 
 struct _HotSshTab
 {
@@ -50,6 +57,7 @@ struct _HotSshTabPrivate
 {
   GSettings *settings;
   GtkWidget *terminal;
+  HotSshPasswordInteraction *password_interaction;
 
   /* Bound via template */
   GtkWidget *host_entry;
@@ -69,6 +77,7 @@ struct _HotSshTabPrivate
 
   /* State */
   HotSshTabPage active_page;
+  guint authmechanism_index;
 
   GSocketConnectable *address;
   GSshConnection *connection;
@@ -76,6 +85,8 @@ struct _HotSshTabPrivate
 
   gboolean need_pty_size_request;
   gboolean sent_pty_size_request;
+  gboolean awaiting_password_entry;
+  gboolean submitted_password;
   gboolean have_outstanding_write;
   gboolean have_outstanding_auth;
   GQueue write_queue;
@@ -118,6 +129,7 @@ state_reset_for_new_connection (HotSshTab                *self)
   gtk_widget_show (priv->connection_text_container);
   gtk_widget_hide (priv->hostkey_container);
   gtk_widget_set_sensitive (priv->password_container, TRUE);
+  priv->awaiting_password_entry = priv->submitted_password = FALSE;
   g_debug ("reset state done");
 }
 
@@ -148,6 +160,7 @@ static void
 page_transition_take_error (HotSshTab               *self,
 			    GError                     *error)
 {
+  g_debug ("Caught error: %s", error->message);
   set_status (self, error->message);
   g_error_free (error);
 }
@@ -231,8 +244,10 @@ on_connection_state_notify (GSshConnection   *conn,
       break;
     case GSSH_CONNECTION_STATE_CONNECTING:
     case GSSH_CONNECTION_STATE_HANDSHAKING:
-    case GSSH_CONNECTION_STATE_PREAUTH:
       page_transition (self, HOTSSH_TAB_PAGE_INTERSTITAL);
+      break;
+    case GSSH_CONNECTION_STATE_PREAUTH:
+    case GSSH_CONNECTION_STATE_NEGOTIATE_AUTH:
       break;
     case GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED:
       page_transition (self, HOTSSH_TAB_PAGE_AUTH);
@@ -251,9 +266,9 @@ on_connection_state_notify (GSshConnection   *conn,
 }
 
 static void
-on_password_auth_complete (GObject                *src,
-			   GAsyncResult           *res,
-			   gpointer                user_data)
+on_auth_complete (GObject                *src,
+                  GAsyncResult           *res,
+                  gpointer                user_data)
 {
   HotSshTab *self = HOTSSH_TAB (user_data);
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
@@ -261,48 +276,100 @@ on_password_auth_complete (GObject                *src,
 
   priv->have_outstanding_auth = FALSE;
 
-  if (!gssh_connection_auth_password_finish ((GSshConnection*)src, res, &local_error))
+  if (!gssh_connection_auth_finish ((GSshConnection*)src, res, &local_error))
     goto out;
 
-  g_debug ("password auth complete");
+  g_debug ("auth complete");
 
  out:
   if (local_error)
-    page_transition_take_error (self, local_error);
+    {
+      if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED))
+        {
+          g_debug ("Authentication mechanism '%s' denied",
+                   gssh_connection_auth_mechanism_to_string (default_authentication_order[priv->authmechanism_index]));
+          g_clear_error (&local_error);
+          priv->authmechanism_index++;
+          iterate_authentication_modes (self);
+        }
+      else
+        page_transition_take_error (self, local_error);
+    }
+}
+
+static gboolean
+have_mechanism (guint                        *available,
+                guint                         n_available,
+                GSshConnectionAuthMechanism   mech)
+{
+  guint i;
+  for (i = 0; i < n_available; i++)
+    if (available[i] == mech)
+      return TRUE;
+  return FALSE;
 }
 
 static void
 iterate_authentication_modes (HotSshTab          *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
-  const char *const *authschemes =
-    gssh_connection_get_authentication_mechanisms (priv->connection);
-  const char *const*iter;
+  guint n_mechanisms;
+  guint *available_authmechanisms;
   GError *local_error = NULL;
+
+  gssh_connection_get_authentication_mechanisms (priv->connection,
+                                                 &available_authmechanisms,
+                                                 &n_mechanisms);
 
   if (priv->have_outstanding_auth)
     return;
 
-  for (iter = authschemes; iter && *iter; iter++)
+  if (priv->awaiting_password_entry &&
+      !priv->submitted_password)
+    return;
+
+  while (priv->authmechanism_index < G_N_ELEMENTS (default_authentication_order) &&
+         !have_mechanism (available_authmechanisms, n_mechanisms,
+                          default_authentication_order[priv->authmechanism_index]))
     {
-      const char *authscheme = *iter;
-      if (strcmp (authscheme, "password") == 0)
-	{
-	  const char *password = gtk_entry_get_text ((GtkEntry*)priv->password_entry);
-	  if (password && password[0])
-	    {
-	      gssh_connection_auth_password_async (priv->connection, password,
-						     priv->cancellable,
-						     on_password_auth_complete, self);
-	      priv->have_outstanding_auth = TRUE;
-	      break;
-	    }
-	}
+      priv->authmechanism_index++;
     }
 
-  g_set_error (&local_error, G_IO_ERROR, G_IO_ERROR_FAILED,
-	       "No more authentication mechanisms available");
-  page_transition_take_error (self, local_error);
+  if (priv->authmechanism_index >= G_N_ELEMENTS (default_authentication_order))
+    {
+      g_set_error (&local_error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                   "No more authentication mechanisms available");
+      goto out;
+    }
+  else
+    {
+      GSshConnectionAuthMechanism mech =
+        default_authentication_order[priv->authmechanism_index];
+      gboolean is_password = mech == GSSH_CONNECTION_AUTH_MECHANISM_PASSWORD;
+      gs_free char *authmsg =
+        g_strdup_printf ("Requesting authentication via '%s'",
+                         gssh_connection_auth_mechanism_to_string (mech));
+      /* Ugly gross hack until we have separate auth pages */
+      set_status (self, authmsg);
+      gtk_widget_set_sensitive (priv->password_container,
+                                is_password);
+      if (is_password)
+        {
+          priv->awaiting_password_entry = TRUE;
+          if (!priv->submitted_password)
+            return;
+        }
+        
+      gssh_connection_auth_async (priv->connection,
+                                  mech,
+                                  priv->cancellable,
+                                  on_auth_complete, self);
+      priv->have_outstanding_auth = TRUE;
+    }
+  
+ out:
+  if (local_error)
+    page_transition_take_error (self, local_error);
 }
 
 static void
@@ -377,6 +444,7 @@ on_connect (GtkButton     *button,
 
   g_clear_object (&priv->connection);
   priv->connection = gssh_connection_new (priv->address, username); 
+  gssh_connection_set_interaction (priv->connection, (GTlsInteraction*)priv->password_interaction);
   g_signal_connect_object (priv->connection, "notify::state",
 			   G_CALLBACK (on_connection_state_notify),
 			   self, 0);
@@ -464,6 +532,7 @@ submit_password (HotSshTab *self)
   
   gtk_widget_set_sensitive (priv->password_container, FALSE);
 
+  priv->submitted_password = TRUE;
   iterate_authentication_modes (self);
 }
 
@@ -476,13 +545,34 @@ on_connect_cancel (GtkButton     *button,
 }
 
 static void
+on_negotiate_complete (GObject             *src,
+                       GAsyncResult        *result,
+                       gpointer             user_data)
+{
+  HotSshTab *self = user_data;
+  GError *local_error = NULL;
+
+  if (!gssh_connection_negotiate_finish ((GSshConnection*)src, result, &local_error))
+    goto out;
+
+  iterate_authentication_modes (self);
+
+ out:
+  if (local_error)
+    page_transition_take_error (self, local_error);
+}
+
+static void
 on_approve_hostkey_clicked (GtkButton     *button,
 			    gpointer       user_data)
 {
   HotSshTab *self = user_data;
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
 
-  gssh_connection_preauth_continue (priv->connection);
+  gtk_widget_set_sensitive ((GtkWidget*)button, FALSE);
+
+  gssh_connection_negotiate_async (priv->connection, priv->cancellable,
+                                   on_negotiate_complete, self);
 }
 
 static void
@@ -579,6 +669,8 @@ hotssh_tab_init (HotSshTab *self)
   g_signal_connect (priv->approve_hostkey_button, "clicked", G_CALLBACK (on_approve_hostkey_clicked), self);
   g_signal_connect_swapped (priv->password_entry, "activate", G_CALLBACK (submit_password), self);
   g_signal_connect_swapped (priv->password_submit, "clicked", G_CALLBACK (submit_password), self);
+
+  priv->password_interaction = hotssh_password_interaction_new ((GtkEntry*)priv->password_entry);
 
   priv->terminal = vte_terminal_new ();
   hotssh_tab_style_updated ((GtkWidget *) self);
