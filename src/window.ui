@@ -21,6 +21,7 @@
             <property name="visible">True</property>
             <property name="use-underline">True</property>
             <property name="can-default">True</property>
+            <property name="valign">center</property>
 	  </object>
 	  <packing>
             <property name="pack-type">start</property>
@@ -29,6 +30,10 @@
         <child>
           <object class="GtkMenuButton" id="gears">
             <property name="visible">True</property>
+            <property name="valign">center</property>
+            <style>
+              <class name="image-button"/>
+            </style>
             <child>
               <object class="GtkImage" id="gears-icon">
                 <property name="visible">True</property>
@@ -50,4 +55,11 @@
       </object>
     </child>
   </template>
+  <object class="GtkSizeGroup" id="buttons_header_bar_size_group">
+      <property name="mode">vertical</property>
+      <widgets>
+        <widget name="new_connection"/>
+        <widget name="gears"/>
+      </widgets>
+  </object>
 </interface>
