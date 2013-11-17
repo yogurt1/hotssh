@@ -370,10 +370,20 @@ garray_append_uint (GArray *array, guint val)
   g_array_append_val (array, val);
 }
 
-/* This evil function is necessary because we can recurse into the
+/* These evil functions are necessary because we can recurse into the
  * iteration function via g_task_return_error() calling the callback
  * immediately.
  */
+static void
+return_task_success_and_clear (GTask  **taskptr)
+{
+  GTask *task = *taskptr;
+
+  *taskptr = NULL;
+  g_task_return_boolean (task, TRUE);
+  g_object_unref (task);
+}
+
 static void
 return_task_error_and_clear (GTask  **taskptr,
                              GError  *error)
@@ -425,10 +435,8 @@ gssh_connection_iteration_internal (GSshConnection   *self,
             return;
           }
         
-        g_task_return_boolean (self->handshake_task, TRUE);
-        g_clear_object (&self->handshake_task);
-
         state_transition (self, GSSH_CONNECTION_STATE_PREAUTH);
+        return_task_success_and_clear (&self->handshake_task);
         /* Fall through */
       }
     case GSSH_CONNECTION_STATE_PREAUTH:
@@ -447,13 +455,14 @@ gssh_connection_iteration_internal (GSshConnection   *self,
           }
         else if (rc == SSH_AUTH_SUCCESS)
           {
+            return_task_success_and_clear (&self->negotiate_task);
             state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
             goto repeat;
           }
         else if (rc == SSH_AUTH_ERROR)
           {
             _gssh_set_error_from_libssh (error, "NONE authentication failed", self->session);
-            return_task_error_and_clear (&self->auth_task, local_error);
+            return_task_error_and_clear (&self->negotiate_task, local_error);
           }
         else
           {
@@ -477,7 +486,8 @@ gssh_connection_iteration_internal (GSshConnection   *self,
           ;
 
         state_transition (self, GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED);
-        /* Fall through */
+        return_task_success_and_clear (&self->negotiate_task);
+        break;
       }
     case GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED:
       {
@@ -591,8 +601,7 @@ gssh_connection_iteration_internal (GSshConnection   *self,
           }
         else
           {
-            g_task_return_boolean (self->auth_task, TRUE);
-            g_clear_object (&self->auth_task);
+            return_task_success_and_clear (&self->auth_task);
             state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
             goto repeat;
           }
@@ -754,8 +763,10 @@ gssh_connection_negotiate_async (GSshConnection      *self,
                                  gpointer             user_data)
 {
   g_return_if_fail (self->state == GSSH_CONNECTION_STATE_PREAUTH);
+  g_return_if_fail (self->negotiate_task == NULL);
   state_transition (self, GSSH_CONNECTION_STATE_NEGOTIATE_AUTH);
   self->paused = FALSE;
+  self->negotiate_task = g_task_new (self, cancellable, callback, user_data);
   gssh_connection_iteration_default (self);
 }
 
