@@ -118,6 +118,7 @@ state_transition_take_error (GSshConnection       *self,
                              GError                 *error)
 {
   g_debug ("caught error: %s", error->message);
+  g_object_ref (self);
 
   if (self->handshake_task)
     {
@@ -146,7 +147,10 @@ state_transition_take_error (GSshConnection       *self,
       else
         g_error_free (error);
     }
+
   state_transition (self, GSSH_CONNECTION_STATE_ERROR);
+
+  g_object_unref (self);
 }
 
 static gboolean
