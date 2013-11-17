@@ -107,6 +107,7 @@ struct _HotSshTabPrivate
 
 G_DEFINE_TYPE_WITH_PRIVATE(HotSshTab, hotssh_tab, GTK_TYPE_NOTEBOOK);
 
+
 static void
 set_status (HotSshTab     *self,
 	    const char       *text)
@@ -114,6 +115,26 @@ set_status (HotSshTab     *self,
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   g_debug ("status: %s", text);
   gtk_label_set_text ((GtkLabel*)priv->connection_text, text);
+}
+
+static void
+set_status_printf (HotSshTab  *self,
+                   const char *format,
+                   ...) G_GNUC_PRINTF (2,3);
+
+static void
+set_status_printf (HotSshTab  *self,
+                   const char *format,
+                   ...)
+{
+  gs_free char *msg;
+  va_list args;
+
+  va_start (args, format);
+  msg = g_strdup_vprintf (format, args);
+  va_end (args);
+
+  set_status (self, msg);
 }
 
 static void
@@ -436,6 +457,43 @@ on_connection_handshake (GObject         *object,
 }
 
 static void
+on_socket_client_event (GSocketClient      *client,
+                        GSocketClientEvent  event,
+                        GSocketConnectable *connectable,
+                        GIOStream          *connection,
+                        gpointer            user_data)
+{
+  HotSshTab *self = HOTSSH_TAB (user_data);
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  switch (event)
+    {
+    case G_SOCKET_CLIENT_RESOLVING:
+      set_status_printf (self, "Resolving '%s'...",
+                         priv->hostname);
+      break;
+    case G_SOCKET_CLIENT_CONNECTING:
+      {
+        GSocketConnection *socketconn = G_SOCKET_CONNECTION (connection);
+        gs_unref_object GSocketAddress *remote_address =
+          g_socket_connection_get_remote_address (socketconn, NULL);
+
+        g_debug ("socket connecting remote=%p", remote_address);
+        if (remote_address && G_IS_INET_SOCKET_ADDRESS (remote_address))
+          {
+            GInetAddress *inetaddr =
+              g_inet_socket_address_get_address ((GInetSocketAddress*)remote_address);
+            gs_free char *inet_str = g_inet_address_to_string (inetaddr);
+            set_status_printf (self, "Connecting to '%s'...",
+                               inet_str);
+          }
+        break;
+      }
+    default:
+      break;
+    }
+}
+                        
+static void
 on_connect (GtkButton     *button,
 	    HotSshTab  *self)
 {
@@ -467,6 +525,8 @@ on_connect (GtkButton     *button,
 
   g_clear_object (&priv->connection);
   priv->connection = gssh_connection_new (priv->address, username); 
+  g_signal_connect (gssh_connection_get_socket_client (priv->connection),
+                    "event", G_CALLBACK (on_socket_client_event), self);
   gssh_connection_set_interaction (priv->connection, (GTlsInteraction*)priv->password_interaction);
   g_signal_connect_object (priv->connection, "notify::state",
 			   G_CALLBACK (on_connection_state_notify),
