@@ -43,12 +43,14 @@ resources.c: src/hotssh.gresource.xml $(shell glib-compile-resources --sourcedir
 	$(AM_V_GEN) glib-compile-resources $< \
 		--target=$@ --sourcedir=$(srcdir)/src --generate-source
 hotssh_SOURCES += resources.c
-BUILT_SOURCES += resources.c
+BUILT_SOURCES += resources.c gschemas.compiled
 
-# We don't use gsettings_SCHEMAS as it fails with
-# srcdir != builddir:
-# https://bugzilla.gnome.org/show_bug.cgi?id=712171
-gsettingsschema_DATA = src/org.gnome.hotssh.gschema.xml
+gsettings_SCHEMAS += src/org.gnome.hotssh.gschema.xml
+
+@GSETTINGS_RULES@
+
+gschemas.compiled: src/org.gnome.hotssh.gschema.xml
+	glib-compile-schemas .
 
 desktopdir=$(datadir)/applications
 desktop_DATA = src/hotssh.desktop
