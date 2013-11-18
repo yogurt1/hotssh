@@ -171,7 +171,7 @@ handle_get_result_metas (HotSshSearchShellSearchProvider2 *skeleton,
       g_variant_builder_add (b2, "{sv}", "id", g_variant_new_string (id));
       g_variant_builder_add (b2, "{sv}", "name", g_variant_new_string (id));
 
-      icon = g_themed_icon_new ("hotssh");
+      icon = g_themed_icon_new ("network-server");
 
       serialized_icon = g_icon_serialize (icon);
       g_variant_builder_add (b2, "{sv}", "icon", serialized_icon);
