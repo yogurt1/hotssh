@@ -89,6 +89,8 @@ hotssh_app_startup (GApplication *app)
   app_menu = G_MENU_MODEL (gtk_builder_get_object (builder, "appmenu"));
   gtk_application_set_app_menu (GTK_APPLICATION (app), app_menu);
   g_object_unref (builder);
+
+  gtk_application_add_accelerator ((GtkApplication*)app, "<Control><Shift>T", "win.new-tab", NULL);
 }
 
 static void
