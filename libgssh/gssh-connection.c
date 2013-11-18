@@ -186,8 +186,8 @@ recalculate_socket_state (GSshConnection   *self)
       g_source_destroy (self->socket_source);
       g_source_unref (self->socket_source);
     }
-  g_printerr ("socket will select on inbound: %d outbound: %d\n",
-	      self->select_inbound, self->select_outbound);
+  g_debug ("socket will select on inbound: %d outbound: %d",
+           self->select_inbound, self->select_outbound);
   self->socket_source = g_socket_create_source (self->socket,
 						conditions,
 						self->cancellable);
@@ -694,7 +694,7 @@ on_socket_client_connected (GObject         *src,
   self->socket = g_socket_connection_get_socket (self->socketconn);
 
   self->session = ssh_new ();
-  ssh_set_log_level (SSH_LOG_FUNCTIONS);
+  /*  ssh_set_log_level (SSH_LOG_FUNCTIONS); */
   if (!self->session)
     {
       g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED,
