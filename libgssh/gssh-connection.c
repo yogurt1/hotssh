@@ -459,8 +459,8 @@ gssh_connection_iteration_internal (GSshConnection   *self,
           }
         else if (rc == SSH_AUTH_SUCCESS)
           {
-            return_task_success_and_clear (&self->negotiate_task);
             state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
+            return_task_success_and_clear (&self->negotiate_task);
             goto repeat;
           }
         else if (rc == SSH_AUTH_ERROR)
@@ -587,15 +587,15 @@ gssh_connection_iteration_internal (GSshConnection   *self,
             gs_free char *msg = g_strdup_printf ("Failed to authenticate via mechanism '%s'",
                                                  gssh_connection_auth_mechanism_to_string (self->current_authmech));
             _gssh_set_error_from_libssh (error, msg, self->session);
-            return_task_error_and_clear (&self->auth_task, local_error);
             g_clear_pointer (&self->password, g_free);
+            return_task_error_and_clear (&self->auth_task, local_error);
           }
         else if (rc == SSH_AUTH_DENIED)
           {
             g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED,
                                  "Authentication failed");
-            return_task_error_and_clear (&self->auth_task, local_error);
             g_clear_pointer (&self->password, g_free);
+            return_task_error_and_clear (&self->auth_task, local_error);
           }
         else if (rc == SSH_AUTH_PARTIAL)
           {
@@ -605,8 +605,8 @@ gssh_connection_iteration_internal (GSshConnection   *self,
           }
         else
           {
-            return_task_success_and_clear (&self->auth_task);
             state_transition (self, GSSH_CONNECTION_STATE_CONNECTED);
+            return_task_success_and_clear (&self->auth_task);
             goto repeat;
           }
         break;
