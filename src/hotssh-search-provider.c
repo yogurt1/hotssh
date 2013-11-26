@@ -130,7 +130,16 @@ handle_get_initial_result_set (HotSshSearchShellSearchProvider2 *skeleton,
                                char                            **terms,
                                HotSshSearchProvider             *search_provider)
 {
-  gs_strfreev char **results = get_results (search_provider, terms);
+  HotSshSearchProviderPrivate *priv = hotssh_search_provider_get_instance_private (search_provider);
+  gs_strfreev char **results;
+
+  /* By calling hold() and release() we trigger the inactivity timeout, so that we stick around
+   * for a few minutes in case the user searches again.
+   */
+  g_application_hold (G_APPLICATION (priv->app));
+  g_application_release (G_APPLICATION (priv->app));
+
+  results = get_results (search_provider, terms);
   hot_ssh_search_shell_search_provider2_complete_get_initial_result_set (skeleton, invocation, (const char * const *)results);
 
   return TRUE;
@@ -292,7 +301,7 @@ hotssh_search_provider_init (HotSshSearchProvider *search_provider)
   HotSshSearchProviderPrivate *priv = hotssh_search_provider_get_instance_private (search_provider);
 
   priv->owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
-                                   "org.gnome.HotSsh.SearchProvider",
+                                   "org.gnome.hotssh.SearchProvider",
                                    G_BUS_NAME_OWNER_FLAGS_NONE,
                                    on_bus_acquired,
                                    on_name_acquired,

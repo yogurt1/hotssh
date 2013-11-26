@@ -59,6 +59,9 @@ desktop_DATA = src/hotssh.desktop
 searchproviderdir = $(datadir)/gnome-shell/search-providers
 searchprovider_DATA = src/hotssh-search-provider.ini
 
+servicedir = $(datadir)/dbus-1/services
+service_DATA = src/org.gnome.hotssh.SearchProvider.service
+
 # Don't install this, it's large.
 # scalableiconsdir = $(datadir)/icons/hicolor/scalable/apps/
 # dist_scalableicons_DATA = src/icons/hotssh.svg

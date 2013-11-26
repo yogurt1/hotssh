@@ -112,6 +112,7 @@ hotssh_app_command_line (GApplication              *app,
   gint i;
   GError *error = NULL;
   gint argc;
+  gboolean no_default_window = FALSE;
   char *host = NULL;
   char *username = NULL;
   gboolean help = FALSE;
@@ -120,6 +121,7 @@ hotssh_app_command_line (GApplication              *app,
     { "host", 'h', 0, G_OPTION_ARG_STRING, &host, NULL, NULL },
     { "username", 'u', 0, G_OPTION_ARG_STRING, &username, NULL, NULL },
     { "help", '?', 0, G_OPTION_ARG_NONE, &help, NULL, NULL },
+    { "no-default-window", 0, G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &no_default_window, NULL, NULL },
     { NULL } 
   };
 
@@ -146,10 +148,21 @@ hotssh_app_command_line (GApplication              *app,
 
   g_strfreev (args);
   g_option_context_free (context);
-      
-  win = hotssh_window_new (HOTSSH_APP (app));
-  gtk_widget_show_all ((GtkWidget*)win);
-  gtk_window_present (GTK_WINDOW (win));
+
+  if (no_default_window)
+    {
+      /* By calling hold() and release() we trigger the inactivity timeout,
+       * so that we stick around until a D-Bus method call can be made.
+       */
+      g_application_hold (app);
+      g_application_release (app);
+    }
+  else
+    {
+      win = hotssh_window_new (HOTSSH_APP (app));
+      gtk_widget_show_all ((GtkWidget*)win);
+      gtk_window_present (GTK_WINDOW (win));
+    }
 
   return 0;
 }
@@ -168,5 +181,6 @@ hotssh_app_new (void)
   return g_object_new (HOTSSH_TYPE_APP,
                        "application-id", "org.gnome.hotssh",
                        "flags", G_APPLICATION_HANDLES_COMMAND_LINE,
+                       "inactivity-timeout", 120000, /* 2 minutes */
                        NULL);
 }

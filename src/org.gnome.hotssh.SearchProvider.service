@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.hotssh.SearchProvider
+Exec=hotssh --no-default-window
