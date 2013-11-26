@@ -23,6 +23,8 @@
 
 #include "libgsystem.h"
 
+#include <glib/gi18n.h>
+
 static void hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel);
 static void new_tab_activated (GSimpleAction    *action,
                                GVariant         *parameter,
@@ -139,7 +141,7 @@ on_tab_hostname_changed (HotSshTab           *tab,
   GtkWidget *label_box = gtk_notebook_get_tab_label ((GtkNotebook*)priv->main_notebook, (GtkWidget*)tab);
   GtkLabel *real_label = GTK_LABEL (g_object_get_data ((GObject*)label_box, "label-text"));
   const char *hostname = hotssh_tab_get_hostname (tab);
-  gtk_label_set_text (real_label, hostname ? hostname : "Disconnected");
+  gtk_label_set_text (real_label, hostname ? hostname : _("Disconnected"));
 }
 
 static void

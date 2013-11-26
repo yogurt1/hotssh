@@ -1,30 +1,26 @@
 #!/bin/sh
+# Run this to generate all the initial makefiles, etc.
 
-test -n "$srcdir" || srcdir=`dirname "$0"`
-test -n "$srcdir" || srcdir=.
+srcdir=`dirname $0`
+test -z "$srcdir" && srcdir=.
 
-olddir=`pwd`
-cd $srcdir
+PKG_NAME="hotssh"
 
-AUTORECONF=`which autoreconf`
-if test -z $AUTORECONF; then
-        echo "*** No autoreconf found, please intall it ***"
-        exit 1
-fi
+(test -f $srcdir/src/hotssh-app.c) || {
+    echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
+    echo " top-level $PKG_NAME directory"
+    exit 1
+}
 
-set -e
+which gnome-autogen.sh || {
+    echo "You need to install gnome-common from the GNOME git"
+    exit 1
+}
 
-mkdir -p m4
+git submodule update --init --recursive
 
-# Fetch submodules if needed
-if test ! -f libgsystem/README;
-then
-  echo "+ Setting up submodules"
-  git submodule init
-  git submodule update
-fi
-
-autoreconf --force --install --verbose
-
-cd $olddir
-test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
+REQUIRED_AUTOCONF_VERSION=2.59
+REQUIRED_AUTOMAKE_VERSION=1.9
+REQUIRED_INTLTOOL_VERSION=0.40.0
+REQUIRED_PKG_CONFIG_VERSION=0.22
+. gnome-autogen.sh

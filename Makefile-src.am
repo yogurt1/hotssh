@@ -36,6 +36,7 @@ hotssh_SOURCES = $(hotssh_headers) \
 	src/hotssh-prefs.c \
 	$(NULL)
 
+hotssh_CPPFLAGS = $(AM_CPPFLAGS) -DLOCALEDIR=\"$(localedir)\"
 hotssh_CFLAGS = $(AM_CFLAGS) $(BUILDDEP_HOTSSHAPP_CFLAGS) -I$(srcdir)/libgsystem -I$(srcdir)/libgssh -I$(srcdir)/src
 hotssh_LDADD = $(BUILDDEP_HOTSSHAPP_LIBS) libgssh.la libgsystem.la
 

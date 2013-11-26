@@ -21,8 +21,13 @@
 #include <gtk/gtk.h>
 #include <hotssh-app.h>
 
+#include <glib/gi18n.h>
+
 int
 main (int argc, char *argv[])
 {
+  bindtextdomain ("hotssh", LOCALEDIR);
+  bind_textdomain_codeset ("hotssh", "UTF-8");
+  textdomain ("hotssh");
   return g_application_run (G_APPLICATION (hotssh_app_new ()), argc, argv);
 }

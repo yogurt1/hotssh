@@ -13,6 +13,11 @@ AC_SYS_LARGEFILE
 AC_PROG_CC
 AM_PROG_CC_C_O
 
+GETTEXT_PACKAGE=AC_PACKAGE_NAME
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[The name of the gettext domain])
+IT_PROG_INTLTOOL(0.50.1)
+
 changequote(,)dnl
 if test "x$GCC" = "xyes"; then
   WARN_CFLAGS="-Wall -Wstrict-prototypes -Werror=missing-prototypes \
@@ -42,5 +47,6 @@ LIBS=$save_LIBS
 
 AC_CONFIG_FILES([
 Makefile
+po/Makefile.in
 ])
 AC_OUTPUT
