@@ -58,6 +58,28 @@ desktop_DATA = src/hotssh.desktop
 searchproviderdir = $(datadir)/gnome-shell/search-providers
 searchprovider_DATA = src/hotssh-search-provider.ini
 
-scalableiconsdir = $(datadir)/icons/hicolor/scalable/apps/
-scalableicons_DATA = src/hotssh.svg
+# Don't install this, it's large.
+# scalableiconsdir = $(datadir)/icons/hicolor/scalable/apps/
+# dist_scalableicons_DATA = src/icons/hotssh.svg
+EXTRA_DIST += src/icons/hotssh.svg
 
+icon16dir = $(datadir)/icons/hicolor/16x16/apps
+dist_icon16_DATA = src/icons/hicolor/16x16/apps/hotssh.png
+
+icon22dir = $(datadir)/icons/hicolor/22x22/apps
+dist_icon22_DATA = src/icons/hicolor/22x22/apps/hotssh.png
+
+icon24dir = $(datadir)/icons/hicolor/24x24/apps
+dist_icon24_DATA = src/icons/hicolor/24x24/apps/hotssh.png
+
+icon32dir = $(datadir)/icons/hicolor/32x32/apps
+dist_icon32_DATA = src/icons/hicolor/32x32/apps/hotssh.png
+
+icon48dir = $(datadir)/icons/hicolor/48x48/apps
+dist_icon48_DATA = src/icons/hicolor/48x48/apps/hotssh.png
+
+icon256dir = $(datadir)/icons/hicolor/256x256/apps
+dist_icon256_DATA = src/icons/hicolor/256x256/apps/hotssh.png
+
+icon512dir = $(datadir)/icons/hicolor/512x512/apps
+dist_icon512_DATA = src/icons/hicolor/512x512/apps/hotssh.png
