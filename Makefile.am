@@ -47,7 +47,7 @@ typelibdir = $(libdir)/girepository-1.0
 typelib_DATA =
 gsettings_SCHEMAS =
 
-EXTRA_DIST += autogen.sh COPYING README.md
+EXTRA_DIST += autogen.sh COPYING
 
 GITIGNOREFILES = aclocal.m4 build-aux config.h.in m4
 
