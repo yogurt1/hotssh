@@ -19,6 +19,7 @@
  */
 
 #include "hotssh-tab.h"
+#include "hotssh-hostdb.h"
 #include "hotssh-password-interaction.h"
 #include "gssh.h"
 
@@ -92,6 +93,7 @@ struct _HotSshTabPrivate
   guint authmechanism_index;
 
   char *hostname;
+  GtkEntryCompletion *host_completion;
   GSocketConnectable *address;
   GSshConnection *connection;
   GSshChannel *channel;
@@ -736,6 +738,20 @@ hotssh_tab_style_updated (GtkWidget      *widget)
   vte_terminal_set_color_background_rgba ((VteTerminal*)priv->terminal, &bg);
 }
 
+static gboolean
+host_entry_match (GtkEntryCompletion *completion,
+                  const char         *key,
+                  GtkTreeIter        *iter,
+                  gpointer            user_data)
+{
+  gs_free char *host = NULL;
+  GtkTreeModel *model = gtk_entry_completion_get_model (completion);
+
+  gtk_tree_model_get (model, iter, 0, &host, -1);
+
+  return g_str_has_prefix (host, key);
+}
+
 static void
 hotssh_tab_grab_focus (GtkWidget *widget)
 {
@@ -793,14 +809,28 @@ hotssh_tab_init (HotSshTab *self)
   gtk_widget_show_all (priv->terminal_box);
 
   g_queue_init (&priv->write_queue);
+
+  {
+    gs_unref_object HotSshHostDB *hostdb = hotssh_hostdb_get_instance ();
+    gs_unref_object GtkTreeModel *hostdb_model = hotssh_hostdb_get_model (hostdb);
+    priv->host_completion = gtk_entry_completion_new ();
+    gtk_entry_completion_set_match_func (priv->host_completion, host_entry_match, self, NULL);
+    gtk_entry_completion_set_model (priv->host_completion, hostdb_model);
+    gtk_entry_completion_set_text_column (priv->host_completion, 0);
+    gtk_entry_completion_set_inline_completion (priv->host_completion, TRUE);
+    gtk_entry_set_completion ((GtkEntry*)priv->host_entry, priv->host_completion);
+  }
 }
 
 static void
 hotssh_tab_dispose (GObject *object)
 {
   HotSshTab *self = HOTSSH_TAB (object);
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
 
   page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
+
+  g_clear_object (&priv->host_completion);
 
   G_OBJECT_CLASS (hotssh_tab_parent_class)->dispose (object);
 }

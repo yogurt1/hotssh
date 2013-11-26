@@ -18,6 +18,7 @@ CLEANFILES += hotssh-search-glue.h hotssh-search-glue.c
 hotssh_headers = $(addprefix src/, \
 	hotssh-app.h \
 	hotssh-search-provider.h \
+	hotssh-hostdb.h \
 	hotssh-tab.h \
 	hotssh-password-interaction.h \
 	hotssh-win.h \
@@ -30,6 +31,7 @@ hotssh_SOURCES = $(hotssh_headers) \
 	src/main.c \
 	src/hotssh-app.c \
 	src/hotssh-search-provider.c \
+	src/hotssh-hostdb.c \
 	src/hotssh-tab.c \
 	src/hotssh-password-interaction.c \
 	src/hotssh-win.c \
