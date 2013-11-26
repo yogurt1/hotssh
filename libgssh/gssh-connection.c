@@ -623,8 +623,10 @@ static void
 gssh_connection_iteration (GSshConnection   *self,
                            GIOCondition        condition)
 {
+  g_object_ref (self);
   gssh_connection_iteration_internal (self, condition);
   recalculate_socket_state (self);
+  g_object_unref (self);
 }
 
 static void
@@ -640,6 +642,7 @@ on_socket_ready (GSocket *socket,
 		 gpointer user_data)
 {
   GSshConnection *self = user_data;
+  gboolean ret;
 
   if (condition & (G_IO_ERR | G_IO_HUP))
     {
@@ -650,11 +653,15 @@ on_socket_ready (GSocket *socket,
       return FALSE;
     }
 
+  g_object_ref (self);
+
   g_debug ("socket ready: state %d", self->state);
 
   gssh_connection_iteration (self, condition);
 
-  return TRUE;
+  ret = self->socket_source != NULL;
+  g_object_unref (self);
+  return ret;
 }
 
 const char *
