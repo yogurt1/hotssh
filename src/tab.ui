@@ -537,4 +537,11 @@
       </packing>
     </child>
   </template>
+  <object class="GtkSizeGroup" id="password_entry_submit_size_group">
+      <property name="mode">vertical</property>
+      <widgets>
+        <widget name="password_entry"/>
+        <widget name="password_submit"/>
+      </widgets>
+  </object>
 </interface>
