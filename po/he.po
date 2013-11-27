@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hotssh 2013.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-27 16:26+0200\n"
-"PO-Revision-Date: 2013-11-27 16:27+0200\n"
+"POT-Creation-Date: 2013-11-27 17:31+0200\n"
+"PO-Revision-Date: 2013-11-27 17:24+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: עברית <>\n"
 "Language: he\n"
@@ -44,8 +44,8 @@ msgid "Disconnected"
 msgstr "מנותק"
 
 #: ../src/hotssh-tab.c:312
-msgid "Authenticated, requesting channel..."
-msgstr "מאומת, מבקש ערוץ..."
+msgid "Authenticated, requesting channel…"
+msgstr "מאומת, מבקש ערוץ…"
 
 #: ../src/hotssh-tab.c:377
 #, c-format
@@ -59,21 +59,21 @@ msgstr "מבקש אימות דרך '%s'"
 
 #: ../src/hotssh-tab.c:473
 #, c-format
-msgid "Resolving '%s'..."
-msgstr "פותר את '%s'..."
+msgid "Resolving '%s'…"
+msgstr "פותר את '%s'…"
 
 #: ../src/hotssh-tab.c:488
 #, c-format
-msgid "Connecting to '%s'..."
-msgstr "מתחבר ל־'%s'..."
+msgid "Connecting to '%s'…"
+msgstr "מתחבר ל־'%s'…"
 
 #: ../src/hotssh-tab.c:643
-msgid "Authenticating..."
-msgstr "מאמת..."
+msgid "Authenticating…"
+msgstr "מאמת…"
 
 #: ../src/hotssh-tab.c:663
-msgid "Negotiating authentication..."
-msgstr "מאמת..."
+msgid "Negotiating authentication…"
+msgstr "מאמת…"
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -109,11 +109,11 @@ msgstr "ה_תאמה לסגנון מסוף המערכת:"
 
 #: ../src/tab.ui.h:1
 msgid "Host: "
-msgstr "מארח:"
+msgstr "מארח: "
 
 #: ../src/tab.ui.h:2
 msgid "Username: "
-msgstr "שם משתמש:"
+msgstr "שם משתמש: "
 
 #: ../src/tab.ui.h:3
 msgid "_Connect"
@@ -124,8 +124,8 @@ msgid "Host"
 msgstr "מארח"
 
 #: ../src/tab.ui.h:5
-msgid "Connecting..."
-msgstr "מתחבר..."
+msgid "Connecting…"
+msgstr "מתחבר…"
 
 #: ../src/tab.ui.h:6
 msgid "Status"
@@ -160,8 +160,8 @@ msgid "Hostkey"
 msgstr "Hostkey"
 
 #: ../src/tab.ui.h:14
-msgid "Password:"
-msgstr "ססמה:"
+msgid "Password: "
+msgstr "ססמה: "
 
 #: ../src/tab.ui.h:15
 msgid "Password"
