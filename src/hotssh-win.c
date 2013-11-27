@@ -120,7 +120,7 @@ create_tab_label (HotSshWindow       *self,
 
   close_image = (GtkImage*)gtk_image_new_from_icon_name ("window-close-symbolic",
 							 GTK_ICON_SIZE_MENU);
-  gtk_widget_set_tooltip_text ((GtkWidget*)close_button, "Close tab");
+  gtk_widget_set_tooltip_text ((GtkWidget*)close_button, _("Close tab"));
   g_signal_connect (close_button, "clicked",
 		    G_CALLBACK (on_tab_close_button_clicked), tab);
   gtk_container_add ((GtkContainer*)close_button, (GtkWidget*)close_image);
