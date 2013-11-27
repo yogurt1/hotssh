@@ -18,12 +18,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
+
 #include "hotssh-app.h"
 #include "hotssh-search-provider.h"
 #include "hotssh-win.h"
 #include "hotssh-prefs.h"
 
 #include "libgsystem.h"
+
+#include <glib/gi18n.h>
 
 struct _HotSshApp
 {
@@ -57,6 +61,33 @@ preferences_activated (GSimpleAction *action,
 }
 
 static void
+about_activated (GSimpleAction *action,
+                 GVariant      *parameter,
+                 gpointer       app)
+{
+  const gchar *authors[] = {
+    "Colin Walters <walters@verbum.org>",
+    NULL
+  };
+  GtkWindow *parent;
+
+  parent = gtk_application_get_active_window (GTK_APPLICATION (app));
+
+  gtk_show_about_dialog (parent,
+                         "authors", authors,
+                         "comments", _("SSH client"),
+                         "copyright", "Copyright \xc2\xa9 2013 Colin Walters",
+                         "license-type", GTK_LICENSE_LGPL_2_1,
+                         "logo-icon-name", "hotssh",
+                         "program-name", _("HotSSH"),
+                         "translator-credits", _("translator_credits"),
+                         "version", PACKAGE_VERSION,
+                         "website", "https://wiki.gnome.org/Apps/HotSSH",
+                         "website-label", _("HotSSH Website"),
+                         NULL);
+}
+
+static void
 quit_activated (GSimpleAction *action,
                 GVariant      *parameter,
                 gpointer       app)
@@ -67,6 +98,7 @@ quit_activated (GSimpleAction *action,
 static GActionEntry app_entries[] =
 {
   { "preferences", preferences_activated, NULL, NULL, NULL },
+  { "about", about_activated, NULL, NULL, NULL },
   { "quit", quit_activated, NULL, NULL, NULL }
 };
 

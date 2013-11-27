@@ -1,4 +1,5 @@
 [encoding: UTF-8]
+src/hotssh-app.c
 src/hotssh-win.c
 src/hotssh-tab.c
 [type: gettext/glade]src/app-menu.ui
