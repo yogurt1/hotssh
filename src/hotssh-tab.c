@@ -28,6 +28,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <glib/gi18n.h>
+
 static const GSshConnectionAuthMechanism default_authentication_order[] = {
   GSSH_CONNECTION_AUTH_MECHANISM_PUBLICKEY,
   /*  GSSH_CONNECTION_AUTH_MECHANISM_GSSAPI_MIC,  Seems broken */
@@ -307,7 +309,7 @@ on_auth_complete (GObject                *src,
   if (!gssh_connection_auth_finish ((GSshConnection*)src, res, &local_error))
     goto out;
 
-  set_status (self, "Authenticated, requesting channel...");
+  set_status (self, _("Authenticated, requesting channel..."));
 
   g_debug ("auth complete");
 
@@ -372,7 +374,7 @@ iterate_authentication_modes (HotSshTab          *self)
   if (priv->authmechanism_index >= G_N_ELEMENTS (default_authentication_order))
     {
       g_set_error (&local_error, G_IO_ERROR, G_IO_ERROR_FAILED,
-                   "No more authentication mechanisms available");
+                   _("No more authentication mechanisms available"));
       goto out;
     }
   else
@@ -381,7 +383,7 @@ iterate_authentication_modes (HotSshTab          *self)
         default_authentication_order[priv->authmechanism_index];
       gboolean is_password = mech == GSSH_CONNECTION_AUTH_MECHANISM_PASSWORD;
       gs_free char *authmsg =
-        g_strdup_printf ("Requesting authentication via '%s'",
+        g_strdup_printf (_("Requesting authentication via '%s'"),
                          gssh_connection_auth_mechanism_to_string (mech));
       /* Ugly gross hack until we have separate auth pages */
       set_status (self, authmsg);
@@ -468,7 +470,7 @@ on_socket_client_event (GSocketClient      *client,
   switch (event)
     {
     case G_SOCKET_CLIENT_RESOLVING:
-      set_status_printf (self, "Resolving '%s'...",
+      set_status_printf (self, _("Resolving '%s'..."),
                          priv->hostname);
       break;
     case G_SOCKET_CLIENT_CONNECTING:
@@ -483,7 +485,7 @@ on_socket_client_event (GSocketClient      *client,
             GInetAddress *inetaddr =
               g_inet_socket_address_get_address ((GInetSocketAddress*)remote_address);
             gs_free char *inet_str = g_inet_address_to_string (inetaddr);
-            set_status_printf (self, "Connecting to '%s'...",
+            set_status_printf (self, _("Connecting to '%s'..."),
                                inet_str);
           }
         break;
@@ -638,7 +640,7 @@ on_negotiate_complete (GObject             *src,
   if (!gssh_connection_negotiate_finish ((GSshConnection*)src, result, &local_error))
     goto out;
 
-  set_status (self, "Authenticating...");
+  set_status (self, _("Authenticating..."));
 
   iterate_authentication_modes (self);
 
@@ -658,7 +660,7 @@ on_approve_hostkey_clicked (GtkButton     *button,
                                    on_negotiate_complete, self);
 
   page_transition (self, HOTSSH_TAB_PAGE_CONNECTING);
-  set_status (self, "Negotiating authentication...");
+  set_status (self, _("Negotiating authentication..."));
 }
 
 static void

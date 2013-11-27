@@ -466,7 +466,7 @@
         </child>
         <child>
           <object class="GtkButton" id="auth_cancel_button">
-            <property name="label">Disconnect</property>
+            <property name="label" translatable="yes">Disconnect</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>

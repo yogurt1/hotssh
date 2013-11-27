@@ -17,7 +17,7 @@
             <property name="can_focus">False</property>
             <child>
               <object class="GtkButton" id="close">
-                <property name="label">_Close</property>
+                <property name="label" translatable="yes">_Close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
@@ -49,7 +49,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="xalign">1</property>
-                <property name="label">_Match System Terminal style:</property>
+                <property name="label" translatable="yes">_Match System Terminal style:</property>
                 <property name="use_underline">True</property>
               </object>
               <packing>
