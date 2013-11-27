@@ -163,6 +163,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">end</property>
+                <property name="margin_left">8</property>
                 <property name="margin_right">8</property>
                 <property name="margin_bottom">8</property>
                 <property name="use_stock">True</property>
@@ -439,6 +440,7 @@
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <property name="margin_left">8</property>
+                    <property name="margin_right">8</property>
                     <property name="use_stock">True</property>
                     <style>
                       <class name="suggested-action"/>
@@ -471,6 +473,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="halign">end</property>
+            <property name="margin_left">8</property>
             <property name="margin_right">8</property>
             <property name="margin_bottom">8</property>
             <property name="image_position">right</property>
