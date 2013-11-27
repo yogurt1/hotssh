@@ -147,7 +147,7 @@
               <object class="GtkLabel" id="connection_text">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Connecting...</property>
+                <property name="label" translatable="yes">Connecting…</property>
                 <property name="justify">center</property>
               </object>
               <packing>
@@ -410,7 +410,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Password:</property>
+                    <property name="label" translatable="yes">Password: </property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
