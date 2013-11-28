@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: hotssh master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-11-27 15:34+0000\n"
+"POT-Creation-Date: 2013-11-27 23:57+0000\n"
 "PO-Revision-Date: 2013-11-27 13:43-0300\n"
 "Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
@@ -28,7 +28,7 @@ msgid "HotSSH"
 msgstr "HotSSH"
 
 #: ../src/hotssh-app.c:83
-msgid "translator_credits"
+msgid "translator-credits"
 msgstr "Rafael Ferreira <rafael.f.f1@gmail.com>"
 
 #: ../src/hotssh-app.c:86
