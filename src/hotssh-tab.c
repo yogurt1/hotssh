@@ -658,6 +658,9 @@ on_approve_hostkey_clicked (GtkButton     *button,
   HotSshTab *self = user_data;
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
 
+  hotssh_hostdb_host_used (hotssh_hostdb_get_instance (),
+                           priv->hostname);
+
   gssh_connection_negotiate_async (priv->connection, priv->cancellable,
                                    on_negotiate_complete, self);
 

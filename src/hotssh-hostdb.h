@@ -33,4 +33,9 @@ HotSshHostDB           *hotssh_hostdb_get_instance (void);
 
 GtkTreeModel           *hotssh_hostdb_get_model    (HotSshHostDB *self);
 
+void                    hotssh_hostdb_host_used    (HotSshHostDB *self,
+                                                    const char   *hostname);
+void                    hotssh_hostdb_set_username    (HotSshHostDB *self,
+                                                       const char   *hostname,
+                                                       const char   *username);
 
