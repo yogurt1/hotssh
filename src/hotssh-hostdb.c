@@ -331,6 +331,23 @@ hostname_to_iter (HotSshHostDB    *self,
 }
 
 static void
+get_or_create_host_in_db (HotSshHostDB        *self,
+                          const char          *hostname,
+                          GtkTreeIter         *iter)
+{
+  G_GNUC_UNUSED HotSshHostDBPrivate *priv = hotssh_hostdb_get_instance_private (self);
+
+  if (hostname_to_iter (self, hostname, iter))
+    return;
+
+  gtk_list_store_append (priv->model, iter);
+  gtk_list_store_set (priv->model, iter,
+                      HOTSSH_HOSTDB_COLUMN_HOSTNAME, hostname,
+                      HOTSSH_HOSTDB_COLUMN_IS_KNOWN, FALSE,
+                      -1);
+}
+
+static void
 on_replace_extradb_contents_complete (GObject                *src,
                                       GAsyncResult           *result,
                                       gpointer                user_data)
@@ -388,8 +405,7 @@ hotssh_hostdb_host_used (HotSshHostDB *self,
   GtkTreeIter iter;
   gs_free char *groupname = g_strdup_printf ("host \"%s\"", hostname);
 
-  if (!hostname_to_iter (self, hostname, &iter))
-    return;
+  get_or_create_host_in_db (self, hostname, &iter);
 
   g_key_file_set_uint64 (priv->extradb, groupname, "last-used", g_get_real_time () / G_USEC_PER_SEC);
   queue_save_extradb (self);
@@ -404,8 +420,7 @@ hotssh_hostdb_set_username (HotSshHostDB *self,
   GtkTreeIter iter;
   gs_free char *groupname = g_strdup_printf ("host \"%s\"", hostname);
 
-  if (!hostname_to_iter (self, hostname, &iter))
-    return;
+  get_or_create_host_in_db (self, hostname, &iter);
 
   g_key_file_set_string (priv->extradb, groupname, "username", username);
 
