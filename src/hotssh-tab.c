@@ -750,6 +750,9 @@ host_entry_match (GtkEntryCompletion *completion,
   gs_free char *host = NULL;
   GtkTreeModel *model = gtk_entry_completion_get_model (completion);
 
+  if (host == NULL)
+    return FALSE;
+
   gtk_tree_model_get (model, iter, 0, &host, -1);
 
   return g_str_has_prefix (host, key);
