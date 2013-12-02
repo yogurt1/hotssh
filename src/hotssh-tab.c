@@ -728,14 +728,17 @@ hotssh_tab_style_updated (GtkWidget      *widget)
 {
   HotSshTab   *self = (HotSshTab*)widget;
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
-  GtkStyleContext *context;
   GdkRGBA fg, bg;
 
   GTK_WIDGET_CLASS (hotssh_tab_parent_class)->style_updated (widget);
 
-  context = gtk_widget_get_style_context (widget);
-  gtk_style_context_get_color (context, GTK_STATE_FLAG_NORMAL, &fg);
-  gtk_style_context_get_background_color (context, GTK_STATE_FLAG_NORMAL, &bg);
+  /* Hardcode black on white for now; in the future I'd like to do
+   * per-host colors.
+   */
+  fg.red = fg.blue = fg.green = 0;
+  fg.alpha = 1;
+  bg.red = bg.blue = bg.green = 1;
+  bg.alpha = 1;
 
   vte_terminal_set_color_foreground_rgba ((VteTerminal*)priv->terminal, &fg);
   vte_terminal_set_color_background_rgba ((VteTerminal*)priv->terminal, &bg);
@@ -762,6 +765,13 @@ static void
 hotssh_tab_grab_focus (GtkWidget *widget)
 {
   reset_focus_state ((HotSshTab*)widget);
+}
+
+static void
+on_vte_realize (GtkWidget   *widget,
+                HotSshTab   *self)
+{
+  hotssh_tab_style_updated ((GtkWidget*)self);
 }
 
 static void
@@ -807,7 +817,7 @@ hotssh_tab_init (HotSshTab *self)
   priv->password_interaction = hotssh_password_interaction_new ((GtkEntry*)priv->password_entry);
 
   priv->terminal = vte_terminal_new ();
-  hotssh_tab_style_updated ((GtkWidget *) self);
+  g_signal_connect (priv->terminal, "realize", G_CALLBACK (on_vte_realize), self);
   vte_terminal_set_audible_bell ((VteTerminal*)priv->terminal, FALSE);  /* Audible bell is a terrible idea */
   g_signal_connect ((GObject*)priv->terminal, "size-allocate", G_CALLBACK (on_terminal_size_allocate), self);
   g_signal_connect ((GObject*)priv->terminal, "commit", G_CALLBACK (on_terminal_commit), self);
