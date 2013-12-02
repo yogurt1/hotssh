@@ -320,13 +320,11 @@ hostname_to_iter (HotSshHostDB    *self,
                           HOTSSH_HOSTDB_COLUMN_HOSTNAME, &model_hostname,
                           -1);
 
-      if (g_ascii_strcasecmp (hostname, model_hostname) != 0)
-        {
-          gtk_tree_model_iter_next ((GtkTreeModel*)priv->model, iter);
-          continue;
-        }
+      if (g_ascii_strcasecmp (hostname, model_hostname) == 0)
+        return TRUE;
 
-      return TRUE;
+      if (!gtk_tree_model_iter_next ((GtkTreeModel*)priv->model, iter))
+        break;
     }
 
   return FALSE;
