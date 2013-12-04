@@ -46,6 +46,7 @@ struct _GSshConnection
   GHashTable *channels;
 
   GError *cached_error;
+  char *remote_hostkey_type;
   GBytes *remote_hostkey_sha1;
   GMainContext *maincontext;
   GSocketClient *socket_client;

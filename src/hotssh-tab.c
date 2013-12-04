@@ -429,13 +429,15 @@ on_connection_handshake (GObject         *object,
   const guint8 *binbuf;
   gsize len;
   gs_free char *hostkey_sha1_text = NULL;
+  gs_free char *hostkey_type = NULL;
 
   if (!gssh_connection_handshake_finish ((GSshConnection*)object, result, error))
     goto out;
 
   g_debug ("handshake complete");
 
-  hostkey_sha1_binary = gssh_connection_preauth_get_fingerprint_sha1 (priv->connection);
+  hostkey_sha1_binary = gssh_connection_preauth_get_host_key_fingerprint_sha1 (priv->connection,
+                                                                               &hostkey_type);
   binbuf = g_bytes_get_data (hostkey_sha1_binary, &len);
   buf = g_string_new ("");
   for (i = 0; i < len; i++)
@@ -445,6 +447,8 @@ on_connection_handshake (GObject         *object,
 	g_string_append_c (buf, ':');
     }
   hostkey_sha1_text = g_string_free (buf, FALSE);
+  
+  g_debug ("remote key type:%s SHA1:%s", hostkey_type, hostkey_sha1_text);
 
   gtk_label_set_text ((GtkLabel*)priv->hostkey_fingerprint_label,
 		      hostkey_sha1_text);

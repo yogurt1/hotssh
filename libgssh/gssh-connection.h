@@ -72,7 +72,8 @@ gboolean                gssh_connection_handshake_finish (GSshConnection    *sel
 void                    gssh_connection_set_interaction (GSshConnection   *self,
                                                          GTlsInteraction  *interaction);
 
-GBytes *                gssh_connection_preauth_get_fingerprint_sha1 (GSshConnection *self);
+GBytes *                gssh_connection_preauth_get_host_key_fingerprint_sha1 (GSshConnection  *self,
+                                                                               char           **out_key_type);
 
 void                    gssh_connection_negotiate_async (GSshConnection      *self,
                                                          GCancellable        *cancellable,
@@ -105,4 +106,14 @@ void                    gssh_connection_open_shell_async (GSshConnection        
 GSshChannel *         gssh_connection_open_shell_finish (GSshConnection         *self,
                                                              GAsyncResult             *result,
                                                              GError                  **error);
+
+void                    gssh_connection_exec_async (GSshConnection           *self,
+                                                    const char               *shell_string,
+                                                    GCancellable             *cancellable,
+                                                    GAsyncReadyCallback       callback,
+                                                    gpointer                  user_data);
+
+GSshChannel *         gssh_connection_exec_finish (GSshConnection         *self,
+                                                   GAsyncResult             *result,
+                                                   GError                  **error);
 

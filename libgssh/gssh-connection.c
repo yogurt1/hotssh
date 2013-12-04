@@ -365,6 +365,7 @@ set_hostkey_sha1 (GSshConnection           *self,
   g_assert (sha1len == sizeof (sha1buf));
 
   self->remote_hostkey_sha1 = g_bytes_new (sha1buf, sha1len);
+  self->remote_hostkey_type = g_strdup (ssh_key_type_to_char (ssh_key_type (key)));
 
   ret = TRUE;
  out:
@@ -737,14 +738,17 @@ gssh_connection_get_state (GSshConnection        *self)
 }
 
 /**
- * gssh_connection_preauth_get_fingerprint_sha1:
+ * gssh_connection_preauth_get_host_key_fingerprint_sha1:
  * @self: Self
+ * @out_key_type: (out): String representation of key type
  *
  * Returns: (transfer none): 20 bytes for the remote host's SHA1 fingerprint
  */
 GBytes *
-gssh_connection_preauth_get_fingerprint_sha1 (GSshConnection *self)
+gssh_connection_preauth_get_host_key_fingerprint_sha1 (GSshConnection          *self,
+                                                       char                   **out_key_type)
 {
+  *out_key_type = g_strdup (self->remote_hostkey_type);
   return self->remote_hostkey_sha1;
 }
 
