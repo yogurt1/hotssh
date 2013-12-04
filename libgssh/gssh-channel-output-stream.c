@@ -214,11 +214,9 @@ gssh_channel_output_stream_write (GOutputStream  *stream,
   if (self->sync_error)
     {
       g_propagate_error (error, self->sync_error);
-      return FALSE;
+      return -1;
     }
-  return TRUE;
-
-  return ret;
+  return self->sync_bytes_written;
 }
 
 void
