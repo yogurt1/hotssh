@@ -247,6 +247,7 @@ process_channels (GSshConnection   *self,
       GTask *task = hkey;
       GSshConnectionChannelCreationData *data = g_task_get_task_data (task);
 
+    again:
       switch (data->state)
         {
         case GSSH_CONNECTION_CHANNEL_CREATION_STATE_OPEN_SESSION:
@@ -268,8 +269,12 @@ process_channels (GSshConnection   *self,
                 g_hash_table_iter_remove (&hiter);
                 break;
               }
-            data->state = GSSH_CONNECTION_CHANNEL_CREATION_STATE_REQUEST_PTY;
-            /* Fall through */
+            if (data->exec_command == NULL)
+              data->state = GSSH_CONNECTION_CHANNEL_CREATION_STATE_REQUEST_PTY;
+            else
+              data->state = GSSH_CONNECTION_CHANNEL_CREATION_STATE_EXEC;
+
+            goto again;
           }
         case GSSH_CONNECTION_CHANNEL_CREATION_STATE_REQUEST_PTY:
           {
@@ -905,7 +910,35 @@ gssh_connection_open_shell_finish (GSshConnection         *self,
                                      GError                  **error)
 {
   g_return_val_if_fail (g_task_is_valid (result, self), NULL);
+  return g_task_propagate_pointer (G_TASK (result), error);
+}
 
+void
+gssh_connection_exec_async (GSshConnection           *self,
+                            const char               *shell_command,
+                            GCancellable             *cancellable,
+                            GAsyncReadyCallback       callback,
+                            gpointer                  user_data)
+{
+  GTask *task;
+  GSshConnectionChannelCreationData *data =
+    g_new0 (GSshConnectionChannelCreationData, 1);
+
+  data->exec_command = g_strdup (shell_command);
+
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_task_data (task, data, channel_creation_data_free);
+  g_hash_table_add (self->open_channel_exec_tasks, task);
+
+  gssh_connection_iteration_default (self);
+}
+
+GSshChannel *
+gssh_connection_exec_finish (GSshConnection         *self,
+                             GAsyncResult             *result,
+                             GError                  **error)
+{
+  g_return_val_if_fail (g_task_is_valid (result, self), NULL);
   return g_task_propagate_pointer (G_TASK (result), error);
 }
 
