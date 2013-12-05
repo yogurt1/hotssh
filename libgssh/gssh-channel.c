@@ -95,8 +95,8 @@ _gssh_channel_iteration (GSshChannel              *self)
   if (self->pty_size_task)
     {
       GTask *orig_pty_size_task = self->pty_size_task;
-      rc = ssh_channel_request_pty_size (self->libsshchannel, "xterm",
-                                         self->pty_width, self->pty_height);
+      rc = ssh_channel_change_pty_size (self->libsshchannel,
+                                        self->pty_width, self->pty_height);
       if (rc == SSH_AGAIN)
         ;
       else 
