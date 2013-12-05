@@ -91,6 +91,7 @@ struct _HotSshTabPrivate
   HotSshTabPage active_page;
   guint authmechanism_index;
 
+  gboolean indisposed;
   char *hostname;
   GtkEntryCompletion *host_completion;
   GSocketConnectable *address;
@@ -156,18 +157,21 @@ state_reset_for_new_connection (HotSshTab                *self)
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   g_debug ("reset state");
   g_clear_pointer (&priv->hostname, g_free);
-  g_object_notify ((GObject*)self, "hostname");
   g_clear_object (&priv->address);
   g_clear_object (&priv->connection);
   g_clear_object (&priv->cancellable);
-  vte_terminal_reset ((VteTerminal*)priv->terminal, TRUE, TRUE);
-  gtk_entry_set_text ((GtkEntry*)priv->password_entry, "");
-  reset_focus_state (self);
-  gtk_label_set_text ((GtkLabel*)priv->connection_text, "");
-  gtk_widget_show (priv->connection_text_container);
-  gtk_widget_hide (priv->hostkey_container);
-  gtk_widget_set_sensitive (priv->password_container, TRUE);
-  priv->awaiting_password_entry = priv->submitted_password = FALSE;
+  if (!priv->indisposed)
+    {
+      g_object_notify ((GObject*)self, "hostname");
+      vte_terminal_reset ((VteTerminal*)priv->terminal, TRUE, TRUE);
+      gtk_entry_set_text ((GtkEntry*)priv->password_entry, "");
+      reset_focus_state (self);
+      gtk_label_set_text ((GtkLabel*)priv->connection_text, "");
+      gtk_widget_show (priv->connection_text_container);
+      gtk_widget_hide (priv->hostkey_container);
+      gtk_widget_set_sensitive (priv->password_container, TRUE);
+      priv->awaiting_password_entry = priv->submitted_password = FALSE;
+    }
   g_debug ("reset state done");
 }
 
@@ -841,6 +845,8 @@ hotssh_tab_dispose (GObject *object)
 {
   HotSshTab *self = HOTSSH_TAB (object);
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+
+  priv->indisposed = TRUE;
 
   page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
 
