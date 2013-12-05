@@ -164,7 +164,7 @@ gssh_channel_input_stream_read (GInputStream   *stream,
   self->sync_context = g_main_context_new ();
   g_main_context_push_thread_default (self->sync_context);
   self->sync_error = NULL;
-  self->sync_running = FALSE;
+  self->sync_running = TRUE;
 
   gssh_channel_input_stream_read_async (stream, buffer, count,
                                           G_PRIORITY_DEFAULT, cancellable,
