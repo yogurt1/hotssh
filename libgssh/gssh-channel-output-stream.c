@@ -223,39 +223,53 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
 {
   int rc;
   GError *local_error = NULL;
+  GTask *task;
 
+  task = self->write_task ? self->write_task : self->close_task;
+
+  if (!task)
+    return;
+
+  if (!self->channel->connection)
+    {
+      g_set_error_literal (&local_error, G_IO_ERROR, G_IO_ERROR_CLOSED,
+                           "Connection closed");
+      if (self->write_task)
+        self->write_task = NULL;
+      else
+        self->close_task = NULL;
+      g_task_return_error (task, local_error);
+      g_object_unref (task);
+      return;
+    }
+  
   switch (self->state)
     {
     case GSSH_CHANNEL_OUTPUT_STREAM_STATE_OPEN:
       {
         gsize bufsize;
         const guint8 *data;
-        GTask *prev_write_task = self->write_task;
-
-        if (!prev_write_task)
-          return;
 
         data = g_bytes_get_data (self->buf, &bufsize);
         rc = ssh_channel_write (self->channel->libsshchannel,
                                 (const char*)data, bufsize);
         if (rc == 0)
           break;
-
+        
         /* This special dance is required because we may have
            reentered via g_task_return() */
         self->write_task = NULL;
 
         if (rc > 0)
           {
-            g_task_return_int (prev_write_task, rc);
+            g_task_return_int (task, rc);
           }
         else
           {
             _gssh_set_error_from_libssh (&local_error, "Failed to write",
                                          self->channel->connection->session);
-            g_task_return_error (prev_write_task, local_error);
+            g_task_return_error (task, local_error);
           }
-        g_object_unref (prev_write_task);
       }
       break;
     case GSSH_CHANNEL_OUTPUT_STREAM_STATE_REQUESTED_EOF:
@@ -271,8 +285,9 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
           {
             _gssh_set_error_from_libssh (&local_error, "Failed to close",
                                          self->channel->connection->session);
-            g_task_return_error (self->close_task, local_error);
-            g_clear_object (&self->close_task);
+            self->close_task = NULL;
+            g_task_return_error (task, local_error);
+            g_object_unref (task);
             break;
           }
       }
@@ -281,9 +296,10 @@ _gssh_channel_output_stream_iteration (GSshChannelOutputStream     *self)
       rc = ssh_channel_is_eof (self->channel->libsshchannel);
       if (rc == 1)
         {
-          g_task_return_boolean (self->close_task, TRUE);
-          g_clear_object (&self->close_task);
+          self->close_task = NULL;
           self->state = GSSH_CHANNEL_OUTPUT_STREAM_STATE_RECEIVED_EOF;
+          g_task_return_boolean (task, TRUE);
+          g_object_unref (task);
         }
       else if (rc == 0)
         {
