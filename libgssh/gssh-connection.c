@@ -93,6 +93,12 @@ reset_state (GSshConnection               *self)
   g_clear_object (&self->socket);
   if (self->socket_source)
     g_source_destroy (self->socket_source);
+  if (self->session)
+    {
+      ssh_disconnect (self->session); 
+      ssh_free (self->session);
+      self->session = NULL;
+    }
   g_clear_pointer (&self->socket_source, g_source_unref);
   g_clear_pointer (&self->authmechanisms, g_array_unref);
   g_clear_pointer (&self->password, g_free);
