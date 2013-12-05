@@ -193,7 +193,6 @@ gssh_channel_output_stream_write (GOutputStream  *stream,
                                     GError        **error)
 {
   GSshChannelOutputStream *self = GSSH_CHANNEL_OUTPUT_STREAM (stream);
-  gssize ret = -1;
 
   g_return_val_if_fail (self->state == GSSH_CHANNEL_OUTPUT_STREAM_STATE_OPEN, -1);
 
