@@ -26,6 +26,8 @@
 
 #include "libgsystem.h"
 
+#include <glib-unix.h>
+
 enum {
   PROP_0,
   PROP_ADDRESS,
@@ -696,6 +698,7 @@ on_socket_client_connected (GObject         *src,
   GError *local_error = NULL;
   GError **error = &local_error;
   int fd;
+  int duped_fd;
 
   g_assert (src == (GObject*)self->socket_client);
 
@@ -717,9 +720,14 @@ on_socket_client_connected (GObject         *src,
     }
   
   fd = g_socket_get_fd (self->socket);
+  do
+    duped_fd = dup (fd);
+  while (G_UNLIKELY (duped_fd == -1 && errno == EINTR));
+  fcntl (duped_fd, F_SETFD, fcntl (duped_fd, F_GETFD) | FD_CLOEXEC);
 
   ssh_set_blocking (self->session, 0);
-  ssh_options_set (self->session, SSH_OPTIONS_FD, &fd);
+  /* The session takes ownership of this fd, unfortunately */
+  ssh_options_set (self->session, SSH_OPTIONS_FD, &duped_fd);
   ssh_options_set (self->session, SSH_OPTIONS_USER, self->username);
 
   state_transition (self, GSSH_CONNECTION_STATE_HANDSHAKING);
