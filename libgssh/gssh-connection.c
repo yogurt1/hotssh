@@ -194,7 +194,8 @@ recalculate_socket_state (GSshConnection   *self)
       g_source_destroy (self->socket_source);
       g_source_unref (self->socket_source);
     }
-  g_debug ("socket will select on inbound: %d outbound: %d",
+  g_debug ("socket paused=%s inbound: %d outbound: %d",
+           self->paused ? "true" : "false",
            self->select_inbound, self->select_outbound);
   self->socket_source = g_socket_create_source (self->socket,
 						conditions,
