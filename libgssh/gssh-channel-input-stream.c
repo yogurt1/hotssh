@@ -187,8 +187,10 @@ void
 _gssh_channel_input_stream_iteration (GSshChannelInputStream     *self)
 {
   int rc;
+  int estatus;
   GError *local_error = NULL;
   GTask *prev_task = self->read_task;
+  gboolean is_eof = FALSE;
 
   if (!prev_task)
     return;
@@ -197,14 +199,28 @@ _gssh_channel_input_stream_iteration (GSshChannelInputStream     *self)
   rc = ssh_channel_read_nonblocking (self->channel->libsshchannel,
                                      self->buf, self->count, 0);
   if (rc == 0)
-    return;
+    {
+      is_eof = ssh_channel_is_eof (self->channel->libsshchannel);
+      estatus = ssh_channel_get_exit_status (self->channel->libsshchannel);
+      if (!is_eof)
+        {
+          g_debug ("channel read 0, not eof, estatus=%d", estatus);
+          return;
+        }
+    }
 
   /* This special dance is required because we may have reentered via
      g_task_return() */
   self->read_task = NULL;
 
-  if (rc > 0)
+  if (is_eof)
     {
+      g_debug ("channel eof");
+      g_task_return_int (prev_task, 0);
+    }
+  else if (rc > 0)
+    {
+      g_debug ("channel read %" G_GSSIZE_FORMAT " bytes", (gssize)rc);
       g_task_return_int (prev_task, rc);
     }
   else
