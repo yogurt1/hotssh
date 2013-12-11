@@ -455,7 +455,7 @@ gssh_connection_iteration_internal (GSshConnection   *self,
         
         state_transition (self, GSSH_CONNECTION_STATE_PREAUTH);
         return_task_success_and_clear (&self->handshake_task);
-        /* Fall through */
+        goto repeat;
       }
     case GSSH_CONNECTION_STATE_PREAUTH:
       {
