@@ -200,7 +200,7 @@ recalculate_socket_state (GSshConnection   *self)
 						conditions,
 						self->cancellable);
   g_source_set_callback (self->socket_source, (GSourceFunc)on_socket_ready, self, NULL);
-  g_source_attach (self->socket_source, NULL);
+  g_source_attach (self->socket_source, self->maincontext);
 }
 
 static void
