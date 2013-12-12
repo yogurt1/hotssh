@@ -1,0 +1,155 @@
+# Spanish translation for hotssh.
+# Copyright (C) 2013 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-12-05 21:18+0000\n"
+"PO-Revision-Date: 2013-12-12 11:38+0100\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Gtranslator 2.91.5\n"
+
+#: ../src/hotssh-app.c:78
+msgid "SSH client"
+msgstr "Cliente de SSH"
+
+#: ../src/hotssh-app.c:82 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:83
+msgid "translator-credits"
+msgstr "Daniel Mustieles <daniel.mustieles@gmail.com>, 2013"
+
+#: ../src/hotssh-app.c:86
+msgid "HotSSH Website"
+msgstr "Página web de HotSSH"
+
+#: ../src/hotssh-win.c:123
+msgid "Close tab"
+msgstr "Cerrar pestaña"
+
+#: ../src/hotssh-win.c:144
+msgid "Disconnected"
+msgstr "Desconectado"
+
+#: ../src/hotssh-tab.c:315
+msgid "Authenticated, requesting channel…"
+msgstr "Autenticado, solicitando canal…"
+
+#: ../src/hotssh-tab.c:380
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "No hay más mecanismos de autenticación disponibles"
+
+#: ../src/hotssh-tab.c:389
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "Solicitando autenticación mediante «%s»"
+
+#: ../src/hotssh-tab.c:480
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "Resolviendo «%s»…"
+
+#: ../src/hotssh-tab.c:495
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "Conectando a «%s»…"
+
+#: ../src/hotssh-tab.c:649
+msgid "Authenticating…"
+msgstr "Autenticando…"
+
+#: ../src/hotssh-tab.c:672
+msgid "Negotiating authentication…"
+msgstr "Negociando autenticación…"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Preferencias"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_Acerca de"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Salir"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_New Tab"
+msgstr "Pestaña _nueva"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Disconnect"
+msgstr "_Desconectar"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Cerrar"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "_Coincidir con el estilo de la terminal del sistema:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Equipo:"
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Nombre de usuario:"
+
+#: ../src/tab.ui.h:3
+msgid "_Connect"
+msgstr "_Conectar"
+
+#: ../src/tab.ui.h:4
+msgid "Connecting…"
+msgstr "Conectando…"
+
+#: ../src/tab.ui.h:5
+msgid "Error:"
+msgstr "Error:"
+
+#: ../src/tab.ui.h:6
+msgid "Disconnect"
+msgstr "Desconectar"
+
+#: ../src/tab.ui.h:7
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"Se requiere aprobación para el nuevo equipo descubierto; la huella de la "
+"clave RSA es:"
+
+#: ../src/tab.ui.h:8
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:9
+msgid "Approve and Connect"
+msgstr "Aprobar y conectar"
+
+#: ../src/tab.ui.h:10
+msgid "Password: "
+msgstr "Contraseña:"
+
+#: ../src/window.ui.h:2
+msgid "New Connection"
+msgstr "Nueva conexión"
