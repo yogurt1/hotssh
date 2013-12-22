@@ -86,7 +86,7 @@ reset_state (GSshConnection               *self)
     }
   g_clear_pointer (&self->channels, g_hash_table_unref);
   /* This hash doesn't hold a ref */
-  self->channels = g_hash_table_new_full (NULL, NULL, NULL, NULL);
+  self->channels = g_hash_table_new (NULL, NULL);
 
   g_clear_pointer (&self->remote_hostkey_sha1, g_bytes_unref);
   g_clear_error (&self->cached_error);
@@ -489,7 +489,7 @@ gssh_connection_iteration_internal (GSshConnection   *self,
             /* Fall through if NONE failed */
           }
 
-        g_clear_pointer (&self->authmechanisms, g_ptr_array_unref);
+        g_clear_pointer (&self->authmechanisms, g_array_unref);
         self->authmechanisms = g_array_new (FALSE, TRUE, sizeof (guint));
         method = ssh_userauth_list (self->session, NULL);
 
@@ -510,9 +510,8 @@ gssh_connection_iteration_internal (GSshConnection   *self,
       }
     case GSSH_CONNECTION_STATE_AUTHENTICATION_REQUIRED:
       {
-        /* User should have connected to notify:: state and
-         * watch for AUTHENTICATION_REQUIRED, then call
-         * gssh_connection_auth_async().
+        /* App may be waiting on hostkey approval; wait for them to
+         * invoke gssh_connection_auth_async().
          */
         if (self->auth_task == NULL)
           {
@@ -555,18 +554,24 @@ gssh_connection_iteration_internal (GSshConnection   *self,
                       g_tls_interaction_invoke_ask_password (self->interaction, password,
                                                              g_task_get_cancellable (self->auth_task),
                                                              &local_error);
-                    if (result == G_TLS_INTERACTION_FAILED)
+                    if (result == G_TLS_INTERACTION_UNHANDLED)
+                      {
+                        g_clear_error (&local_error);
+                        g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                                     "Unhandled password interaction");
+                        return_task_error_and_clear (&self->auth_task, local_error);
+                        return;
+                      }
+                    else if (result == G_TLS_INTERACTION_FAILED)
                       {
                         return_task_error_and_clear (&self->auth_task, local_error);
                         return;
                       }
-                    else
+                    else if (result == G_TLS_INTERACTION_HANDLED)
                       {
                         gsize password_len;
                         const guint8 *password_value;
                         GString *password_str;
-
-                        g_assert (result == G_TLS_INTERACTION_HANDLED);
 
                         password_value = g_tls_password_get_value (password, &password_len);
 
