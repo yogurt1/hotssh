@@ -1,0 +1,155 @@
+# Slovenian translation for hotssh.
+# Copyright (C) 2013 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+#
+# Matej Urbančič <mateju@svn.gnome.org>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-12-22 10:48+0000\n"
+"PO-Revision-Date: 2013-12-22 19:39+0100\n"
+"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
+"Language: sl_SI\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 or n"
+"%100==4 ? 3 : 0) ;\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: ../src/hotssh-app.c:78
+msgid "SSH client"
+msgstr "Odjemalec SSH"
+
+#: ../src/hotssh-app.c:82 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:83
+msgid "translator-credits"
+msgstr "Matej Urbančič <mateju@svn.gnome.org>"
+
+#: ../src/hotssh-app.c:86
+msgid "HotSSH Website"
+msgstr "Spletna stran HotSSH"
+
+#: ../src/hotssh-win.c:123
+msgid "Close tab"
+msgstr "Zapri zavihek"
+
+#: ../src/hotssh-win.c:144
+msgid "Disconnected"
+msgstr "Povezava je prekinjena"
+
+#: ../src/hotssh-tab.c:315
+msgid "Authenticated, requesting channel…"
+msgstr "Overitev je uspešno končana; poteka iskanje kanala ..."
+
+#: ../src/hotssh-tab.c:380
+#, fuzzy, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Ni drugih razpoložljivih zrcalnih strežnikov"
+
+#: ../src/hotssh-tab.c:389
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "Poteka zahteva overitve preko '%s'"
+
+#: ../src/hotssh-tab.c:480
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "Razreševanje '%s' ..."
+
+#: ../src/hotssh-tab.c:495
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "Vzpostavljanje povezave z '%s' ..."
+
+#: ../src/hotssh-tab.c:649
+msgid "Authenticating…"
+msgstr "Poteka overjanje ..."
+
+#: ../src/hotssh-tab.c:672
+msgid "Negotiating authentication…"
+msgstr ""
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Možnosti"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_O programu"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Končaj"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_New Tab"
+msgstr "_Nov zavihek"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Disconnect"
+msgstr "_Prekini povezavo"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Možnosti"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Zapri"
+
+#: ../src/prefs.ui.h:3
+#, fuzzy
+msgid "_Match System Terminal style:"
+msgstr "Uporabi pisavo terminala _sistema"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Gostitelj: "
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Uporabniško ime: "
+
+#: ../src/tab.ui.h:3
+msgid "_Connect"
+msgstr "_Poveži"
+
+#: ../src/tab.ui.h:4
+msgid "Connecting…"
+msgstr "Povezovanje ..."
+
+#: ../src/tab.ui.h:5
+msgid "Error:"
+msgstr "Napaka:"
+
+#: ../src/tab.ui.h:6
+msgid "Disconnect"
+msgstr "Odklopi"
+
+#: ../src/tab.ui.h:7
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+
+#: ../src/tab.ui.h:8
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:9
+msgid "Approve and Connect"
+msgstr "Odobri in poveži"
+
+#: ../src/tab.ui.h:10
+msgid "Password: "
+msgstr "Geslo:"
+
+#: ../src/window.ui.h:2
+msgid "New Connection"
+msgstr "Nova povezava"
