@@ -204,7 +204,9 @@ _gssh_channel_input_stream_iteration (GSshChannelInputStream     *self)
       estatus = ssh_channel_get_exit_status (self->channel->libsshchannel);
       if (!is_eof)
         {
-          g_debug ("channel read 0, not eof, estatus=%d", estatus);
+          /* We'll get 0 but !is_eof when we hit the libssh equivalent
+           * of EAGAIN.  We need to wait for poll().
+           */
           return;
         }
     }
