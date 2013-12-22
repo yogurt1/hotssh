@@ -54,6 +54,8 @@ gssh_channel_close (GIOStream     *stream,
                       GError       **error)
 {
   GSshChannel *self = (GSshChannel*)stream;
+
+  g_return_val_if_fail (self->connection->state == GSSH_CONNECTION_STATE_CONNECTED, FALSE);
   
   if (self->connection)
     g_hash_table_remove (self->connection->channels, self);
@@ -128,6 +130,7 @@ gssh_channel_request_pty_size_async (GSshChannel         *self,
 {
   g_return_if_fail (self->have_pty);
   g_return_if_fail (self->pty_size_task == NULL);
+  g_return_if_fail (self->connection->state == GSSH_CONNECTION_STATE_CONNECTED);
 
   self->pty_size_task = g_task_new (self, cancellable, callback, user_data);
   self->pty_width = width;
