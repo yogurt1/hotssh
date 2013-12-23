@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: hotssh master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-12-22 10:48+0000\n"
-"PO-Revision-Date: 2013-12-22 19:39+0100\n"
+"POT-Creation-Date: 2013-12-22 18:41+0000\n"
+"PO-Revision-Date: 2013-12-23 19:34+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 or n"
-"%100==4 ? 3 : 0) ;\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
 "X-Generator: Poedit 1.5.4\n"
 
 #: ../src/hotssh-app.c:78
@@ -50,9 +50,9 @@ msgid "Authenticated, requesting channel…"
 msgstr "Overitev je uspešno končana; poteka iskanje kanala ..."
 
 #: ../src/hotssh-tab.c:380
-#, fuzzy, c-format
+#, c-format
 msgid "No more authentication mechanisms available"
-msgstr "Ni drugih razpoložljivih zrcalnih strežnikov"
+msgstr "Ni drugih razpoložljivih načinov overitve"
 
 #: ../src/hotssh-tab.c:389
 #, c-format
@@ -75,7 +75,7 @@ msgstr "Poteka overjanje ..."
 
 #: ../src/hotssh-tab.c:672
 msgid "Negotiating authentication…"
-msgstr ""
+msgstr "Poteka preverjanje overitve ..."
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -106,9 +106,8 @@ msgid "_Close"
 msgstr "_Zapri"
 
 #: ../src/prefs.ui.h:3
-#, fuzzy
 msgid "_Match System Terminal style:"
-msgstr "Uporabi pisavo terminala _sistema"
+msgstr "_Uskladi slog sistemskega terminala:"
 
 #: ../src/tab.ui.h:1
 msgid "Host: "
@@ -137,6 +136,7 @@ msgstr "Odklopi"
 #: ../src/tab.ui.h:7
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
 msgstr ""
+"Zahtevana je potrditev novega ključa gostitelja. Prstni odtis ključa RSA je:"
 
 #: ../src/tab.ui.h:8
 msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
