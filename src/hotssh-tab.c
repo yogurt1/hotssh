@@ -177,8 +177,6 @@ state_reset_for_new_connection (HotSshTab                *self)
       gtk_entry_set_text ((GtkEntry*)priv->password_entry, "");
       reset_focus_state (self);
       gtk_label_set_text ((GtkLabel*)priv->connection_text, "");
-      gtk_widget_show (priv->connection_text_container);
-      gtk_widget_hide (priv->hostkey_container);
       gtk_widget_set_sensitive (priv->password_container, TRUE);
       priv->awaiting_password_entry = priv->submitted_password = FALSE;
     }
@@ -467,8 +465,6 @@ on_connection_handshake (GObject         *object,
 
   gtk_label_set_text ((GtkLabel*)priv->hostkey_fingerprint_label,
 		      hostkey_sha1_text);
-  gtk_widget_hide (priv->connection_text_container);
-  gtk_widget_show (priv->hostkey_container);
   page_transition (self, HOTSSH_TAB_PAGE_HOSTKEY);
 
  out:
