@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sun Nov 17 16:27:47 2013 -->
+<!-- Generated with glade 3.16.0 -->
 <interface>
-  <!-- interface-requires gtk+ 3.10 -->
-  <template class="HotSshTab" parent="GtkStack">
+  <requires lib="gtk+" version="3.10"/>
+  <template class="HotSshTab" parent="GtkNotebook">
     <property name="can_focus">False</property>
     <child>
       <object class="GtkBox" id="content_box">
@@ -123,9 +123,6 @@
           </packing>
         </child>
       </object>
-      <packing>
-        <property name="name">new-connection</property>
-      </packing>
     </child>
     <child>
       <object class="GtkAlignment" id="connection_text_container">
@@ -172,7 +169,7 @@
         </child>
       </object>
       <packing>
-        <property name="name">connecting</property>
+        <property name="position">1</property>
       </packing>
     </child>
     <child>
@@ -239,7 +236,7 @@
         </child>
       </object>
       <packing>
-        <property name="name">error</property>
+        <property name="position">2</property>
       </packing>
     </child>
     <child>
@@ -346,7 +343,7 @@
         </child>
       </object>
       <packing>
-        <property name="name">hostkey</property>
+        <property name="position">3</property>
       </packing>
     </child>
     <child>
@@ -446,7 +443,7 @@
         </child>
       </object>
       <packing>
-        <property name="name">password</property>
+        <property name="position">4</property>
       </packing>
     </child>
     <child>
@@ -471,15 +468,15 @@
         </child>
       </object>
       <packing>
-        <property name="name">terminal</property>
+        <property name="position">5</property>
       </packing>
     </child>
   </template>
   <object class="GtkSizeGroup" id="password_entry_submit_size_group">
-      <property name="mode">vertical</property>
-      <widgets>
-        <widget name="password_entry"/>
-        <widget name="password_submit"/>
-      </widgets>
+    <property name="mode">vertical</property>
+    <widgets>
+      <widget name="password_entry"/>
+      <widget name="password_submit"/>
+    </widgets>
   </object>
 </interface>

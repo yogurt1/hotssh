@@ -44,23 +44,24 @@ enum {
 
 struct _HotSshTab
 {
-  GtkStack parent;
+  GtkNotebook parent;
 };
 
 struct _HotSshTabClass
 {
-  GtkStackClass parent_class;
+  GtkNotebookClass parent_class;
 };
 
 typedef struct _HotSshTabPrivate HotSshTabPrivate;
 
-#define HOTSSH_TAB_PAGE_NEW_CONNECTION ("new-connection")
-#define HOTSSH_TAB_PAGE_CONNECTING     ("connecting")
-#define HOTSSH_TAB_PAGE_ERROR          ("error")
-#define HOTSSH_TAB_PAGE_HOSTKEY        ("hostkey")
-#define HOTSSH_TAB_PAGE_PASSWORD       ("password")
-#define HOTSSH_TAB_PAGE_TERMINAL       ("terminal")
-typedef const char * HotSshTabPage;
+typedef enum {
+  HOTSSH_TAB_PAGE_NEW_CONNECTION,
+  HOTSSH_TAB_PAGE_CONNECTING,
+  HOTSSH_TAB_PAGE_ERROR,
+  HOTSSH_TAB_PAGE_HOSTKEY,
+  HOTSSH_TAB_PAGE_PASSWORD,
+  HOTSSH_TAB_PAGE_TERMINAL
+} HotSshTabPage;
 
 struct _HotSshTabPrivate
 {
@@ -109,7 +110,7 @@ struct _HotSshTabPrivate
   GCancellable *cancellable;
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE(HotSshTab, hotssh_tab, GTK_TYPE_STACK);
+G_DEFINE_TYPE_WITH_PRIVATE(HotSshTab, hotssh_tab, GTK_TYPE_NOTEBOOK);
 
 
 static void
@@ -184,14 +185,14 @@ page_transition (HotSshTab        *self,
   if (new_page == priv->active_page)
     return;
 
-  g_debug ("PAGE: %s => %s", priv->active_page, new_page);
+  g_debug ("PAGE: %u => %u", priv->active_page, new_page);
   priv->active_page = new_page;
 
   if (priv->active_page == HOTSSH_TAB_PAGE_NEW_CONNECTION
       || priv->active_page == HOTSSH_TAB_PAGE_ERROR)
     state_reset_for_new_connection (self);
 
-  gtk_stack_set_visible_child_name ((GtkStack*)self, new_page);
+  gtk_notebook_set_current_page ((GtkNotebook*)self, new_page);
 
   if (priv->active_page == HOTSSH_TAB_PAGE_TERMINAL)
     gtk_widget_grab_focus ((GtkWidget*)priv->terminal);
@@ -806,6 +807,8 @@ hotssh_tab_init (HotSshTab *self)
   priv->settings = g_settings_new ("org.gnome.hotssh");
 
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  gtk_notebook_set_show_tabs ((GtkNotebook*)self, FALSE);
 
   g_signal_connect (priv->connect_button, "clicked", G_CALLBACK (on_connect), self);
   g_signal_connect (priv->connect_cancel_button, "clicked", G_CALLBACK (on_connect_cancel), self);
