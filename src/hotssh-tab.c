@@ -56,6 +56,7 @@ typedef struct _HotSshTabPrivate HotSshTabPrivate;
 
 typedef enum {
   HOTSSH_TAB_PAGE_NEW_CONNECTION,
+  HOTSSH_TAB_PAGE_LIST_CONNECTIONS,
   HOTSSH_TAB_PAGE_CONNECTING,
   HOTSSH_TAB_PAGE_ERROR,
   HOTSSH_TAB_PAGE_HOSTKEY,
@@ -72,7 +73,8 @@ struct _HotSshTabPrivate
   /* Bound via template */
   GtkWidget *host_entry;
   GtkWidget *username_entry;
-  GtkWidget *connect_button;
+  GtkWidget *create_and_connect_button;
+  GtkWidget *add_new_connection_button;
   GtkWidget *connection_text_container;
   GtkWidget *connection_text;
   GtkWidget *error_text;
@@ -87,13 +89,20 @@ struct _HotSshTabPrivate
   GtkWidget *approve_hostkey_button;
   GtkWidget *disapprove_hostkey_button;
   GtkWidget *terminal_box;
+  GtkWidget *connections_treeview;
+  GtkWidget *hostname_column;
+  GtkWidget *hostname_renderer;
+  GtkWidget *lastused_column;
+  GtkWidget *lastused_renderer;
 
   /* State */
   HotSshTabPage active_page;
   guint authmechanism_index;
 
   gboolean indisposed;
+  char *connection_id;
   char *hostname;
+  char *username;
   GtkEntryCompletion *host_completion;
   GSocketConnectable *address;
   GSshConnection *connection;
@@ -157,7 +166,7 @@ state_reset_for_new_connection (HotSshTab                *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   g_debug ("reset state");
-  g_clear_pointer (&priv->hostname, g_free);
+  g_clear_pointer (&priv->connection_id, g_free);
   g_clear_object (&priv->address);
   g_clear_object (&priv->connection);
   g_clear_object (&priv->cancellable);
@@ -189,6 +198,7 @@ page_transition (HotSshTab        *self,
   priv->active_page = new_page;
 
   if (priv->active_page == HOTSSH_TAB_PAGE_NEW_CONNECTION
+      || priv->active_page == HOTSSH_TAB_PAGE_LIST_CONNECTIONS
       || priv->active_page == HOTSSH_TAB_PAGE_ERROR)
     state_reset_for_new_connection (self);
 
@@ -502,6 +512,13 @@ on_socket_client_event (GSocketClient      *client,
       break;
     }
 }
+
+static void
+on_add_new_connection (GtkButton     *button,
+                       HotSshTab  *self)
+{
+  page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
+}
                         
 static void
 on_connect (GtkButton     *button,
@@ -510,10 +527,10 @@ on_connect (GtkButton     *button,
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   GError *local_error = NULL;
   GError **error = &local_error;
+  GtkTreeIter iter;
+  gs_unref_object GNetworkAddress *address = NULL;
   const char *hostname;
   const char *username;
-
-  page_transition (self, HOTSSH_TAB_PAGE_CONNECTING);
 
   hostname = gtk_entry_get_text (GTK_ENTRY (priv->host_entry));
   username = gtk_entry_get_text (GTK_ENTRY (priv->username_entry));
@@ -522,18 +539,67 @@ on_connect (GtkButton     *button,
   priv->cancellable = g_cancellable_new ();
 
   g_clear_object (&priv->address);
-  priv->address = g_network_address_parse (hostname, 22, error);
-  if (!priv->address)
+  address = (GNetworkAddress*)g_network_address_parse (hostname, 22, error);
+  if (!address)
     {
       page_transition_take_error (self, local_error);
       return;
     }
 
-  priv->hostname = g_strdup (hostname);
+  g_clear_pointer (&priv->connection_id, g_free);
+  hotssh_hostdb_add_entry (hotssh_hostdb_get_instance (),
+                           username,
+                           (GNetworkAddress*)address,
+                           &priv->connection_id);
+  hotssh_hostdb_lookup_by_id (hotssh_hostdb_get_instance (),
+                              priv->connection_id, &iter);
+  /*
+  gtk_tree_selection_select_iter (gtk_tree_view_get_selection ((GtkTreeView*)priv->connections_treeview),
+                                  &iter);
+  */
+
+  page_transition (self, HOTSSH_TAB_PAGE_LIST_CONNECTIONS);
+}
+
+static void
+on_connection_row_activated (GtkTreeView       *tree_view,
+                             GtkTreePath       *path,
+                             GtkTreeViewColumn *column,
+                             gpointer           user_data)
+{
+  HotSshTab *self = user_data;
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  GtkTreeIter iter;
+  guint port;
+  gs_unref_object GSocketConnectable *address = NULL;
+  gs_unref_object GtkTreeModel *model = NULL;
+
+  model = hotssh_hostdb_get_model (hotssh_hostdb_get_instance ());
+
+  g_assert (gtk_tree_model_get_iter (model, &iter, path));
+
+  g_clear_pointer (&priv->connection_id, g_free);
+  g_clear_pointer (&priv->hostname, g_free);
+  g_clear_pointer (&priv->username, g_free);
+  gtk_tree_model_get (model, &iter,
+                      HOTSSH_HOSTDB_COLUMN_ID,
+                      &priv->connection_id,
+                      HOTSSH_HOSTDB_COLUMN_HOSTNAME,
+                      &priv->hostname,
+                      HOTSSH_HOSTDB_COLUMN_PORT,
+                      &port,
+                      HOTSSH_HOSTDB_COLUMN_USERNAME,
+                      &priv->username,
+                      -1);
+
+  g_clear_object (&priv->address);
+  priv->address = g_network_address_new (priv->hostname, port);
+
   g_object_notify ((GObject*)self, "hostname");
 
+  page_transition (self, HOTSSH_TAB_PAGE_CONNECTING);
   g_clear_object (&priv->connection);
-  priv->connection = gssh_connection_new (priv->address, username); 
+  priv->connection = gssh_connection_new (priv->address, priv->username); 
   g_signal_connect (gssh_connection_get_socket_client (priv->connection),
                     "event", G_CALLBACK (on_socket_client_event), self);
   gssh_connection_set_interaction (priv->connection, (GTlsInteraction*)priv->password_interaction);
@@ -543,6 +609,9 @@ on_connect (GtkButton     *button,
   g_debug ("connected, beginning handshake");
   gssh_connection_handshake_async (priv->connection, priv->cancellable,
 				   on_connection_handshake, self);
+  
+  hotssh_hostdb_update_last_used (hotssh_hostdb_get_instance (),
+                                  priv->connection_id);
 }
 
 static void
@@ -633,7 +702,7 @@ on_connect_cancel (GtkButton     *button,
 		   gpointer       user_data)
 {
   HotSshTab *self = user_data;
-  page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
+  page_transition (self, HOTSSH_TAB_PAGE_LIST_CONNECTIONS);
 }
 
 static void
@@ -663,8 +732,8 @@ on_approve_hostkey_clicked (GtkButton     *button,
   HotSshTab *self = user_data;
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
 
-  hotssh_hostdb_host_used (hotssh_hostdb_get_instance (),
-                           priv->hostname);
+  hotssh_hostdb_set_entry_known (hotssh_hostdb_get_instance (),
+                                 priv->connection_id, TRUE);
 
   gssh_connection_negotiate_async (priv->connection, priv->cancellable,
                                    on_negotiate_complete, self);
@@ -810,7 +879,8 @@ hotssh_tab_init (HotSshTab *self)
 
   gtk_notebook_set_show_tabs ((GtkNotebook*)self, FALSE);
 
-  g_signal_connect (priv->connect_button, "clicked", G_CALLBACK (on_connect), self);
+  g_signal_connect (priv->create_and_connect_button, "clicked", G_CALLBACK (on_connect), self);
+  g_signal_connect (priv->add_new_connection_button, "clicked", G_CALLBACK (on_add_new_connection), self);
   g_signal_connect (priv->connect_cancel_button, "clicked", G_CALLBACK (on_connect_cancel), self);
   g_signal_connect (priv->error_disconnect, "clicked", G_CALLBACK (on_connect_cancel), self);
   g_signal_connect (priv->auth_cancel_button, "clicked", G_CALLBACK (on_connect_cancel), self);
@@ -818,6 +888,7 @@ hotssh_tab_init (HotSshTab *self)
   g_signal_connect (priv->disapprove_hostkey_button, "clicked", G_CALLBACK (on_connect_cancel), self);
   g_signal_connect_swapped (priv->password_entry, "activate", G_CALLBACK (submit_password), self);
   g_signal_connect_swapped (priv->password_submit, "clicked", G_CALLBACK (submit_password), self);
+  g_signal_connect (priv->connections_treeview, "row-activated", G_CALLBACK (on_connection_row_activated), self);
 
   priv->password_interaction = hotssh_password_interaction_new ((GtkEntry*)priv->password_entry);
 
@@ -851,11 +922,91 @@ hotssh_tab_dispose (GObject *object)
 
   priv->indisposed = TRUE;
 
-  page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
+  page_transition (self, HOTSSH_TAB_PAGE_LIST_CONNECTIONS);
 
   g_clear_object (&priv->host_completion);
 
   G_OBJECT_CLASS (hotssh_tab_parent_class)->dispose (object);
+}
+
+static const char *
+seconds_to_time_ago_format (gulong *seconds)
+{
+  
+  if (*seconds < 60)
+    return _("Less than 1 minute ago");
+  *seconds /= 60;
+  if (*seconds < 60)
+    return ngettext ("%d minute ago", "%d minutes ago",
+                     *seconds);
+  *seconds /= 60;
+  if (*seconds < 24)
+    return ngettext ("%d hour ago", "%d hours ago",
+                     *seconds);
+  *seconds /= 24;
+  return ngettext ("%d day ago", "%d days ago",
+                   *seconds);
+}
+
+static void
+render_last_used (GtkTreeViewColumn *tree_column,
+                  GtkCellRenderer *cell,
+                  GtkTreeModel *tree_model,
+                  GtkTreeIter *iter,
+                  gpointer data)
+{
+  guint64 last_used;
+  guint64 current_time;
+  gs_free char *formatted_text = NULL;
+  const char *text;
+
+  gtk_tree_model_get (tree_model, iter,
+                      HOTSSH_HOSTDB_COLUMN_LAST_USED,
+                      &last_used,
+                      -1);
+  if (last_used == 0)
+    {
+      text = _("Never");
+    }
+  else
+    {
+      current_time = g_get_real_time () / G_USEC_PER_SEC;
+      if (current_time < last_used)
+        text = _("In the future");
+      else
+        {
+          gulong diff = (gulong)(current_time - last_used);
+          const char *fmt = seconds_to_time_ago_format (&diff);
+
+          text = formatted_text = g_strdup_printf (fmt, diff);
+        }
+    }
+
+  g_object_set (cell, "text", text, NULL);
+}
+
+static void
+hotssh_tab_constructed (GObject *object)
+{
+  HotSshTab *self = HOTSSH_TAB (object);
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  gs_unref_object GtkTreeModel *model = NULL;
+
+  if (G_OBJECT_CLASS (hotssh_tab_parent_class)->constructed)
+    G_OBJECT_CLASS (hotssh_tab_parent_class)->constructed (object);
+
+  page_transition (self, HOTSSH_TAB_PAGE_LIST_CONNECTIONS);
+
+  model = hotssh_hostdb_get_model (hotssh_hostdb_get_instance ());
+  gtk_tree_view_set_model ((GtkTreeView*)priv->connections_treeview, model);
+
+  gtk_tree_view_column_add_attribute ((GtkTreeViewColumn*)priv->hostname_column,
+                                      (GtkCellRenderer*)priv->hostname_renderer,
+                                      "text", 1);
+  gtk_tree_view_column_set_cell_data_func ((GtkTreeViewColumn*)priv->lastused_column,
+                                           (GtkCellRenderer*)priv->lastused_renderer,
+                                           render_last_used,
+                                           self, NULL);
 }
 
 static void
@@ -863,13 +1014,20 @@ hotssh_tab_class_init (HotSshTabClass *class)
 {
   G_OBJECT_CLASS (class)->get_property = hotssh_tab_get_property;
   G_OBJECT_CLASS (class)->dispose = hotssh_tab_dispose;
+  G_OBJECT_CLASS (class)->constructed = hotssh_tab_constructed;
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (class),
                                                "/org/gnome/hotssh/tab.ui");
 
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, connections_treeview);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, hostname_column);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, hostname_renderer);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, lastused_column);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, lastused_renderer);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, host_entry);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, username_entry);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, connect_button);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, create_and_connect_button);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, add_new_connection_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, connection_text_container);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, connection_text);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, error_text);
@@ -919,7 +1077,7 @@ hotssh_tab_new_channel  (HotSshTab *source)
 void
 hotssh_tab_disconnect  (HotSshTab *self)
 {
-  page_transition (self, HOTSSH_TAB_PAGE_NEW_CONNECTION);
+  page_transition (self, HOTSSH_TAB_PAGE_LIST_CONNECTIONS);
 }
 
 const char *

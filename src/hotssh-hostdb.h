@@ -28,14 +28,39 @@
 typedef struct _HotSshHostDB          HotSshHostDB;
 typedef struct _HotSshHostDBClass     HotSshHostDBClass;
 
+enum {
+  HOTSSH_HOSTDB_COLUMN_ID,
+  HOTSSH_HOSTDB_COLUMN_HOSTNAME,
+  HOTSSH_HOSTDB_COLUMN_PORT,
+  HOTSSH_HOSTDB_COLUMN_USERNAME,
+  HOTSSH_HOSTDB_COLUMN_LAST_USED,
+  HOTSSH_HOSTDB_COLUMN_IS_KNOWN,
+  HOTSSH_HOSTDB_COLUMN_OPENSSH_KNOWNHOST_LINE
+};
+#define HOTSSH_HOSTDB_N_COLUMNS (HOTSSH_HOSTDB_COLUMN_OPENSSH_KNOWNHOST_LINE+1)
+
 GType                   hotssh_hostdb_get_type     (void);
 HotSshHostDB           *hotssh_hostdb_get_instance (void);
 
 GtkTreeModel           *hotssh_hostdb_get_model    (HotSshHostDB *self);
 
-void                    hotssh_hostdb_host_used    (HotSshHostDB *self,
-                                                    const char   *hostname);
-void                    hotssh_hostdb_set_username    (HotSshHostDB *self,
-                                                       const char   *hostname,
-                                                       const char   *username);
+void                    hotssh_hostdb_add_entry    (HotSshHostDB    *self,
+                                                    const char      *username,
+                                                    GNetworkAddress *address,
+                                                    char            **out_id);
 
+gboolean               hotssh_hostdb_lookup_by_id (HotSshHostDB   *self,
+                                                   const char     *id,
+                                                   GtkTreeIter    *out_iter);
+
+void                   hotssh_hostdb_set_entry_basic (HotSshHostDB    *self,
+                                                      const char      *id,
+                                                      const char      *username,
+                                                      GNetworkAddress *address);
+
+void                   hotssh_hostdb_update_last_used    (HotSshHostDB    *self,
+                                                          const char      *id);
+
+void                   hotssh_hostdb_set_entry_known    (HotSshHostDB    *self,
+                                                         const char      *id,
+                                                         gboolean         known);
