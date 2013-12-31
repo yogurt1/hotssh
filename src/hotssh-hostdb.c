@@ -535,6 +535,9 @@ hotssh_hostdb_init (HotSshHostDB *self)
                                     G_TYPE_BOOLEAN, /* is-known */
                                     G_TYPE_UINT64  /* openssh-knownhost-line */
                                     );
+  gtk_tree_sortable_set_sort_column_id ((GtkTreeSortable*)priv->model, 
+                                        HOTSSH_HOSTDB_COLUMN_LAST_USED,
+                                        GTK_SORT_DESCENDING);
   homedir = g_get_home_dir ();
   g_assert (homedir);
 

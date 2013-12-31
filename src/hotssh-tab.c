@@ -1003,6 +1003,10 @@ hotssh_tab_constructed (GObject *object)
                                            (GtkCellRenderer*)priv->lastused_renderer,
                                            render_last_used,
                                            self, NULL);
+  g_object_set (priv->lastused_column,
+                "sort-indicator", TRUE,
+                "sort-order", GTK_SORT_DESCENDING,
+                NULL);
 }
 
 static void

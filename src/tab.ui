@@ -188,6 +188,7 @@
               <object class="GtkTreeViewColumn" id="lastused_column">
                 <property name="title" translatable="yes">Last Used</property>
                 <property name="sort_indicator">True</property>
+                <property name="sort_order">descending</property>
                 <property name="sort_column_id">4</property>
                 <child>
                   <object class="GtkCellRendererText" id="lastused_renderer"/>
