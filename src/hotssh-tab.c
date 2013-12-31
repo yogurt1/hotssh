@@ -728,14 +728,14 @@ on_approve_hostkey_clicked (GtkButton     *button,
   HotSshTab *self = user_data;
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
 
+  page_transition (self, HOTSSH_TAB_PAGE_CONNECTING);
+  set_status (self, _("Negotiating authentication…"));
+
   hotssh_hostdb_set_entry_known (hotssh_hostdb_get_instance (),
                                  priv->connection_id, TRUE);
 
   gssh_connection_negotiate_async (priv->connection, priv->cancellable,
                                    on_negotiate_complete, self);
-
-  page_transition (self, HOTSSH_TAB_PAGE_CONNECTING);
-  set_status (self, _("Negotiating authentication…"));
 }
 
 static void
