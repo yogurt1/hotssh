@@ -4,14 +4,14 @@
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
 # gnomepl@aviary.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2013.
-# Aviary.pl <gnomepl@aviary.pl>, 2009-2013.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2014.
+# Aviary.pl <gnomepl@aviary.pl>, 2009-2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-28 00:55+0100\n"
-"PO-Revision-Date: 2013-11-28 00:56+0100\n"
+"POT-Creation-Date: 2014-01-01 05:10+0100\n"
+"PO-Revision-Date: 2014-01-01 05:11+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -34,8 +34,8 @@ msgstr "HotSSH"
 #: ../src/hotssh-app.c:83
 msgid "translator-credits"
 msgstr ""
-"Piotr Drąg <piotrdrag@gmail.com>, 2009-2013\n"
-"Aviary.pl <gnomepl@aviary.pl>, 2009-2013"
+"Piotr Drąg <piotrdrag@gmail.com>, 2009-2014\n"
+"Aviary.pl <gnomepl@aviary.pl>, 2009-2014"
 
 #: ../src/hotssh-app.c:86
 msgid "HotSSH Website"
@@ -49,37 +49,73 @@ msgstr "Zamknij kartę"
 msgid "Disconnected"
 msgstr "Rozłączono"
 
-#: ../src/hotssh-tab.c:312
+#: ../src/hotssh-tab.c:324
 msgid "Authenticated, requesting channel…"
 msgstr "Uwierzytelniono, żądanie kanału…"
 
-#: ../src/hotssh-tab.c:377
+#: ../src/hotssh-tab.c:389
 #, c-format
 msgid "No more authentication mechanisms available"
 msgstr "Nie ma więcej dostępnych mechanizmów uwierzytelniania"
 
-#: ../src/hotssh-tab.c:386
+#: ../src/hotssh-tab.c:398
 #, c-format
 msgid "Requesting authentication via '%s'"
 msgstr "Żądanie uwierzytelniania przez \"%s\""
 
-#: ../src/hotssh-tab.c:473
+#: ../src/hotssh-tab.c:487
 #, c-format
 msgid "Resolving '%s'…"
 msgstr "Rozwiązywanie \"%s\"…"
 
-#: ../src/hotssh-tab.c:488
+#: ../src/hotssh-tab.c:502
 #, c-format
 msgid "Connecting to '%s'…"
 msgstr "Łączenie z \"%s\"…"
 
-#: ../src/hotssh-tab.c:643
+#: ../src/hotssh-tab.c:715
 msgid "Authenticating…"
 msgstr "Uwierzytelnianie…"
 
-#: ../src/hotssh-tab.c:663
+#: ../src/hotssh-tab.c:732
 msgid "Negotiating authentication…"
 msgstr "Negocjowanie uwierzytelniania…"
+
+#: ../src/hotssh-tab.c:933
+msgid "Less than 1 minute ago"
+msgstr "Mniej niż minutę temu"
+
+#: ../src/hotssh-tab.c:936
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d minuta temu"
+msgstr[1] "%d minuty temu"
+msgstr[2] "%d minut temu"
+
+#: ../src/hotssh-tab.c:940
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d godzina temu"
+msgstr[1] "%d godziny temu"
+msgstr[2] "%d godzin temu"
+
+#: ../src/hotssh-tab.c:943
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dzień temu"
+msgstr[1] "%d dni temu"
+msgstr[2] "%d dni temu"
+
+#: ../src/hotssh-tab.c:965
+msgid "Never"
+msgstr "Nigdy"
+
+#: ../src/hotssh-tab.c:971
+msgid "In the future"
+msgstr "W przyszłości"
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -122,32 +158,32 @@ msgid "Username: "
 msgstr "Nazwa użytkownika: "
 
 #: ../src/tab.ui.h:3
-msgid "_Connect"
-msgstr "Połą_cz"
+msgid "_Create and Connect"
+msgstr "_Utwórz i połącz"
 
 #: ../src/tab.ui.h:4
-msgid "Host"
-msgstr "Komputer"
+msgid "Hostname"
+msgstr "Nazwa komputera"
 
 #: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Ostatnio używane"
+
+#: ../src/tab.ui.h:6
+msgid "Add New Connection"
+msgstr "Dodaj nowe połączenie"
+
+#: ../src/tab.ui.h:7
 msgid "Connecting…"
 msgstr "Łączenie…"
 
-#: ../src/tab.ui.h:6
-msgid "Status"
-msgstr "Stan"
-
-#: ../src/tab.ui.h:7
+#: ../src/tab.ui.h:8
 msgid "Error:"
 msgstr "Błąd:"
 
-#: ../src/tab.ui.h:8
+#: ../src/tab.ui.h:9
 msgid "Disconnect"
 msgstr "Rozłącz"
-
-#: ../src/tab.ui.h:9
-msgid "Error"
-msgstr "Błąd"
 
 #: ../src/tab.ui.h:10
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
@@ -162,20 +198,8 @@ msgid "Approve and Connect"
 msgstr "Zaakceptuj i połącz"
 
 #: ../src/tab.ui.h:13
-msgid "Hostkey"
-msgstr "Klucz komputera"
-
-#: ../src/tab.ui.h:14
 msgid "Password: "
 msgstr "Hasło: "
-
-#: ../src/tab.ui.h:15
-msgid "Password"
-msgstr "Hasło"
-
-#: ../src/tab.ui.h:16
-msgid "Terminal"
-msgstr "Terminal"
 
 #: ../src/window.ui.h:2
 msgid "New Connection"
