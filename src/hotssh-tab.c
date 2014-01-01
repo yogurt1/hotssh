@@ -94,6 +94,8 @@ struct _HotSshTabPrivate
   GtkWidget *hostname_renderer;
   GtkWidget *lastused_column;
   GtkWidget *lastused_renderer;
+  GtkWidget *known_column;
+  GtkWidget *known_renderer;
 
   /* State */
   HotSshTabPage active_page;
@@ -121,6 +123,10 @@ struct _HotSshTabPrivate
 
 G_DEFINE_TYPE_WITH_PRIVATE(HotSshTab, hotssh_tab, GTK_TYPE_NOTEBOOK);
 
+static void
+on_negotiate_complete (GObject             *src,
+                       GAsyncResult        *result,
+                       gpointer             user_data);
 
 static void
 set_status (HotSshTab     *self,
@@ -428,6 +434,64 @@ iterate_authentication_modes (HotSshTab          *self)
 }
 
 static void
+handle_unknown_hostkey (HotSshTab *self,
+                        const char *connected_hostkey_type,
+                        const char *connected_hostkey_sha1)
+{
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+
+  gtk_label_set_text ((GtkLabel*)priv->hostkey_fingerprint_label,
+		      connected_hostkey_sha1);
+  page_transition (self, HOTSSH_TAB_PAGE_HOSTKEY);
+}
+
+static void
+verify_hostkey (HotSshTab              *self,
+                const char             *connected_hostkey_type,
+                const char             *connected_hostkey_base64,
+                const char             *saved_hostkey_type,
+                const char             *saved_hostkey_base64)
+{
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  gs_free char *errdetails = NULL;
+
+  if (strcmp (connected_hostkey_type, saved_hostkey_type) != 0)
+    {
+      errdetails = g_strdup_printf (_("The remote host key type has changed; it was previously \"%s\", now \"%s\""),
+                                    saved_hostkey_type, connected_hostkey_type);
+    }
+  else if (strcmp (connected_hostkey_base64, saved_hostkey_base64) != 0)
+    {
+      errdetails = g_strdup (_("The remote host key has changed"));
+    }
+    
+  if (errdetails)
+    {
+      GError *local_error = NULL;
+
+      g_set_error (&local_error, G_IO_ERROR,
+                   G_IO_ERROR_FAILED,
+                   _("Error: The host credentials for \"%s\" (%s) do not match the previously "
+                     "saved credentials.  This may represent an attempt by a malicious party to "
+                     "intercept communication; however, it is also possible that the host key was changed "
+                     "by a system administrator.\n\nDetails: %s"),
+                   priv->hostname,
+                   g_network_address_get_hostname ((GNetworkAddress*)priv->address),
+                   errdetails);
+      page_transition_take_error (self, local_error);
+    }
+  else
+    {
+      g_debug ("Remote host key matches");
+      page_transition (self, HOTSSH_TAB_PAGE_CONNECTING);
+      set_status (self, _("Negotiating authentication…"));
+
+      gssh_connection_negotiate_async (priv->connection, priv->cancellable,
+                                       on_negotiate_complete, self);
+    }
+}
+
+static void
 on_connection_handshake (GObject         *object,
 			 GAsyncResult    *result,
 			 gpointer         user_data)
@@ -436,36 +500,52 @@ on_connection_handshake (GObject         *object,
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   GError *local_error = NULL;
   GError **error = &local_error;
-  GBytes *hostkey_sha1_binary;
-  GString *buf;
-  guint i;
-  const guint8 *binbuf;
-  gsize len;
-  gs_free char *hostkey_sha1_text = NULL;
-  gs_free char *hostkey_type = NULL;
+  gs_free char *saved_hostkey_type = NULL;
+  gs_free char *saved_hostkey_base64 = NULL;
+  gs_unref_object GtkTreeModel *model = NULL;
+  gs_free char *connected_hostkey_type = NULL;
+  gs_free char *connected_hostkey_sha1_text = NULL;
+  gs_free char *connected_hostkey_base64 = NULL;
+  GtkTreeIter iter;
+
+  model = hotssh_hostdb_get_model (hotssh_hostdb_get_instance ());
 
   if (!gssh_connection_handshake_finish ((GSshConnection*)object, result, error))
     goto out;
 
+  gssh_connection_preauth_get_host_key (priv->connection,
+                                        &connected_hostkey_type,
+                                        &connected_hostkey_sha1_text,
+                                        &connected_hostkey_base64);
+
   g_debug ("handshake complete");
+  g_debug ("remote key type:%s SHA1:%s",
+           connected_hostkey_type,
+           connected_hostkey_sha1_text);
 
-  hostkey_sha1_binary = gssh_connection_preauth_get_host_key_fingerprint_sha1 (priv->connection,
-                                                                               &hostkey_type);
-  binbuf = g_bytes_get_data (hostkey_sha1_binary, &len);
-  buf = g_string_new ("");
-  for (i = 0; i < len; i++)
+  g_assert (hotssh_hostdb_lookup_by_id (hotssh_hostdb_get_instance (), priv->connection_id, &iter));
+
+  gtk_tree_model_get (model, &iter,
+                      HOTSSH_HOSTDB_COLUMN_HOST_KEY_TYPE,
+                      &saved_hostkey_type,
+                      HOTSSH_HOSTDB_COLUMN_HOST_KEY_BASE64,
+                      &saved_hostkey_base64,
+                      -1);
+
+  if (saved_hostkey_type == NULL)
     {
-      g_string_append_printf (buf, "%02X", binbuf[i]);
-      if (i < len - 1)
-	g_string_append_c (buf, ':');
+      handle_unknown_hostkey (self,
+                              connected_hostkey_type,
+                              connected_hostkey_sha1_text);
     }
-  hostkey_sha1_text = g_string_free (buf, FALSE);
-  
-  g_debug ("remote key type:%s SHA1:%s", hostkey_type, hostkey_sha1_text);
-
-  gtk_label_set_text ((GtkLabel*)priv->hostkey_fingerprint_label,
-		      hostkey_sha1_text);
-  page_transition (self, HOTSSH_TAB_PAGE_HOSTKEY);
+  else
+    {
+      verify_hostkey (self,
+                      connected_hostkey_type,
+                      connected_hostkey_base64,
+                      saved_hostkey_type,
+                      saved_hostkey_base64);
+    }
 
  out:
   if (local_error)
@@ -727,12 +807,19 @@ on_approve_hostkey_clicked (GtkButton     *button,
 {
   HotSshTab *self = user_data;
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  gs_free char *keytype = NULL;
+  gs_free char *key_base64 = NULL;
 
   page_transition (self, HOTSSH_TAB_PAGE_CONNECTING);
   set_status (self, _("Negotiating authentication…"));
 
-  hotssh_hostdb_set_entry_known (hotssh_hostdb_get_instance (),
-                                 priv->connection_id, TRUE);
+  gssh_connection_preauth_get_host_key (priv->connection,
+                                        &keytype, NULL, &key_base64);
+
+  hotssh_hostdb_set_entry_host_key_known (hotssh_hostdb_get_instance (),
+                                          priv->connection_id,
+                                          keytype, key_base64,
+                                          NULL);
 
   gssh_connection_negotiate_async (priv->connection, priv->cancellable,
                                    on_negotiate_complete, self);
@@ -982,6 +1069,32 @@ render_last_used (GtkTreeViewColumn *tree_column,
 }
 
 static void
+render_known (GtkTreeViewColumn *tree_column,
+              GtkCellRenderer *cell,
+              GtkTreeModel *tree_model,
+              GtkTreeIter *iter,
+              gpointer data)
+{
+  gboolean known;
+  const char *text;
+  gs_free char *keytype;
+
+  gtk_tree_model_get (tree_model, iter,
+                      HOTSSH_HOSTDB_COLUMN_IS_KNOWN,
+                      &known,
+                      HOTSSH_HOSTDB_COLUMN_HOST_KEY_TYPE,
+                      &keytype,
+                      -1);
+
+  if (!known || !keytype)
+    text = _("Unknown");
+  else 
+    text = keytype;
+
+  g_object_set (cell, "text", text, NULL);
+}
+
+static void
 hotssh_tab_constructed (GObject *object)
 {
   HotSshTab *self = HOTSSH_TAB (object);
@@ -1007,6 +1120,10 @@ hotssh_tab_constructed (GObject *object)
                 "sort-indicator", TRUE,
                 "sort-order", GTK_SORT_DESCENDING,
                 NULL);
+  gtk_tree_view_column_set_cell_data_func ((GtkTreeViewColumn*)priv->known_column,
+                                           (GtkCellRenderer*)priv->known_renderer,
+                                           render_known,
+                                           self, NULL);
 }
 
 static void
@@ -1024,6 +1141,8 @@ hotssh_tab_class_init (HotSshTabClass *class)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, hostname_renderer);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, lastused_column);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, lastused_renderer);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, known_column);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, known_renderer);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, host_entry);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, username_entry);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, create_and_connect_button);

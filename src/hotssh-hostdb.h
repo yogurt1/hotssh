@@ -35,9 +35,12 @@ enum {
   HOTSSH_HOSTDB_COLUMN_USERNAME,
   HOTSSH_HOSTDB_COLUMN_LAST_USED,
   HOTSSH_HOSTDB_COLUMN_IS_KNOWN,
-  HOTSSH_HOSTDB_COLUMN_OPENSSH_KNOWNHOST_LINE
+  HOTSSH_HOSTDB_COLUMN_OPENSSH_KNOWNHOST_LINE,
+  HOTSSH_HOSTDB_COLUMN_HOST_KEY_IP_ADDRESS,
+  HOTSSH_HOSTDB_COLUMN_HOST_KEY_TYPE,
+  HOTSSH_HOSTDB_COLUMN_HOST_KEY_BASE64
 };
-#define HOTSSH_HOSTDB_N_COLUMNS (HOTSSH_HOSTDB_COLUMN_OPENSSH_KNOWNHOST_LINE+1)
+#define HOTSSH_HOSTDB_N_COLUMNS (HOTSSH_HOSTDB_COLUMN_HOST_KEY_BASE64+1)
 
 GType                   hotssh_hostdb_get_type     (void);
 HotSshHostDB           *hotssh_hostdb_get_instance (void);
@@ -61,6 +64,8 @@ void                   hotssh_hostdb_set_entry_basic (HotSshHostDB    *self,
 void                   hotssh_hostdb_update_last_used    (HotSshHostDB    *self,
                                                           const char      *id);
 
-void                   hotssh_hostdb_set_entry_known    (HotSshHostDB    *self,
-                                                         const char      *id,
-                                                         gboolean         known);
+void                   hotssh_hostdb_set_entry_host_key_known (HotSshHostDB    *self,
+                                                               const char      *id,
+                                                               const char      *keytype,
+                                                               const char      *key_base64,
+                                                               const char      *last_ip_address);

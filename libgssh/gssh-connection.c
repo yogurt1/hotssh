@@ -88,7 +88,8 @@ reset_state (GSshConnection               *self)
   /* This hash doesn't hold a ref */
   self->channels = g_hash_table_new (NULL, NULL);
 
-  g_clear_pointer (&self->remote_hostkey_sha1, g_bytes_unref);
+  g_clear_pointer (&self->remote_hostkey_sha1_text, g_free);
+  g_clear_pointer (&self->remote_hostkey_base64, g_free);
   g_clear_error (&self->cached_error);
   g_clear_object (&self->socket);
   if (self->socket_source)
@@ -350,6 +351,8 @@ set_hostkey_sha1 (GSshConnection           *self,
   guint8 sha1buf[20];
   gsize sha1len = sizeof (sha1buf);
   GChecksum *csum;
+  GString *buf;
+  guint i;
 
   rc = ssh_get_publickey (self->session, &key);
   if (rc != SSH_OK)
@@ -373,8 +376,18 @@ set_hostkey_sha1 (GSshConnection           *self,
   g_checksum_get_digest (csum, sha1buf, &sha1len);
   g_assert (sha1len == sizeof (sha1buf));
 
-  self->remote_hostkey_sha1 = g_bytes_new (sha1buf, sha1len);
+  buf = g_string_new ("");
+  for (i = 0; i < sha1len; i++)
+    {
+      g_string_append_printf (buf, "%02X", sha1buf[i]);
+      if (i < sha1len - 1)
+	g_string_append_c (buf, ':');
+    }
+
+    self->remote_hostkey_sha1_text = g_string_free (buf, FALSE);
   self->remote_hostkey_type = g_strdup (ssh_key_type_to_char (ssh_key_type (key)));
+  self->remote_hostkey_base64 = g_strdup (key_b64);
+  free (key_b64);  /* Possible free != g_free */
 
   ret = TRUE;
  out:
@@ -759,18 +772,24 @@ gssh_connection_get_state (GSshConnection        *self)
 }
 
 /**
- * gssh_connection_preauth_get_host_key_fingerprint_sha1:
+ * gssh_connection_preauth_get_host_key:
  * @self: Self
  * @out_key_type: (out): String representation of key type
- *
- * Returns: (transfer none): 20 bytes for the remote host's SHA1 fingerprint
+ * @out_key_sha1_text: (out): String representation of key SHA1
+ * @out_key_base64: (out): String representation of base64-encoded key
  */
-GBytes *
-gssh_connection_preauth_get_host_key_fingerprint_sha1 (GSshConnection          *self,
-                                                       char                   **out_key_type)
+void
+gssh_connection_preauth_get_host_key (GSshConnection   *self,
+                                      char            **out_key_type,
+                                      char            **out_key_sha1_text,
+                                      char            **out_key_base64)
 {
-  *out_key_type = g_strdup (self->remote_hostkey_type);
-  return self->remote_hostkey_sha1;
+  if (out_key_type)
+    *out_key_type = g_strdup (self->remote_hostkey_type);
+  if (out_key_sha1_text)
+    *out_key_sha1_text = g_strdup (self->remote_hostkey_sha1_text);
+  if (out_key_base64)
+    *out_key_base64 = g_strdup (self->remote_hostkey_base64);
 }
 
 void

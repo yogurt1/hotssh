@@ -28,6 +28,8 @@
 
 #include "libgsystem.h"
 
+#define WRITE_IDLE_SECONDS (5)
+
 struct _HotSshHostDB
 {
   GObject parent;
@@ -50,20 +52,29 @@ struct _HotSshHostDBPrivate
   GFile *hotssh_hostdb_path;
   GFileMonitor *knownhosts_monitor;
 
+  GHashTable *add_knownhost_queue;
+
   guint idle_save_hostdb_id;
+  guint idle_save_knownhosts_id;
   char *new_hostdb_contents;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE(HotSshHostDB, hotssh_hostdb, G_TYPE_OBJECT)
 
 static char *
+hostname_and_port_to_string (const char *hostname,
+                             guint port)
+{
+  if (port == 22)
+    return g_strdup (hostname);
+  return g_strdup_printf ("[%s]:%u", hostname, port);
+}
+
+static char *
 address_to_string (GNetworkAddress    *address)
 {
-  const char *hostname = g_network_address_get_hostname (address);
-  guint port = g_network_address_get_port (address);
-  if (port == 22)
-    return g_strdup (g_network_address_get_hostname (address));
-  return g_strdup_printf ("[%s]:%u", hostname, port);
+  return hostname_and_port_to_string (g_network_address_get_hostname (address),
+                                      g_network_address_get_port (address));
 }
 
 static void
@@ -89,7 +100,9 @@ static void
 mark_all_entries_known_by_address (HotSshHostDB    *self,
                                    const char      *hostname,
                                    guint            port,
-                                   guint            lineno)
+                                   guint            lineno,
+                                   const char      *keytype,
+                                   const char      *key_base64)
 {
   G_GNUC_UNUSED HotSshHostDBPrivate *priv = hotssh_hostdb_get_instance_private (self);
   GtkTreeIter iter;
@@ -114,6 +127,8 @@ mark_all_entries_known_by_address (HotSshHostDB    *self,
         {
           gtk_list_store_set (priv->model, &iter,
                               HOTSSH_HOSTDB_COLUMN_IS_KNOWN, TRUE,
+                              HOTSSH_HOSTDB_COLUMN_HOST_KEY_TYPE, keytype,
+                              HOTSSH_HOSTDB_COLUMN_HOST_KEY_BASE64, key_base64,
                               HOTSSH_HOSTDB_COLUMN_OPENSSH_KNOWNHOST_LINE, lineno,
                               -1);
         }
@@ -156,6 +171,8 @@ on_knownhosts_changed (GFileMonitor        *monitor,
       GNetworkAddress *address_obj = NULL;
       gs_free char *address_str = NULL;
       char *comma;
+      const char *keytype;
+      const char *key_base64;
 
       eol = strchr (iter, '\n');
       if (eol)
@@ -181,10 +198,15 @@ on_knownhosts_changed (GFileMonitor        *monitor,
         goto next;
       address_str = address_to_string (address_obj);
 
+      keytype = parts[1];
+      key_base64 = parts[2];
+
       mark_all_entries_known_by_address (self,
                                          g_network_address_get_hostname (address_obj),
                                          g_network_address_get_port (address_obj),
-                                         lineno);
+                                         lineno,
+                                         keytype,
+                                         key_base64);
 
       g_hash_table_insert (priv->openssh_knownhosts, address_str, parts);
       address_str = NULL;
@@ -340,7 +362,7 @@ queue_save_hostdb (HotSshHostDB    *self)
   G_GNUC_UNUSED HotSshHostDBPrivate *priv = hotssh_hostdb_get_instance_private (self);
   if (priv->idle_save_hostdb_id > 0)
     return;
-  priv->idle_save_hostdb_id = g_timeout_add_seconds (5, idle_save_hostdb, self);
+  priv->idle_save_hostdb_id = g_timeout_add_seconds (WRITE_IDLE_SECONDS, idle_save_hostdb, self);
 }
 
 static void
@@ -464,33 +486,149 @@ hotssh_hostdb_update_last_used (HotSshHostDB    *self,
   queue_save_hostdb (self);
 }
 
+static void
+on_knownhosts_splice_complete (GObject            *src,
+                               GAsyncResult       *result,
+                               gpointer            user_data)
+{
+  HotSshHostDB *self = user_data;
+  G_GNUC_UNUSED HotSshHostDBPrivate *priv = hotssh_hostdb_get_instance_private (self);
+  gssize bytes_written;
+  GError *local_error = NULL;
+
+  priv->idle_save_knownhosts_id = 0;
+
+  g_debug ("knownhosts splice complete");
+
+  bytes_written = g_output_stream_splice_finish ((GOutputStream*)src, result, &local_error);
+  if (bytes_written == -1)
+    goto out;
+
+ out:
+  if (local_error)
+    {
+      g_warning ("Failed to write '%s': %s",
+                 gs_file_get_path_cached (priv->openssh_knownhosts_path),
+                 local_error->message);
+      g_error_free (local_error);
+    }
+}
+
+static void
+on_knownhosts_opened (GObject            *src,
+                      GAsyncResult       *result,
+                      gpointer            user_data)
+{
+  HotSshHostDB *self = user_data;
+  G_GNUC_UNUSED HotSshHostDBPrivate *priv = hotssh_hostdb_get_instance_private (self);
+  GHashTableIter hashiter;
+  gpointer key, value;
+  GError *local_error = NULL;
+  gs_unref_object GFileOutputStream *fileout = NULL;
+  gs_unref_object GMemoryInputStream *membuf = (GMemoryInputStream*)g_memory_input_stream_new ();
+
+  g_debug ("knownhosts opened for append");
+
+  fileout = g_file_append_to_finish ((GFile*)src, result, &local_error);
+  if (!fileout)
+    goto out;
+
+  g_hash_table_iter_init (&hashiter, priv->add_knownhost_queue);
+  while (g_hash_table_iter_next (&hashiter, &key, &value))
+    {
+      GtkTreeIter iter;
+      const char *id = key;
+      gs_free char *hostname = NULL;
+      guint port;
+      gs_free char *keytype = NULL;
+      gs_free char *key_base64 = NULL;
+      gs_free char *ipaddr = NULL;
+      gs_free char *address = NULL;
+      char *out_line;
+
+      if (!hotssh_hostdb_lookup_by_id (self, id, &iter))
+        continue;
+
+      gtk_tree_model_get ((GtkTreeModel*)priv->model, &iter,
+                          HOTSSH_HOSTDB_COLUMN_HOSTNAME, &hostname,
+                          HOTSSH_HOSTDB_COLUMN_PORT, &port,
+                          HOTSSH_HOSTDB_COLUMN_HOST_KEY_TYPE, &keytype,
+                          HOTSSH_HOSTDB_COLUMN_HOST_KEY_BASE64, &key_base64,
+                          HOTSSH_HOSTDB_COLUMN_HOST_KEY_IP_ADDRESS, &ipaddr,
+                          -1);
+
+      address = hostname_and_port_to_string (hostname, port);
+      if (ipaddr)
+        out_line = g_strdup_printf ("%s,%s %s %s\n", address, ipaddr,
+                                    keytype, key_base64);
+      else
+        out_line = g_strdup_printf ("%s %s %s\n", address,
+                                    keytype, key_base64);
+
+      g_memory_input_stream_add_bytes (membuf, g_bytes_new_take (out_line, strlen (out_line)));
+
+      g_hash_table_iter_remove (&hashiter);
+    }
+
+  g_output_stream_splice_async ((GOutputStream*)fileout, (GInputStream*)membuf,
+                                G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | 
+                                G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+                                G_PRIORITY_DEFAULT,
+                                NULL,
+                                on_knownhosts_splice_complete,
+                                self);
+
+ out:
+  if (local_error)
+    {
+      priv->idle_save_knownhosts_id = 0;
+      g_warning ("Failed to write '%s': %s",
+                 gs_file_get_path_cached (priv->openssh_knownhosts_path),
+                 local_error->message);
+      g_error_free (local_error);
+    }
+}
+
+static gboolean
+idle_write_knownhosts (gpointer user_data)
+{
+  HotSshHostDB *self = user_data;
+  G_GNUC_UNUSED HotSshHostDBPrivate *priv = hotssh_hostdb_get_instance_private (self);
+
+  g_file_append_to_async (priv->openssh_knownhosts_path, 0,
+                          G_PRIORITY_DEFAULT, NULL,
+                          on_knownhosts_opened, self);
+
+  return FALSE;
+}
+
 void
-hotssh_hostdb_set_entry_known (HotSshHostDB    *self,
-                               const char      *id,
-                               gboolean         make_known)
+hotssh_hostdb_set_entry_host_key_known (HotSshHostDB    *self,
+                                        const char      *id,
+                                        const char      *keytype,
+                                        const char      *key_base64,
+                                        const char      *last_ip_address)
 {
   G_GNUC_UNUSED HotSshHostDBPrivate *priv = hotssh_hostdb_get_instance_private (self);
-  gboolean is_known;
   GtkTreeIter iter;
+
+  g_return_if_fail (id != NULL);
+  g_return_if_fail (keytype != NULL);
+  g_return_if_fail (key_base64 != NULL);
 
   if (!hotssh_hostdb_lookup_by_id (self, id, &iter))
     return;
 
-  gtk_tree_model_get ((GtkTreeModel*)priv->model, &iter,
-                      HOTSSH_HOSTDB_COLUMN_IS_KNOWN, &is_known,
+  gtk_list_store_set (priv->model, &iter,
+                      HOTSSH_HOSTDB_COLUMN_HOST_KEY_TYPE, keytype,
+                      HOTSSH_HOSTDB_COLUMN_HOST_KEY_BASE64, key_base64,
+                      HOTSSH_HOSTDB_COLUMN_HOST_KEY_IP_ADDRESS, last_ip_address,
                       -1);
 
-  if (is_known == make_known)
-    return;
+  g_hash_table_add (priv->add_knownhost_queue, g_strdup (id));
 
-  if (make_known)
-    {
-      g_debug ("not implemented");
-    }
-  else
-    {
-      g_debug ("not implemented");
-    }
+  if (priv->idle_save_knownhosts_id == 0)
+    priv->idle_save_knownhosts_id = g_timeout_add_seconds (WRITE_IDLE_SECONDS, idle_write_knownhosts, self);
 }
 
 static GFileMonitor *
@@ -533,13 +671,19 @@ hotssh_hostdb_init (HotSshHostDB *self)
                                     G_TYPE_STRING, /* username */
                                     G_TYPE_UINT64, /* last-used */
                                     G_TYPE_BOOLEAN, /* is-known */
-                                    G_TYPE_UINT64  /* openssh-knownhost-line */
+                                    G_TYPE_UINT64, /* openssh-knownhost-line */
+                                    G_TYPE_STRING, /* last-ip-address */
+                                    G_TYPE_STRING, /* host-key-type */
+                                    G_TYPE_STRING /* host-key-base64 */
                                     );
   gtk_tree_sortable_set_sort_column_id ((GtkTreeSortable*)priv->model, 
                                         HOTSSH_HOSTDB_COLUMN_LAST_USED,
                                         GTK_SORT_DESCENDING);
   homedir = g_get_home_dir ();
   g_assert (homedir);
+
+  priv->add_knownhost_queue = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                     NULL, g_free);
 
   priv->openssh_knownhosts = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                     g_free, (GDestroyNotify)g_strfreev);
@@ -579,6 +723,7 @@ hotssh_hostdb_dispose (GObject *object)
   g_clear_pointer (&priv->hostdb, g_key_file_unref);
   g_clear_pointer (&priv->openssh_knownhosts_path, g_hash_table_unref);
   g_clear_object (&priv->model);
+  g_clear_pointer (&priv->add_knownhost_queue, g_hash_table_unref);
 
   G_OBJECT_CLASS (hotssh_hostdb_parent_class)->dispose (object);
 }
