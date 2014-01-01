@@ -2,22 +2,23 @@
 # Copyright (C) 2013 hotssh's COPYRIGHT HOLDER
 # This file is distributed under the same license as the hotssh package.
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2013.
+# Enrico Nicoletto <liverig@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-11-27 23:57+0000\n"
-"PO-Revision-Date: 2013-11-27 13:43-0300\n"
-"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"POT-Creation-Date: 2013-12-31 19:02+0000\n"
+"PO-Revision-Date: 2013-12-31 19:56-0300\n"
+"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.3\n"
 
 #: ../src/hotssh-app.c:78
 msgid "SSH client"
@@ -29,7 +30,9 @@ msgstr "HotSSH"
 
 #: ../src/hotssh-app.c:83
 msgid "translator-credits"
-msgstr "Rafael Ferreira <rafael.f.f1@gmail.com>"
+msgstr ""
+"Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Enrico Nicoletto <liverig@gmail.com>."
 
 #: ../src/hotssh-app.c:86
 msgid "HotSSH Website"
@@ -43,37 +46,70 @@ msgstr "Fechar aba"
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/hotssh-tab.c:312
+#: ../src/hotssh-tab.c:324
 msgid "Authenticated, requesting channel…"
 msgstr "Autenticado, requisitando canal…"
 
-#: ../src/hotssh-tab.c:377
+#: ../src/hotssh-tab.c:389
 #, c-format
 msgid "No more authentication mechanisms available"
 msgstr "Nenhum outro mecanismo de autenticação disponível"
 
-#: ../src/hotssh-tab.c:386
+#: ../src/hotssh-tab.c:398
 #, c-format
 msgid "Requesting authentication via '%s'"
 msgstr "Requisitando autenticação via \"%s\""
 
-#: ../src/hotssh-tab.c:473
+#: ../src/hotssh-tab.c:487
 #, c-format
 msgid "Resolving '%s'…"
 msgstr "Resolvendo \"%s\"…"
 
-#: ../src/hotssh-tab.c:488
+#: ../src/hotssh-tab.c:502
 #, c-format
 msgid "Connecting to '%s'…"
 msgstr "Conectando em \"%s\"…"
 
-#: ../src/hotssh-tab.c:643
+#: ../src/hotssh-tab.c:715
 msgid "Authenticating…"
 msgstr "Autenticando…"
 
-#: ../src/hotssh-tab.c:663
+#: ../src/hotssh-tab.c:732
 msgid "Negotiating authentication…"
 msgstr "Negociando autenticação…"
+
+#: ../src/hotssh-tab.c:933
+msgid "Less than 1 minute ago"
+msgstr "Menos de 1 minuto atrás"
+
+#: ../src/hotssh-tab.c:936
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d minuto atrás"
+msgstr[1] "%d minutos atrás"
+
+#: ../src/hotssh-tab.c:940
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d hora atrás"
+msgstr[1] "%d horas atrás"
+
+#: ../src/hotssh-tab.c:943
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dia atrás"
+msgstr[1] "%d dias atrás"
+
+#: ../src/hotssh-tab.c:965
+msgid "Never"
+msgstr "Nunca"
+
+#: ../src/hotssh-tab.c:971
+msgid "In the future"
+msgstr "No futuro"
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -116,32 +152,32 @@ msgid "Username: "
 msgstr "Usuário: "
 
 #: ../src/tab.ui.h:3
-msgid "_Connect"
-msgstr "_Conectar"
+msgid "_Create and Connect"
+msgstr "_Criar e conectar"
 
 #: ../src/tab.ui.h:4
-msgid "Host"
-msgstr "Máquina"
+msgid "Hostname"
+msgstr "Nome de máquina"
 
 #: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Último uso"
+
+#: ../src/tab.ui.h:6
+msgid "Add New Connection"
+msgstr "Adicionar nova conexão"
+
+#: ../src/tab.ui.h:7
 msgid "Connecting…"
 msgstr "Conectando…"
 
-#: ../src/tab.ui.h:6
-msgid "Status"
-msgstr "Status"
-
-#: ../src/tab.ui.h:7
+#: ../src/tab.ui.h:8
 msgid "Error:"
 msgstr "Erro:"
 
-#: ../src/tab.ui.h:8
+#: ../src/tab.ui.h:9
 msgid "Disconnect"
 msgstr "Desconectar"
-
-#: ../src/tab.ui.h:9
-msgid "Error"
-msgstr "Erro"
 
 #: ../src/tab.ui.h:10
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
@@ -158,21 +194,27 @@ msgid "Approve and Connect"
 msgstr "Aprovar e conectar"
 
 #: ../src/tab.ui.h:13
-msgid "Hostkey"
-msgstr "Chave da máquina"
-
-#: ../src/tab.ui.h:14
 msgid "Password: "
 msgstr "Senha: "
-
-#: ../src/tab.ui.h:15
-msgid "Password"
-msgstr "Senha"
-
-#: ../src/tab.ui.h:16
-msgid "Terminal"
-msgstr "Terminal"
 
 #: ../src/window.ui.h:2
 msgid "New Connection"
 msgstr "Nova conexão"
+
+#~ msgid "_Connect"
+#~ msgstr "_Conectar"
+
+#~ msgid "Status"
+#~ msgstr "Status"
+
+#~ msgid "Error"
+#~ msgstr "Erro"
+
+#~ msgid "Hostkey"
+#~ msgstr "Chave da máquina"
+
+#~ msgid "Password"
+#~ msgstr "Senha"
+
+#~ msgid "Terminal"
+#~ msgstr "Terminal"
