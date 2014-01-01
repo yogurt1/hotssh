@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-01 05:10+0100\n"
-"PO-Revision-Date: 2014-01-01 05:11+0100\n"
+"POT-Creation-Date: 2014-01-01 05:16+0100\n"
+"PO-Revision-Date: 2014-01-01 05:17+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -83,7 +83,7 @@ msgstr "Negocjowanie uwierzytelniania…"
 
 #: ../src/hotssh-tab.c:933
 msgid "Less than 1 minute ago"
-msgstr "Mniej niż minutę temu"
+msgstr "Mniej niż minuta temu"
 
 #: ../src/hotssh-tab.c:936
 #, c-format
