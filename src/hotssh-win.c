@@ -93,6 +93,29 @@ find_tab_index (HotSshWindow    *self,
 }
 
 static void
+set_close_button_visibility (HotSshWindow *self,
+                             gboolean      visible)
+{
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  guint i;
+  guint n;
+
+  n = gtk_notebook_get_n_pages ((GtkNotebook*)priv->main_notebook);
+
+  for (i = 0; i < n; i++)
+    {
+      GtkWidget *tab = gtk_notebook_get_nth_page ((GtkNotebook*)priv->main_notebook, i);
+      GtkWidget *label = gtk_notebook_get_tab_label ((GtkNotebook*)priv->main_notebook, tab);
+      GtkWidget *close_button = g_object_get_data ((GObject*)label, "close-button");
+
+      if (visible)
+        gtk_widget_show (close_button);
+      else
+        gtk_widget_hide (close_button);
+    }
+}
+
+static void
 on_tab_close_button_clicked (GtkButton    *button,
 			     gpointer      user_data)
 {
@@ -103,6 +126,8 @@ on_tab_close_button_clicked (GtkButton    *button,
 
   index = find_tab_index (win, tab);
   gtk_notebook_remove_page ((GtkNotebook*)priv->main_notebook, index);
+  if (gtk_notebook_get_n_pages ((GtkNotebook*)priv->main_notebook) <= 1)
+    set_close_button_visibility (win, FALSE);
 }
 
 static GtkWidget *
@@ -137,6 +162,7 @@ create_tab_label (HotSshWindow       *self,
 
   gtk_widget_show_all ((GtkWidget*)label_box);
   g_object_set_data ((GObject*)label_box, "label-text", label);
+  g_object_set_data ((GObject*)label_box, "close-button", close_button);
   return (GtkWidget*)label_box;
 }
 
@@ -159,6 +185,9 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
   GtkWidget *label;
   HotSshTab *tab;
   int idx;
+  guint n_pages;
+  gboolean is_first_tab;
+  gboolean was_single_tab;
 
   if (new_channel)
     {
@@ -171,12 +200,21 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
       tab = hotssh_tab_new ();
     }
 
+  n_pages = gtk_notebook_get_n_pages ((GtkNotebook*)priv->main_notebook);
+  is_first_tab = n_pages == 0;
+  was_single_tab = n_pages == 1;
+
   g_object_set_data ((GObject*)tab, "window", self);
   label = create_tab_label (self, tab);
   g_signal_connect ((GObject*)tab, "notify::hostname", G_CALLBACK (on_tab_hostname_changed), self);
   idx = gtk_notebook_append_page ((GtkNotebook*)priv->main_notebook,
                                   (GtkWidget*)tab,
                                   (GtkWidget*)label);
+  if (was_single_tab)
+    set_close_button_visibility (self, TRUE);
+  else if (is_first_tab)
+    set_close_button_visibility (self, FALSE);
+
   on_tab_hostname_changed (tab, NULL, self);
   gtk_widget_show_all ((GtkWidget*)tab);
   gtk_notebook_set_current_page ((GtkNotebook*)priv->main_notebook, idx);
