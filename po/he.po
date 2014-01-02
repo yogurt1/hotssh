@@ -2,14 +2,14 @@
 # Copyright (C) 2013 THE hotssh'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the hotssh package.
 # יוסף אור בוצ׳קו <yoseforb@gmail.com>, 2013.
-# Yosef Or Boczko <yoseforb@gmail.com>, 2013.
+# Yosef Or Boczko <yoseforb@gmail.com>, 2013, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh 2013.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-27 17:31+0200\n"
-"PO-Revision-Date: 2013-11-27 17:24+0200\n"
+"POT-Creation-Date: 2014-01-02 03:06+0200\n"
+"PO-Revision-Date: 2014-01-02 03:17+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: עברית <>\n"
 "Language: he\n"
@@ -28,7 +28,7 @@ msgid "HotSSH"
 msgstr "HotSSH"
 
 #: ../src/hotssh-app.c:83
-msgid "translator_credits"
+msgid "translator-credits"
 msgstr "יוסף אור בוצ׳קו <yoseforb@gmail.com>"
 
 #: ../src/hotssh-app.c:86
@@ -43,37 +43,103 @@ msgstr "סגירת לשונית"
 msgid "Disconnected"
 msgstr "מנותק"
 
-#: ../src/hotssh-tab.c:312
+#: ../src/hotssh-tab.c:330 ../src/hotssh-tab.c:1190
 msgid "Authenticated, requesting channel…"
 msgstr "מאומת, מבקש ערוץ…"
 
-#: ../src/hotssh-tab.c:377
+#: ../src/hotssh-tab.c:395
 #, c-format
 msgid "No more authentication mechanisms available"
 msgstr "מנגנון האימות אינו זמין עוד"
 
-#: ../src/hotssh-tab.c:386
+#: ../src/hotssh-tab.c:404
 #, c-format
 msgid "Requesting authentication via '%s'"
 msgstr "מבקש אימות דרך '%s'"
 
-#: ../src/hotssh-tab.c:473
+#: ../src/hotssh-tab.c:460
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr "סוג המפתח מארח המרוחק שונה; הוא היה „%s”, כעת „%s”"
+
+#: ../src/hotssh-tab.c:465
+msgid "The remote host key has changed"
+msgstr "המפתח מארח המרוחק שונה"
+
+#: ../src/hotssh-tab.c:474
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"שגיאה: תעודה המארח עבור „%s” ‏(%s) אינה מתאימה לתעודה הקודמת השמורה. שגיאה זו "
+"עשויה לייצג ניסיון ליירוט תקשורת; אולם, יתכן כי מפתח המארח שונה על ידי מנהל "
+"המערכת.\n"
+"\n"
+"פרטים: %s"
+
+#: ../src/hotssh-tab.c:487 ../src/hotssh-tab.c:814
+msgid "Negotiating authentication…"
+msgstr "מאמת…"
+
+#: ../src/hotssh-tab.c:567
 #, c-format
 msgid "Resolving '%s'…"
 msgstr "פותר את '%s'…"
 
-#: ../src/hotssh-tab.c:488
+#: ../src/hotssh-tab.c:582
 #, c-format
 msgid "Connecting to '%s'…"
 msgstr "מתחבר ל־'%s'…"
 
-#: ../src/hotssh-tab.c:643
+#: ../src/hotssh-tab.c:795
 msgid "Authenticating…"
 msgstr "מאמת…"
 
-#: ../src/hotssh-tab.c:663
-msgid "Negotiating authentication…"
-msgstr "מאמת…"
+#: ../src/hotssh-tab.c:1020
+msgid "Less than 1 minute ago"
+msgstr "לפני פחות מדקה"
+
+#: ../src/hotssh-tab.c:1023
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "לפני דקה"
+msgstr[1] "לפני %d דקות"
+msgstr[2] "לפני שתי דקות"
+
+#: ../src/hotssh-tab.c:1027
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "לפני שעה"
+msgstr[1] "לפני %d שעות"
+msgstr[2] "לפני שעתיים"
+
+#: ../src/hotssh-tab.c:1030
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "אתמול"
+msgstr[1] "לפני %d ימים"
+msgstr[2] "לפני יומיים"
+
+#: ../src/hotssh-tab.c:1052
+msgid "Never"
+msgstr "לעולם"
+
+#: ../src/hotssh-tab.c:1058
+msgid "In the future"
+msgstr "בעתיד"
+
+#: ../src/hotssh-tab.c:1090
+msgid "Unknown"
+msgstr "לא ידוע"
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -116,61 +182,71 @@ msgid "Username: "
 msgstr "שם משתמש: "
 
 #: ../src/tab.ui.h:3
-msgid "_Connect"
-msgstr "_התחברות"
+msgid "_Create and Connect"
+msgstr "י_צירה והתחברות"
 
 #: ../src/tab.ui.h:4
-msgid "Host"
-msgstr "מארח"
+msgid "Hostname"
+msgstr "שם מארח"
 
 #: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "שימוש אחרון"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "ידוע"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "הוספת חיבור חדש"
+
+#: ../src/tab.ui.h:8
 msgid "Connecting…"
 msgstr "מתחבר…"
 
-#: ../src/tab.ui.h:6
-msgid "Status"
-msgstr "מצב"
-
-#: ../src/tab.ui.h:7
+#: ../src/tab.ui.h:9
 msgid "Error:"
 msgstr "שגיאה:"
 
-#: ../src/tab.ui.h:8
+#: ../src/tab.ui.h:10
 msgid "Disconnect"
 msgstr "התנתקות"
 
-#: ../src/tab.ui.h:9
-msgid "Error"
-msgstr "שגיאה"
-
-#: ../src/tab.ui.h:10
+#: ../src/tab.ui.h:11
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
 msgstr "אישור חדש דורש מפתח מארח; טביעת אצבע מפתח ה־RSA היא:"
 
-#: ../src/tab.ui.h:11
+#: ../src/tab.ui.h:12
 msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 
-#: ../src/tab.ui.h:12
+#: ../src/tab.ui.h:13
 msgid "Approve and Connect"
 msgstr "אישור והתחברות"
-
-#: ../src/tab.ui.h:13
-msgid "Hostkey"
-msgstr "Hostkey"
 
 #: ../src/tab.ui.h:14
 msgid "Password: "
 msgstr "ססמה: "
 
-#: ../src/tab.ui.h:15
-msgid "Password"
-msgstr "ססמה"
-
-#: ../src/tab.ui.h:16
-msgid "Terminal"
-msgstr "מסוף"
-
 #: ../src/window.ui.h:2
 msgid "New Connection"
 msgstr "חיבור חדש"
+
+#~ msgid "_Connect"
+#~ msgstr "_התחברות"
+
+#~ msgid "Status"
+#~ msgstr "מצב"
+
+#~ msgid "Error"
+#~ msgstr "שגיאה"
+
+#~ msgid "Hostkey"
+#~ msgstr "Hostkey"
+
+#~ msgid "Password"
+#~ msgstr "ססמה"
+
+#~ msgid "Terminal"
+#~ msgstr "מסוף"
