@@ -1186,6 +1186,10 @@ hotssh_tab_new_channel  (HotSshTab *source)
   HotSshTabPrivate *source_priv = hotssh_tab_get_instance_private (source);
 
   state_reset_for_new_connection (tab);
+  
+  set_status (tab, _("Authenticated, requesting channel…"));
+  page_transition (tab, HOTSSH_TAB_PAGE_CONNECTING);
+
   priv->hostname = g_strdup (source_priv->hostname);
   priv->connection = g_object_ref (source_priv->connection);
   on_connection_state_notify (priv->connection, NULL, tab);
