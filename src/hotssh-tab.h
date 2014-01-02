@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include <vte/vte.h>
 
 #define HOTSSH_TYPE_TAB (hotssh_tab_get_type ())
 #define HOTSSH_TAB(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), HOTSSH_TYPE_TAB, HotSshTab))
@@ -36,3 +36,5 @@ HotSshTab              *hotssh_tab_new_channel  (HotSshTab *source);
 void                    hotssh_tab_disconnect  (HotSshTab *source);
 
 const char *            hotssh_tab_get_hostname (HotSshTab *self);
+
+VteTerminal            *hotssh_tab_get_terminal (HotSshTab *self);

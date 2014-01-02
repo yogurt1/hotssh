@@ -1209,3 +1209,10 @@ hotssh_tab_get_hostname (HotSshTab *self)
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   return priv->hostname;
 }
+
+VteTerminal *
+hotssh_tab_get_terminal (HotSshTab *self)
+{
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  return (VteTerminal*)priv->terminal;
+}

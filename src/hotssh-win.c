@@ -35,11 +35,19 @@ static void new_channel_activated (GSimpleAction    *action,
 static void disconnect_activated (GSimpleAction    *action,
                                   GVariant         *parameter,
                                   gpointer          user_data);
+static void copy_activated (GSimpleAction    *action,
+                            GVariant         *parameter,
+                            gpointer          user_data);
+static void paste_activated (GSimpleAction    *action,
+                             GVariant         *parameter,
+                             gpointer          user_data);
 
 static GActionEntry win_entries[] = {
   { "new-tab", new_tab_activated, NULL, NULL, NULL },
   { "new-channel", new_channel_activated, NULL, NULL, NULL },
-  { "disconnect", disconnect_activated, NULL, NULL, NULL }
+  { "disconnect", disconnect_activated, NULL, NULL, NULL },
+  { "copy", copy_activated, NULL, NULL, NULL },
+  { "paste", paste_activated, NULL, NULL, NULL }
 };
 
 struct _HotSshWindow
@@ -206,6 +214,40 @@ new_channel_activated (GSimpleAction    *action,
   HotSshWindow *self = user_data;
 
   hotssh_win_append_tab (self, TRUE);
+}
+
+static void
+copy_activated (GSimpleAction    *action,
+                GVariant         *parameter,
+                gpointer          user_data)
+{
+  HotSshWindow *self = user_data;
+  GtkWidget *focus = gtk_window_get_focus ((GtkWindow*)self);
+  
+  if (!focus)
+    return;
+
+  if (GTK_IS_EDITABLE (focus))
+    gtk_editable_paste_clipboard ((GtkEditable*) focus);
+  else if (VTE_IS_TERMINAL (focus))
+    vte_terminal_copy_clipboard ((VteTerminal*) focus);
+}
+
+static void
+paste_activated (GSimpleAction    *action,
+                 GVariant         *parameter,
+                 gpointer          user_data)
+{
+  HotSshWindow *self = user_data;
+  GtkWidget *focus = gtk_window_get_focus ((GtkWindow*)self);
+
+  if (!focus)
+    return;
+
+  if (GTK_IS_EDITABLE (focus))
+    gtk_editable_paste_clipboard ((GtkEditable*) focus);
+  else if (VTE_IS_TERMINAL (focus))
+    vte_terminal_paste_clipboard ((VteTerminal*) focus);
 }
 
 static void

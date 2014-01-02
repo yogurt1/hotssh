@@ -11,6 +11,14 @@
         <attribute name="label" translatable="yes">_Disconnect</attribute>
         <attribute name="action">win.disconnect</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">_Copy</attribute>
+        <attribute name="action">win.copy</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Paste</attribute>
+        <attribute name="action">win.paste</attribute>
+      </item>
     </section>
   </menu>
 </interface>
