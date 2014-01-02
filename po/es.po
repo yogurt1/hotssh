@@ -2,15 +2,15 @@
 # Copyright (C) 2013 hotssh's COPYRIGHT HOLDER
 # This file is distributed under the same license as the hotssh package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2013.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2013, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-12-05 21:18+0000\n"
-"PO-Revision-Date: 2013-12-12 11:38+0100\n"
+"POT-Creation-Date: 2014-01-02 01:37+0000\n"
+"PO-Revision-Date: 2014-01-02 10:12+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -30,51 +30,115 @@ msgstr "HotSSH"
 
 #: ../src/hotssh-app.c:83
 msgid "translator-credits"
-msgstr "Daniel Mustieles <daniel.mustieles@gmail.com>, 2013"
+msgstr "Daniel Mustieles <daniel.mustieles@gmail.com>, 2013, 2014"
 
 #: ../src/hotssh-app.c:86
 msgid "HotSSH Website"
 msgstr "Página web de HotSSH"
 
-#: ../src/hotssh-win.c:123
+#: ../src/hotssh-win.c:131
 msgid "Close tab"
 msgstr "Cerrar pestaña"
 
-#: ../src/hotssh-win.c:144
+#: ../src/hotssh-win.c:152
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/hotssh-tab.c:315
+#: ../src/hotssh-tab.c:330 ../src/hotssh-tab.c:1190
 msgid "Authenticated, requesting channel…"
 msgstr "Autenticado, solicitando canal…"
 
-#: ../src/hotssh-tab.c:380
+#: ../src/hotssh-tab.c:395
 #, c-format
 msgid "No more authentication mechanisms available"
 msgstr "No hay más mecanismos de autenticación disponibles"
 
-#: ../src/hotssh-tab.c:389
+#: ../src/hotssh-tab.c:404
 #, c-format
 msgid "Requesting authentication via '%s'"
 msgstr "Solicitando autenticación mediante «%s»"
 
-#: ../src/hotssh-tab.c:480
+#: ../src/hotssh-tab.c:460
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr "La clave del equipo remoto ha cambiado: antes era «%s» y ahora es «%s»"
+
+#: ../src/hotssh-tab.c:465
+msgid "The remote host key has changed"
+msgstr "La clave del equipo remoto ha cambiado"
+
+#: ../src/hotssh-tab.c:474
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Error: las credenciales del equipo «%s» (%s) no coinciden con las "
+"credenciales guardadas anteriormente. Esto puede representar un intento "
+"malicioso de interceptar la comunicación; sin embargo, también es posible "
+"que un administrador del sistema haya cambiado la clave:\n"
+"\n"
+"Detalles: %s"
+
+#: ../src/hotssh-tab.c:487 ../src/hotssh-tab.c:814
+msgid "Negotiating authentication…"
+msgstr "Negociando autenticación…"
+
+#: ../src/hotssh-tab.c:567
 #, c-format
 msgid "Resolving '%s'…"
 msgstr "Resolviendo «%s»…"
 
-#: ../src/hotssh-tab.c:495
+#: ../src/hotssh-tab.c:582
 #, c-format
 msgid "Connecting to '%s'…"
 msgstr "Conectando a «%s»…"
 
-#: ../src/hotssh-tab.c:649
+#: ../src/hotssh-tab.c:795
 msgid "Authenticating…"
 msgstr "Autenticando…"
 
-#: ../src/hotssh-tab.c:672
-msgid "Negotiating authentication…"
-msgstr "Negociando autenticación…"
+#: ../src/hotssh-tab.c:1020
+msgid "Less than 1 minute ago"
+msgstr "Hace menos de un minuto"
+
+#: ../src/hotssh-tab.c:1023
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "hace %d minuto"
+msgstr[1] "hace %d minutos"
+
+#: ../src/hotssh-tab.c:1027
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "hace %d hora"
+msgstr[1] "hace %d horas"
+
+#: ../src/hotssh-tab.c:1030
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "hace %d día"
+msgstr[1] "hace %d días"
+
+#: ../src/hotssh-tab.c:1052
+msgid "Never"
+msgstr "Nunca"
+
+#: ../src/hotssh-tab.c:1058
+msgid "In the future"
+msgstr "En el futuro"
+
+#: ../src/hotssh-tab.c:1090
+msgid "Unknown"
+msgstr "Desconocido"
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -95,6 +159,14 @@ msgstr "Pestaña _nueva"
 #: ../src/gears-menu.ui.h:2
 msgid "_Disconnect"
 msgstr "_Desconectar"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Copy"
+msgstr "_Copiar"
+
+#: ../src/gears-menu.ui.h:4
+msgid "_Paste"
+msgstr "_Pegar"
 
 #: ../src/prefs.ui.h:1
 msgid "Preferences"
@@ -117,39 +189,60 @@ msgid "Username: "
 msgstr "Nombre de usuario:"
 
 #: ../src/tab.ui.h:3
-msgid "_Connect"
-msgstr "_Conectar"
+#| msgid "Approve and Connect"
+msgid "_Create and Connect"
+msgstr "_crear y conectar"
 
 #: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Nombre del equipo"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Usado por última vez"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Conocido"
+
+#: ../src/tab.ui.h:7
+#| msgid "New Connection"
+msgid "Add New Connection"
+msgstr "Añadir conexión nueva"
+
+#: ../src/tab.ui.h:8
 msgid "Connecting…"
 msgstr "Conectando…"
 
-#: ../src/tab.ui.h:5
+#: ../src/tab.ui.h:9
 msgid "Error:"
 msgstr "Error:"
 
-#: ../src/tab.ui.h:6
+#: ../src/tab.ui.h:10
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: ../src/tab.ui.h:7
+#: ../src/tab.ui.h:11
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
 msgstr ""
 "Se requiere aprobación para el nuevo equipo descubierto; la huella de la "
 "clave RSA es:"
 
-#: ../src/tab.ui.h:8
+#: ../src/tab.ui.h:12
 msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 
-#: ../src/tab.ui.h:9
+#: ../src/tab.ui.h:13
 msgid "Approve and Connect"
 msgstr "Aprobar y conectar"
 
-#: ../src/tab.ui.h:10
+#: ../src/tab.ui.h:14
 msgid "Password: "
 msgstr "Contraseña:"
 
 #: ../src/window.ui.h:2
 msgid "New Connection"
 msgstr "Nueva conexión"
+
+#~ msgid "_Connect"
+#~ msgstr "_Conectar"
