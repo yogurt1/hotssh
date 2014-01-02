@@ -148,6 +148,12 @@ gssh_channel_request_pty_size_finish (GSshChannel         *self,
   return g_task_propagate_boolean (G_TASK (res), error);
 }
 
+int
+gssh_channel_get_exit_code (GSshChannel *self)
+{
+  return ssh_channel_get_exit_status (self->libsshchannel);
+}
+
 static void
 gssh_channel_init (GSshChannel *self)
 {

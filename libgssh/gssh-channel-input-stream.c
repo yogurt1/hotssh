@@ -187,7 +187,6 @@ void
 _gssh_channel_input_stream_iteration (GSshChannelInputStream     *self)
 {
   int rc;
-  int estatus;
   GError *local_error = NULL;
   GTask *prev_task = self->read_task;
   gboolean is_eof = FALSE;
@@ -201,7 +200,6 @@ _gssh_channel_input_stream_iteration (GSshChannelInputStream     *self)
   if (rc == 0)
     {
       is_eof = ssh_channel_is_eof (self->channel->libsshchannel);
-      estatus = ssh_channel_get_exit_status (self->channel->libsshchannel);
       if (!is_eof)
         {
           /* We'll get 0 but !is_eof when we hit the libssh equivalent
