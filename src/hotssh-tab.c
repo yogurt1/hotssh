@@ -89,6 +89,7 @@ struct _HotSshTabPrivate
   GtkWidget *approve_hostkey_button;
   GtkWidget *disapprove_hostkey_button;
   GtkWidget *terminal_box;
+  GtkWidget *terminal_vscrollbar;
   GtkWidget *connections_treeview;
   GtkWidget *hostname_column;
   GtkWidget *hostname_renderer;
@@ -974,13 +975,15 @@ hotssh_tab_init (HotSshTab *self)
   g_signal_connect (priv->connections_treeview, "row-activated", G_CALLBACK (on_connection_row_activated), self);
 
   priv->password_interaction = hotssh_password_interaction_new ((GtkEntry*)priv->password_entry);
-
+  
   priv->terminal = vte_terminal_new ();
   g_signal_connect (priv->terminal, "realize", G_CALLBACK (on_vte_realize), self);
   vte_terminal_set_audible_bell ((VteTerminal*)priv->terminal, FALSE);  /* Audible bell is a terrible idea */
   g_signal_connect ((GObject*)priv->terminal, "size-allocate", G_CALLBACK (on_terminal_size_allocate), self);
   g_signal_connect ((GObject*)priv->terminal, "commit", G_CALLBACK (on_terminal_commit), self);
-  gtk_box_pack_start ((GtkBox*)priv->terminal_box, (GtkWidget*)priv->terminal, TRUE, TRUE, 0);
+  gtk_box_pack_start ((GtkBox*)priv->terminal_box, priv->terminal, TRUE, TRUE, 0);
+  gtk_range_set_adjustment ((GtkRange*)priv->terminal_vscrollbar,
+                            gtk_scrollable_get_vadjustment ((GtkScrollable*)priv->terminal));
   gtk_widget_show_all (priv->terminal_box);
 
   g_queue_init (&priv->write_queue);
@@ -1161,6 +1164,7 @@ hotssh_tab_class_init (HotSshTabClass *class)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, approve_hostkey_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, disapprove_hostkey_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, terminal_box);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, terminal_vscrollbar);
 
   GTK_WIDGET_CLASS (class)->grab_focus = hotssh_tab_grab_focus;
   GTK_WIDGET_CLASS (class)->style_updated = hotssh_tab_style_updated;
