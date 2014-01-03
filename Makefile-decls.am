@@ -1,4 +1,4 @@
-# Copyright (C) 2011,2013 Colin Walters <walters@verbum.org>
+# Copyright (C) 2011,2014 Colin Walters <walters@verbum.org>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,25 +15,37 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 
-include Makefile-decls.am
+# Common variables
+ACLOCAL_AMFLAGS =
+AM_CPPFLAGS =
+AM_CFLAGS =
+DISTCHECK_CONFIGURE_FLAGS =
+SUBDIRS =
+NULL = 
+BUILT_SOURCES =
+MANPAGES =
+CLEANFILES =
+EXTRA_DIST =
+bin_PROGRAMS =
+sbin_PROGRAMS =
+bin_SCRIPTS =
+lib_LTLIBRARIES =
+libexec_PROGRAMS =
+noinst_LTLIBRARIES =
+noinst_PROGRAMS =
+privlibdir = $(pkglibdir)
+privlib_LTLIBRARIES =
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA =
+INTROSPECTION_GIRS = 
+girdir = $(datadir)/gir-1.0
+gir_DATA =
+typelibdir = $(libdir)/girepository-1.0
+typelib_DATA =
+gsettings_SCHEMAS =
+# git.mk
+GITIGNOREFILES =
 
-ACLOCAL_AMFLAGS += -I m4 ${ACLOCAL_FLAGS}
-AM_CPPFLAGS += -DDATADIR='"$(datadir)"' -DLIBEXECDIR='"$(libexecdir)"'
-AM_CFLAGS += $(WARN_CFLAGS)
-
-EXTRA_DIST += autogen.sh COPYING
-GITIGNOREFILES += aclocal.m4 build-aux config.h.in m4
-
-libgsystem_srcpath := libgsystem
-libgsystem_cflags = $(BUILDDEP_GIO_UNIX_CFLAGS) -I$(srcdir)/libgsystem
-libgsystem_libs = $(BUILDDEP_GIO_UNIX_LIBS)
-include libgsystem/Makefile-libgsystem.am
-noinst_LTLIBRARIES += libgsystem.la
-
-include Makefile-libgssh.am
-include Makefile-src.am
-
-release-tag:
-	git tag -m "Release $(VERSION)" v$(VERSION)
-
--include $(top_srcdir)/git.mk
+# This is a special facility to chain together hooks easily
+INSTALL_DATA_HOOKS =
+install-data-hook: $(INSTALL_DATA_HOOKS)
