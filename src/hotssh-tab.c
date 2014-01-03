@@ -220,7 +220,7 @@ on_istream_read_complete (GObject           *src,
 {
   HotSshTab *self = user_data;
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
-  GBytes *result = NULL;
+  gs_unref_bytes GBytes *result = NULL;
   GError *local_error = NULL;
   const guint8 *buf;
   gsize len;
