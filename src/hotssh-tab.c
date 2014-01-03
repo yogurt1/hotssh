@@ -1196,6 +1196,14 @@ hotssh_tab_get_hostname (HotSshTab *self)
   return priv->hostname;
 }
 
+gboolean
+hotssh_tab_is_connected (HotSshTab *self)
+{
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+  return priv->connection &&
+    gssh_connection_get_state (priv->connection) == GSSH_CONNECTION_STATE_CONNECTED;
+}
+
 VteTerminal *
 hotssh_tab_get_terminal (HotSshTab *self)
 {

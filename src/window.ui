@@ -15,17 +15,24 @@
         <style>
           <class name="titlebar"/>
         </style>
-	<child>
-	  <object class="GtkButton" id="new_connection">
-            <property name="label" translatable="yes">New Connection</property>
+        <child>
+          <object class="GtkButton" id="new_tab">
             <property name="visible">True</property>
-            <property name="use-underline">True</property>
-            <property name="can-default">True</property>
             <property name="valign">center</property>
-	  </object>
-	  <packing>
-            <property name="pack-type">start</property>
-	  </packing>
+            <style>
+              <class name="image-button"/>
+            </style>
+            <child>
+              <object class="GtkImage" id="new-tab-icon">
+                <property name="visible">True</property>
+                <property name="icon-name">tab-new-symbolic</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+          </packing>
 	</child>
         <child>
           <object class="GtkMenuButton" id="gears">
@@ -58,7 +65,7 @@
   <object class="GtkSizeGroup" id="buttons_header_bar_size_group">
       <property name="mode">vertical</property>
       <widgets>
-        <widget name="new_connection"/>
+        <widget name="new_tab"/>
         <widget name="gears"/>
       </widgets>
   </object>

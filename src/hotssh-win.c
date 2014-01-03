@@ -25,7 +25,6 @@
 
 #include <glib/gi18n.h>
 
-static void hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel);
 static void new_tab_activated (GSimpleAction    *action,
                                GVariant         *parameter,
                                gpointer          user_data);
@@ -43,6 +42,8 @@ static void paste_activated (GSimpleAction    *action,
                              gpointer          user_data);
 
 static GActionEntry win_entries[] = {
+  /* For now, autotab == new channel if possible */
+  { "new-autotab", new_channel_activated, NULL, NULL, NULL },
   { "new-tab", new_tab_activated, NULL, NULL, NULL },
   { "new-channel", new_channel_activated, NULL, NULL, NULL },
   { "disconnect", disconnect_activated, NULL, NULL, NULL },
@@ -74,8 +75,8 @@ struct _HotSshWindowPrivate
 
   /* Bound via template */
   GtkWidget *main_notebook;
-  GtkWidget *new_connection;
   GtkWidget *gears;
+  GtkWidget *new_tab;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE(HotSshWindow, hotssh_window, GTK_TYPE_APPLICATION_WINDOW);
@@ -149,12 +150,14 @@ create_tab_label (HotSshWindow       *self,
   gtk_label_set_single_line_mode (label, TRUE);
   gtk_misc_set_alignment ((GtkMisc*)label, 0.0, 0.5);
   gtk_misc_set_padding ((GtkMisc*)label, 0, 0);
-  gtk_box_pack_start ((GtkBox*)label_box, (GtkWidget*)label, FALSE, FALSE, 0);
+  gtk_box_pack_start ((GtkBox*)label_box, (GtkWidget*)label, TRUE, TRUE, 0);
+  gtk_widget_set_halign ((GtkWidget*)label, GTK_ALIGN_CENTER);
 
   close_button = (GtkButton*)gtk_button_new ();
   gtk_widget_set_name ((GtkWidget*)close_button, "hotssh-tab-close-button");
   gtk_button_set_focus_on_click (close_button, FALSE);
   gtk_button_set_relief (close_button, GTK_RELIEF_NONE);
+  gtk_widget_set_halign ((GtkWidget*)close_button, GTK_ALIGN_END);
 
   close_image = (GtkImage*)gtk_image_new_from_icon_name ("window-close-symbolic",
 							 GTK_ICON_SIZE_MENU);
@@ -166,6 +169,7 @@ create_tab_label (HotSshWindow       *self,
   gtk_box_pack_start ((GtkBox*)label_box, (GtkWidget*)close_button, FALSE, FALSE, 0);
 
   gtk_widget_show_all ((GtkWidget*)label_box);
+  gtk_widget_set_halign ((GtkWidget*)label_box, GTK_ALIGN_FILL);
   g_object_set_data ((GObject*)label_box, "label-text", label);
   g_object_set_data ((GObject*)label_box, "close-button", close_button);
   return (GtkWidget*)label_box;
@@ -183,8 +187,13 @@ on_tab_hostname_changed (HotSshTab           *tab,
   gtk_label_set_text (real_label, hostname ? hostname : _("Disconnected"));
 }
 
+typedef enum {
+  NEW_TAB_DISCONNECTED,
+  NEW_TAB_CHANNEL_OR_AUTO
+} NewTabKind;
+
 static void
-hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
+hotssh_win_append_tab (HotSshWindow   *self, NewTabKind kind)
 {
   HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
   GtkWidget *label;
@@ -194,11 +203,14 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
   gboolean is_first_tab;
   gboolean was_single_tab;
 
-  if (new_channel)
+  if (kind == NEW_TAB_CHANNEL_OR_AUTO)
     {
       guint i = gtk_notebook_get_current_page ((GtkNotebook*)priv->main_notebook);
       HotSshTab *current_tab = (HotSshTab*)gtk_notebook_get_nth_page ((GtkNotebook*)priv->main_notebook, i);
-      tab = hotssh_tab_new_channel (current_tab);
+      if (hotssh_tab_is_connected (current_tab))
+        tab = hotssh_tab_new_channel (current_tab);
+      else
+        tab = hotssh_tab_new ();
     }
   else
     {
@@ -215,6 +227,8 @@ hotssh_win_append_tab (HotSshWindow   *self, gboolean new_channel)
   idx = gtk_notebook_append_page ((GtkNotebook*)priv->main_notebook,
                                   (GtkWidget*)tab,
                                   (GtkWidget*)label);
+  gtk_container_child_set ((GtkContainer*)priv->main_notebook, (GtkWidget*)tab,
+                           "tab-expand", TRUE, NULL);
   if (was_single_tab)
     set_close_button_visibility (self, TRUE);
   else if (is_first_tab)
@@ -233,7 +247,7 @@ new_tab_activated (GSimpleAction    *action,
 {
   HotSshWindow *self = user_data;
 
-  hotssh_win_append_tab (self, FALSE);
+  hotssh_win_append_tab (self, NEW_TAB_DISCONNECTED);
 }
 
 static void
@@ -256,7 +270,7 @@ new_channel_activated (GSimpleAction    *action,
 {
   HotSshWindow *self = user_data;
 
-  hotssh_win_append_tab (self, TRUE);
+  hotssh_win_append_tab (self, NEW_TAB_CHANNEL_OR_AUTO);
 }
 
 static void
@@ -364,7 +378,7 @@ hotssh_window_init (HotSshWindow *self)
   gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (priv->gears), menu);
   g_object_unref (builder);
 
-  gtk_actionable_set_action_name ((GtkActionable*)priv->new_connection, "win.new-tab");
+  gtk_actionable_set_action_name ((GtkActionable*)priv->new_tab, "win.new-autotab");
 
   hotssh_win_append_tab (self, FALSE);
 }
@@ -405,7 +419,7 @@ hotssh_window_class_init (HotSshWindowClass *class)
                                                "/org/gnome/hotssh/window.ui");
 
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, main_notebook);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, new_connection);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, new_tab);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshWindow, gears);
 }
 

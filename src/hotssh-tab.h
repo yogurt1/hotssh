@@ -37,4 +37,6 @@ void                    hotssh_tab_disconnect  (HotSshTab *source);
 
 const char *            hotssh_tab_get_hostname (HotSshTab *self);
 
+gboolean                hotssh_tab_is_connected (HotSshTab *self);
+
 VteTerminal            *hotssh_tab_get_terminal (HotSshTab *self);
