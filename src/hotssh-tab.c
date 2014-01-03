@@ -159,16 +159,6 @@ set_status_printf (HotSshTab  *self,
 }
 
 static void
-reset_focus_state (HotSshTab   *self)
-{
-  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
-  if (gtk_entry_get_text ((GtkEntry*)priv->host_entry)[0] == '\0')
-    gtk_widget_grab_focus (priv->host_entry);
-  else
-    gtk_widget_grab_focus (priv->username_entry);
-}
-
-static void
 state_reset_for_new_connection (HotSshTab                *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
@@ -182,7 +172,6 @@ state_reset_for_new_connection (HotSshTab                *self)
       g_object_notify ((GObject*)self, "hostname");
       vte_terminal_reset ((VteTerminal*)priv->terminal, TRUE, TRUE);
       gtk_entry_set_text ((GtkEntry*)priv->password_entry, "");
-      reset_focus_state (self);
       gtk_label_set_text ((GtkLabel*)priv->connection_text, "");
       gtk_widget_set_sensitive (priv->password_container, TRUE);
       priv->awaiting_password_entry = priv->submitted_password = FALSE;
@@ -920,12 +909,6 @@ host_entry_match (GtkEntryCompletion *completion,
 }
 
 static void
-hotssh_tab_grab_focus (GtkWidget *widget)
-{
-  reset_focus_state ((HotSshTab*)widget);
-}
-
-static void
 on_vte_realize (GtkWidget   *widget,
                 HotSshTab   *self)
 {
@@ -1166,7 +1149,6 @@ hotssh_tab_class_init (HotSshTabClass *class)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, terminal_box);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (class), HotSshTab, terminal_vscrollbar);
 
-  GTK_WIDGET_CLASS (class)->grab_focus = hotssh_tab_grab_focus;
   GTK_WIDGET_CLASS (class)->style_updated = hotssh_tab_style_updated;
 
   g_object_class_install_property (G_OBJECT_CLASS (class),

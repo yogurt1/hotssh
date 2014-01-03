@@ -67,6 +67,11 @@ struct _HotSshWindowPrivate
   GtkWidget *terminal;
   GSettings *settings;
 
+  GtkWidget *watching_focus;
+  guint watching_focus_sigid;
+
+  gboolean indisposed;
+
   /* Bound via template */
   GtkWidget *main_notebook;
   GtkWidget *new_connection;
@@ -255,6 +260,59 @@ new_channel_activated (GSimpleAction    *action,
 }
 
 static void
+hotssh_window_update_copy_paste_sensitivity (HotSshWindow *self);
+
+static void
+on_focused_terminal_selection_changed (VteTerminal *terminal,
+                                       gpointer user_data)
+{
+  HotSshWindow *self = user_data;
+  hotssh_window_update_copy_paste_sensitivity (self);
+}
+
+static void
+hotssh_window_update_copy_paste_sensitivity (HotSshWindow *self)
+{
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  GtkWidget *focus = gtk_window_get_focus ((GtkWindow*)self);
+  gboolean can_copy = FALSE;
+  GAction *copy_action;
+  
+  if (focus != priv->watching_focus)
+    {
+      if (priv->watching_focus && priv->watching_focus_sigid > 0)
+        g_signal_handler_disconnect (priv->watching_focus, priv->watching_focus_sigid);
+      priv->watching_focus = NULL;
+      priv->watching_focus_sigid = 0;
+
+      if (focus && VTE_IS_TERMINAL (focus))
+        {
+          priv->watching_focus = focus;
+          g_object_add_weak_pointer ((GObject*)focus, (gpointer*)&priv->watching_focus);
+          priv->watching_focus_sigid = 
+            g_signal_connect (priv->watching_focus, "selection-changed",
+                              G_CALLBACK (on_focused_terminal_selection_changed),
+                              self);
+        }
+    }
+  
+  if (focus)
+    {
+      g_debug ("focus is a %s", g_type_name (G_TYPE_FROM_INSTANCE (focus)));
+      if (GTK_IS_EDITABLE (focus))
+        can_copy = gtk_editable_get_selection_bounds ((GtkEditable*)focus, NULL, NULL);
+      else if (VTE_IS_TERMINAL (focus))
+        can_copy = vte_terminal_get_has_selection ((VteTerminal*)focus);
+    }
+  else
+    g_debug ("focus is NULL");
+
+  copy_action = g_action_map_lookup_action ((GActionMap*)self, "copy");
+  g_assert (copy_action);
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (copy_action), can_copy); 
+}
+
+static void
 copy_activated (GSimpleAction    *action,
                 GVariant         *parameter,
                 gpointer          user_data)
@@ -317,15 +375,31 @@ hotssh_window_dispose (GObject *object)
   HotSshWindow *self = HOTSSH_WINDOW (object);
   HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
 
+  priv->indisposed = TRUE;
+
   g_clear_object (&priv->settings);
 
   G_OBJECT_CLASS (hotssh_window_parent_class)->dispose (object);
 }
 
 static void
+hotssh_window_set_focus (GtkWindow *window,
+                         GtkWidget *focus)
+{
+  HotSshWindow *self = (HotSshWindow*)window;
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  GTK_WINDOW_CLASS (hotssh_window_parent_class)->set_focus (window, focus);
+
+  if (!priv->indisposed)
+    hotssh_window_update_copy_paste_sensitivity (self);
+}
+
+static void
 hotssh_window_class_init (HotSshWindowClass *class)
 {
   G_OBJECT_CLASS (class)->dispose = hotssh_window_dispose;
+
+  GTK_WINDOW_CLASS (class)->set_focus = hotssh_window_set_focus;
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (class),
                                                "/org/gnome/hotssh/window.ui");
