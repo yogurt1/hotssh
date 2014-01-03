@@ -40,6 +40,9 @@ static void copy_activated (GSimpleAction    *action,
 static void paste_activated (GSimpleAction    *action,
                              GVariant         *parameter,
                              gpointer          user_data);
+static void switch_tab_activated (GSimpleAction    *action,
+                                  GVariant         *parameter,
+                                  gpointer          user_data);
 
 static GActionEntry win_entries[] = {
   /* For now, autotab == new channel if possible */
@@ -48,7 +51,8 @@ static GActionEntry win_entries[] = {
   { "new-channel", new_channel_activated, NULL, NULL, NULL },
   { "disconnect", disconnect_activated, NULL, NULL, NULL },
   { "copy", copy_activated, NULL, NULL, NULL },
-  { "paste", paste_activated, NULL, NULL, NULL }
+  { "paste", paste_activated, NULL, NULL, NULL },
+  { "switch-tab", switch_tab_activated, "u", "uint32 0", NULL }
 };
 
 struct _HotSshWindow
@@ -358,6 +362,18 @@ paste_activated (GSimpleAction    *action,
     gtk_editable_paste_clipboard ((GtkEditable*) focus);
   else if (VTE_IS_TERMINAL (focus))
     vte_terminal_paste_clipboard ((VteTerminal*) focus);
+}
+
+static void
+switch_tab_activated (GSimpleAction    *action,
+                      GVariant         *parameter,
+                      gpointer          user_data)
+{
+  HotSshWindow *self = user_data;
+  HotSshWindowPrivate *priv = hotssh_window_get_instance_private (self);
+  guint32 tabnum = g_variant_get_uint32 (parameter);
+
+  gtk_notebook_set_current_page ((GtkNotebook*)priv->main_notebook, tabnum);
 }
 
 static void

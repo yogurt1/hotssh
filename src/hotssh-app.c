@@ -108,6 +108,7 @@ hotssh_app_startup (GApplication *app)
   HotSshApp *hotssh_app = HOTSSH_APP (app);
   GtkBuilder *builder;
   GMenuModel *app_menu;
+  
 
   G_APPLICATION_CLASS (hotssh_app_parent_class)->startup (app);
 
@@ -123,6 +124,17 @@ hotssh_app_startup (GApplication *app)
   g_object_unref (builder);
 
   gtk_application_add_accelerator ((GtkApplication*)app, "<Control><Shift>T", "win.new-tab", NULL);
+  {
+    guint i = 0;
+    for (i = 1; i <= 9; i++)
+      {
+        gs_free char *key = g_strdup_printf ("<Alt>%u", i);
+        gtk_application_add_accelerator ((GtkApplication*)app, key, "win.switch-tab",
+                                         g_variant_new_uint32 (i-1));
+      }
+    gtk_application_add_accelerator ((GtkApplication*)app, "<Alt>0", "win.switch-tab",
+                                     g_variant_new_uint32 (9));
+  }
 }
 
 static void
