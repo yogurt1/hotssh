@@ -1,15 +1,15 @@
 # Czech translation for hotssh.
 # Copyright (C) 2013 hotssh's COPYRIGHT HOLDER
 # This file is distributed under the same license as the hotssh package.
-# Marek Černocký <marek@manet.cz>, 2013.
+# Marek Černocký <marek@manet.cz>, 2013, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-12-23 18:35+0000\n"
-"PO-Revision-Date: 2013-12-25 09:12+0100\n"
+"POT-Creation-Date: 2014-01-02 01:37+0000\n"
+"PO-Revision-Date: 2014-01-03 08:01+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -35,45 +35,112 @@ msgstr "Marek Černocký <marek@manet.cz>"
 msgid "HotSSH Website"
 msgstr "Webové stránky HotSSH"
 
-#: ../src/hotssh-win.c:123
+#: ../src/hotssh-win.c:131
 msgid "Close tab"
 msgstr "Zavřít kartu"
 
-#: ../src/hotssh-win.c:144
+#: ../src/hotssh-win.c:152
 msgid "Disconnected"
 msgstr "Odpojeno"
 
-#: ../src/hotssh-tab.c:315
+#: ../src/hotssh-tab.c:330 ../src/hotssh-tab.c:1190
 msgid "Authenticated, requesting channel…"
 msgstr "Ověřeno, žádá se o kanál…"
 
-#: ../src/hotssh-tab.c:380
+#: ../src/hotssh-tab.c:395
 #, c-format
 msgid "No more authentication mechanisms available"
 msgstr "Žádný další ověřovací mechanizmus není k dispozici"
 
-#: ../src/hotssh-tab.c:389
+#: ../src/hotssh-tab.c:404
 #, c-format
 msgid "Requesting authentication via '%s'"
 msgstr "Žádá se o ověření pomocí „%s“"
 
-#: ../src/hotssh-tab.c:480
+#: ../src/hotssh-tab.c:460
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"Byl změněn typ klíče vzdáleného hostitele. Původně byl „%s“, nyní je „%s“"
+
+#: ../src/hotssh-tab.c:465
+msgid "The remote host key has changed"
+msgstr "Změnil se klíč vzdáleného hostitele"
+
+#: ../src/hotssh-tab.c:474
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Chyba: Pověření hostitele pro „%s“ (%s) neodpovídá dříve uloženému pověření. "
+"Může to být příznakem snahy záškodníků zachytit komunikaci, možná ale jen "
+"správce systému změnil klíč hostitele.\n"
+"\n"
+"Podrobnosti: %s"
+
+#: ../src/hotssh-tab.c:487 ../src/hotssh-tab.c:814
+msgid "Negotiating authentication…"
+msgstr "Vyjednává se ověření…"
+
+#: ../src/hotssh-tab.c:567
 #, c-format
 msgid "Resolving '%s'…"
 msgstr "Vyhledává se „%s“…"
 
-#: ../src/hotssh-tab.c:495
+#: ../src/hotssh-tab.c:582
 #, c-format
 msgid "Connecting to '%s'…"
 msgstr "Připojuje se k „%s“…"
 
-#: ../src/hotssh-tab.c:649
+#: ../src/hotssh-tab.c:795
 msgid "Authenticating…"
 msgstr "Ověřuje se…"
 
-#: ../src/hotssh-tab.c:672
-msgid "Negotiating authentication…"
-msgstr "Vyjednává se ověření…"
+#: ../src/hotssh-tab.c:1020
+msgid "Less than 1 minute ago"
+msgstr "Před méně než 1 minutou"
+
+#: ../src/hotssh-tab.c:1023
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "Před %d minutou"
+msgstr[1] "Před %d minutami"
+msgstr[2] "Před %d minutami"
+
+#: ../src/hotssh-tab.c:1027
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "Před %d hodinou"
+msgstr[1] "Před %d hodinami"
+msgstr[2] "Před %d hodinami"
+
+#: ../src/hotssh-tab.c:1030
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "Před %d dnem"
+msgstr[1] "Před %d dny"
+msgstr[2] "Před %d dny"
+
+#: ../src/hotssh-tab.c:1052
+msgid "Never"
+msgstr "Nikdy"
+
+#: ../src/hotssh-tab.c:1058
+msgid "In the future"
+msgstr "V budoucnosti"
+
+#: ../src/hotssh-tab.c:1090
+msgid "Unknown"
+msgstr "Neznámý"
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -94,6 +161,14 @@ msgstr "_Nová karta"
 #: ../src/gears-menu.ui.h:2
 msgid "_Disconnect"
 msgstr "O_dpojit"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Copy"
+msgstr "_Kopírovat"
+
+#: ../src/gears-menu.ui.h:4
+msgid "_Paste"
+msgstr "V_ložit"
 
 #: ../src/prefs.ui.h:1
 msgid "Preferences"
@@ -116,36 +191,52 @@ msgid "Username: "
 msgstr "Uživatelské jméno:"
 
 #: ../src/tab.ui.h:3
-msgid "_Connect"
-msgstr "_Připojit"
+msgid "_Create and Connect"
+msgstr "_Vytvořit a připojit"
 
 #: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Název hostitele"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Naposledy použito"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Znám"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Přidat nové připojení"
+
+#: ../src/tab.ui.h:8
 msgid "Connecting…"
 msgstr "Připojuje se…"
 
-#: ../src/tab.ui.h:5
+#: ../src/tab.ui.h:9
 msgid "Error:"
 msgstr "Chyba:"
 
-#: ../src/tab.ui.h:6
+#: ../src/tab.ui.h:10
 msgid "Disconnect"
 msgstr "Odpojit"
 
-#: ../src/tab.ui.h:7
+#: ../src/tab.ui.h:11
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
 msgstr ""
 "Je požadováno schválení klíče hostitele, který se objevil poprvé. Otisk "
 "klíče RSA je:"
 
-#: ../src/tab.ui.h:8
+#: ../src/tab.ui.h:12
 msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 
-#: ../src/tab.ui.h:9
+#: ../src/tab.ui.h:13
 msgid "Approve and Connect"
 msgstr "Schválit a připojit"
 
-#: ../src/tab.ui.h:10
+#: ../src/tab.ui.h:14
 msgid "Password: "
 msgstr "Heslo: "
 
