@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-01 05:16+0100\n"
-"PO-Revision-Date: 2014-01-01 05:17+0100\n"
+"POT-Creation-Date: 2014-01-03 15:15+0100\n"
+"PO-Revision-Date: 2014-01-03 15:17+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -41,51 +41,80 @@ msgstr ""
 msgid "HotSSH Website"
 msgstr "Witryna HotSSH"
 
-#: ../src/hotssh-win.c:123
+#: ../src/hotssh-win.c:164
 msgid "Close tab"
 msgstr "Zamknij kartę"
 
-#: ../src/hotssh-win.c:144
+#: ../src/hotssh-win.c:187
 msgid "Disconnected"
 msgstr "Rozłączono"
 
-#: ../src/hotssh-tab.c:324
+#: ../src/hotssh-tab.c:320 ../src/hotssh-tab.c:1176
 msgid "Authenticated, requesting channel…"
 msgstr "Uwierzytelniono, żądanie kanału…"
 
-#: ../src/hotssh-tab.c:389
+#: ../src/hotssh-tab.c:385
 #, c-format
 msgid "No more authentication mechanisms available"
 msgstr "Nie ma więcej dostępnych mechanizmów uwierzytelniania"
 
-#: ../src/hotssh-tab.c:398
+#: ../src/hotssh-tab.c:394
 #, c-format
 msgid "Requesting authentication via '%s'"
 msgstr "Żądanie uwierzytelniania przez \"%s\""
 
-#: ../src/hotssh-tab.c:487
+#: ../src/hotssh-tab.c:450
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"Typ klucza zdalnego komputera został zmieniony; poprzednio wynosił \"%s\", "
+"teraz wynosi \"%s\""
+
+#: ../src/hotssh-tab.c:455
+msgid "The remote host key has changed"
+msgstr "Klucz zdalnego komputera został zmieniony"
+
+#: ../src/hotssh-tab.c:464
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Błąd: dane uwierzytelniające komputera dla \"%s\" (%s) nie pasują do "
+"poprzednio zapisanych danych. Może to oznaczać próbę przejęcia komunikacji "
+"przez niewłaściwą osobę, jednakże może też oznaczać, że administrator "
+"systemu zmienił klucz komputera.\n"
+"\n"
+"Szczegóły: %s"
+
+#: ../src/hotssh-tab.c:477 ../src/hotssh-tab.c:804
+msgid "Negotiating authentication…"
+msgstr "Negocjowanie uwierzytelniania…"
+
+#: ../src/hotssh-tab.c:557
 #, c-format
 msgid "Resolving '%s'…"
 msgstr "Rozwiązywanie \"%s\"…"
 
-#: ../src/hotssh-tab.c:502
+#: ../src/hotssh-tab.c:572
 #, c-format
 msgid "Connecting to '%s'…"
 msgstr "Łączenie z \"%s\"…"
 
-#: ../src/hotssh-tab.c:715
+#: ../src/hotssh-tab.c:785
 msgid "Authenticating…"
 msgstr "Uwierzytelnianie…"
 
-#: ../src/hotssh-tab.c:732
-msgid "Negotiating authentication…"
-msgstr "Negocjowanie uwierzytelniania…"
-
-#: ../src/hotssh-tab.c:933
+#: ../src/hotssh-tab.c:1006
 msgid "Less than 1 minute ago"
 msgstr "Mniej niż minuta temu"
 
-#: ../src/hotssh-tab.c:936
+#: ../src/hotssh-tab.c:1009
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
@@ -93,7 +122,7 @@ msgstr[0] "%d minuta temu"
 msgstr[1] "%d minuty temu"
 msgstr[2] "%d minut temu"
 
-#: ../src/hotssh-tab.c:940
+#: ../src/hotssh-tab.c:1013
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
@@ -101,7 +130,7 @@ msgstr[0] "%d godzina temu"
 msgstr[1] "%d godziny temu"
 msgstr[2] "%d godzin temu"
 
-#: ../src/hotssh-tab.c:943
+#: ../src/hotssh-tab.c:1016
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -109,13 +138,17 @@ msgstr[0] "%d dzień temu"
 msgstr[1] "%d dni temu"
 msgstr[2] "%d dni temu"
 
-#: ../src/hotssh-tab.c:965
+#: ../src/hotssh-tab.c:1038
 msgid "Never"
 msgstr "Nigdy"
 
-#: ../src/hotssh-tab.c:971
+#: ../src/hotssh-tab.c:1044
 msgid "In the future"
 msgstr "W przyszłości"
+
+#: ../src/hotssh-tab.c:1076
+msgid "Unknown"
+msgstr "Nieznane"
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -130,12 +163,16 @@ msgid "_Quit"
 msgstr "Za_kończ"
 
 #: ../src/gears-menu.ui.h:1
-msgid "_New Tab"
-msgstr "_Nowa karta"
-
-#: ../src/gears-menu.ui.h:2
 msgid "_Disconnect"
 msgstr "_Rozłącz"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "S_kopiuj"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "Wk_lej"
 
 #: ../src/prefs.ui.h:1
 msgid "Preferences"
@@ -170,37 +207,37 @@ msgid "Last Used"
 msgstr "Ostatnio używane"
 
 #: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Znane"
+
+#: ../src/tab.ui.h:7
 msgid "Add New Connection"
 msgstr "Dodaj nowe połączenie"
 
-#: ../src/tab.ui.h:7
+#: ../src/tab.ui.h:8
 msgid "Connecting…"
 msgstr "Łączenie…"
 
-#: ../src/tab.ui.h:8
+#: ../src/tab.ui.h:9
 msgid "Error:"
 msgstr "Błąd:"
 
-#: ../src/tab.ui.h:9
+#: ../src/tab.ui.h:10
 msgid "Disconnect"
 msgstr "Rozłącz"
 
-#: ../src/tab.ui.h:10
+#: ../src/tab.ui.h:11
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
 msgstr "Wymagana jest akceptacja nowego klucza komputera. Odcisk RSA klucza:"
 
-#: ../src/tab.ui.h:11
+#: ../src/tab.ui.h:12
 msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 
-#: ../src/tab.ui.h:12
+#: ../src/tab.ui.h:13
 msgid "Approve and Connect"
 msgstr "Zaakceptuj i połącz"
 
-#: ../src/tab.ui.h:13
+#: ../src/tab.ui.h:14
 msgid "Password: "
 msgstr "Hasło: "
-
-#: ../src/window.ui.h:2
-msgid "New Connection"
-msgstr "Nowe połączenie"
