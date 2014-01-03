@@ -889,6 +889,8 @@ hotssh_tab_style_updated (GtkWidget      *widget)
 
   vte_terminal_set_color_foreground_rgba ((VteTerminal*)priv->terminal, &fg);
   vte_terminal_set_color_background_rgba ((VteTerminal*)priv->terminal, &bg);
+  vte_terminal_set_color_bold_rgba ((VteTerminal*)priv->terminal, &fg);
+  vte_terminal_set_color_dim_rgba ((VteTerminal*)priv->terminal, &fg);
 }
 
 static gboolean
