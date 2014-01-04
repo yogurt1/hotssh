@@ -1000,6 +1000,32 @@ hotssh_tab_dispose (GObject *object)
   G_OBJECT_CLASS (hotssh_tab_parent_class)->dispose (object);
 }
 
+static void
+render_hostname (GtkTreeViewColumn *tree_column,
+                 GtkCellRenderer *cell,
+                 GtkTreeModel *tree_model,
+                 GtkTreeIter *iter,
+                 gpointer data)
+{
+  const char *text;
+  gs_free char *entry_username = NULL;
+  gs_free char *entry_hostname = NULL;
+  const char *local_username = g_get_user_name ();
+
+  gtk_tree_model_get (tree_model, iter,
+                      HOTSSH_HOSTDB_COLUMN_USERNAME,
+                      &entry_username,
+                      HOTSSH_HOSTDB_COLUMN_HOSTNAME,
+                      &entry_hostname,
+                      -1);
+
+  text = entry_hostname;
+  if (entry_username && strcmp (entry_username, local_username) != 0)
+    text = g_strconcat (entry_username, "@", entry_hostname, NULL);
+
+  g_object_set (cell, "text", text, NULL);
+}
+
 static const char *
 seconds_to_time_ago_format (gulong *seconds)
 {
@@ -1097,9 +1123,10 @@ hotssh_tab_constructed (GObject *object)
   model = hotssh_hostdb_get_model (hotssh_hostdb_get_instance ());
   gtk_tree_view_set_model ((GtkTreeView*)priv->connections_treeview, model);
 
-  gtk_tree_view_column_add_attribute ((GtkTreeViewColumn*)priv->hostname_column,
-                                      (GtkCellRenderer*)priv->hostname_renderer,
-                                      "text", 1);
+  gtk_tree_view_column_set_cell_data_func ((GtkTreeViewColumn*)priv->hostname_column,
+                                           (GtkCellRenderer*)priv->hostname_renderer,
+                                           render_hostname,
+                                           self, NULL);
   gtk_tree_view_column_set_cell_data_func ((GtkTreeViewColumn*)priv->lastused_column,
                                            (GtkCellRenderer*)priv->lastused_renderer,
                                            render_last_used,
