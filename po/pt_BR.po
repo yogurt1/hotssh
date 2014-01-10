@@ -1,16 +1,16 @@
 # Brazilian Portuguese translation for hotssh.
-# Copyright (C) 2013 hotssh's COPYRIGHT HOLDER
+# Copyright (C) 2014 hotssh's COPYRIGHT HOLDER
 # This file is distributed under the same license as the hotssh package.
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2013.
-# Enrico Nicoletto <liverig@gmail.com>, 2013.
+# Enrico Nicoletto <liverig@gmail.com>, 2013, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-12-31 19:02+0000\n"
-"PO-Revision-Date: 2013-12-31 19:56-0300\n"
+"POT-Creation-Date: 2014-01-07 23:42+0000\n"
+"PO-Revision-Date: 2014-01-10 15:41-0300\n"
 "Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.3\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../src/hotssh-app.c:78
 msgid "SSH client"
@@ -38,78 +38,111 @@ msgstr ""
 msgid "HotSSH Website"
 msgstr "Site HotSSH"
 
-#: ../src/hotssh-win.c:123
+#: ../src/hotssh-win.c:168
 msgid "Close tab"
 msgstr "Fechar aba"
 
-#: ../src/hotssh-win.c:144
+#: ../src/hotssh-win.c:191
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/hotssh-tab.c:324
+#: ../src/hotssh-tab.c:320 ../src/hotssh-tab.c:1205
 msgid "Authenticated, requesting channel…"
 msgstr "Autenticado, requisitando canal…"
 
-#: ../src/hotssh-tab.c:389
+#: ../src/hotssh-tab.c:385
 #, c-format
 msgid "No more authentication mechanisms available"
 msgstr "Nenhum outro mecanismo de autenticação disponível"
 
-#: ../src/hotssh-tab.c:398
+#: ../src/hotssh-tab.c:394
 #, c-format
 msgid "Requesting authentication via '%s'"
 msgstr "Requisitando autenticação via \"%s\""
 
-#: ../src/hotssh-tab.c:487
+#: ../src/hotssh-tab.c:450
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"O tipo de chave da máquina remota foi alterado; anteriormente era: \"%s\", "
+"agora é: \"%s\""
+
+#: ../src/hotssh-tab.c:455
+msgid "The remote host key has changed"
+msgstr "A chave da máquina remota foi alterada"
+
+#: ../src/hotssh-tab.c:464
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Erro: As credenciais de máquina para \"%s\" (%s) não coincidem com as "
+"credenciais anteriormente salvas.  Isto pode representar uma tentativa de "
+"uma entidade maliciosa que deseja interceptar a comunicação; porém, também é "
+"possível que um administrador de sistema tenha alterado a chave de máquina.\n"
+"\n"
+"Detalhes: %s"
+
+#: ../src/hotssh-tab.c:477 ../src/hotssh-tab.c:804
+msgid "Negotiating authentication…"
+msgstr "Negociando autenticação…"
+
+#: ../src/hotssh-tab.c:557
 #, c-format
 msgid "Resolving '%s'…"
 msgstr "Resolvendo \"%s\"…"
 
-#: ../src/hotssh-tab.c:502
+#: ../src/hotssh-tab.c:572
 #, c-format
 msgid "Connecting to '%s'…"
 msgstr "Conectando em \"%s\"…"
 
-#: ../src/hotssh-tab.c:715
+#: ../src/hotssh-tab.c:785
 msgid "Authenticating…"
 msgstr "Autenticando…"
 
-#: ../src/hotssh-tab.c:732
-msgid "Negotiating authentication…"
-msgstr "Negociando autenticação…"
-
-#: ../src/hotssh-tab.c:933
+#: ../src/hotssh-tab.c:1034
 msgid "Less than 1 minute ago"
 msgstr "Menos de 1 minuto atrás"
 
-#: ../src/hotssh-tab.c:936
+#: ../src/hotssh-tab.c:1037
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d minuto atrás"
 msgstr[1] "%d minutos atrás"
 
-#: ../src/hotssh-tab.c:940
+#: ../src/hotssh-tab.c:1041
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d hora atrás"
 msgstr[1] "%d horas atrás"
 
-#: ../src/hotssh-tab.c:943
+#: ../src/hotssh-tab.c:1044
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d dia atrás"
 msgstr[1] "%d dias atrás"
 
-#: ../src/hotssh-tab.c:965
+#: ../src/hotssh-tab.c:1066
 msgid "Never"
 msgstr "Nunca"
 
-#: ../src/hotssh-tab.c:971
+#: ../src/hotssh-tab.c:1072
 msgid "In the future"
 msgstr "No futuro"
+
+#: ../src/hotssh-tab.c:1104
+msgid "Unknown"
+msgstr "Desconhecido(a)"
 
 #: ../src/app-menu.ui.h:1
 msgid "_Preferences"
@@ -124,12 +157,16 @@ msgid "_Quit"
 msgstr "_Sair"
 
 #: ../src/gears-menu.ui.h:1
-msgid "_New Tab"
-msgstr "_Nova aba"
-
-#: ../src/gears-menu.ui.h:2
 msgid "_Disconnect"
 msgstr "_Desconectar"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "Co_piar"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "Co_lar"
 
 #: ../src/prefs.ui.h:1
 msgid "Preferences"
@@ -164,42 +201,48 @@ msgid "Last Used"
 msgstr "Último uso"
 
 #: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Conhecido(a)"
+
+#: ../src/tab.ui.h:7
 msgid "Add New Connection"
 msgstr "Adicionar nova conexão"
 
-#: ../src/tab.ui.h:7
+#: ../src/tab.ui.h:8
 msgid "Connecting…"
 msgstr "Conectando…"
 
-#: ../src/tab.ui.h:8
+#: ../src/tab.ui.h:9
 msgid "Error:"
 msgstr "Erro:"
 
-#: ../src/tab.ui.h:9
+#: ../src/tab.ui.h:10
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: ../src/tab.ui.h:10
+#: ../src/tab.ui.h:11
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
 msgstr ""
 "Aprovação de novas chaves de máquinas encontradas é necessária; impressão "
 "digital de chave RSA é:"
 
-#: ../src/tab.ui.h:11
+#: ../src/tab.ui.h:12
 msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
 
-#: ../src/tab.ui.h:12
+#: ../src/tab.ui.h:13
 msgid "Approve and Connect"
 msgstr "Aprovar e conectar"
 
-#: ../src/tab.ui.h:13
+#: ../src/tab.ui.h:14
 msgid "Password: "
 msgstr "Senha: "
 
-#: ../src/window.ui.h:2
-msgid "New Connection"
-msgstr "Nova conexão"
+#~ msgid "_New Tab"
+#~ msgstr "_Nova aba"
+
+#~ msgid "New Connection"
+#~ msgstr "Nova conexão"
 
 #~ msgid "_Connect"
 #~ msgstr "_Conectar"
