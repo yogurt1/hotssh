@@ -38,12 +38,7 @@ PKG_PROG_PKG_CONFIG
 GLIB_GSETTINGS
 
 PKG_CHECK_MODULES(BUILDDEP_GIO_UNIX, [gio-unix-2.0 >= 2.34])
-PKG_CHECK_MODULES(BUILDDEP_HOTSSHAPP, [gio-unix-2.0 >= 2.34 gtk+-3.0 >= 3.10.0 vte-2.90])
-PKG_CHECK_MODULES(BUILDDEP_LIBGSSH, [gio-unix-2.0 libssh])
-save_LIBS=$LIBS
-LIBS=$BUILDDEP_LIBGSSH_LIBS
-AC_CHECK_FUNC(ssh_get_poll_flags,,AC_MSG_ERROR([You must have libssh 0.6 with ssh_get_poll_flags]))
-LIBS=$save_LIBS
+PKG_CHECK_MODULES(BUILDDEP_HOTSSHAPP, [gio-unix-2.0 >= 2.34 gtk+-3.0 >= 3.10.0 vte-2.90 libgssh-1])
 
 AC_CONFIG_FILES([
 Makefile

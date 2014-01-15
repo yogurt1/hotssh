@@ -39,8 +39,8 @@ hotssh_SOURCES = $(hotssh_headers) \
 	$(NULL)
 
 hotssh_CPPFLAGS = $(AM_CPPFLAGS) -DLOCALEDIR=\"$(localedir)\"
-hotssh_CFLAGS = $(AM_CFLAGS) $(BUILDDEP_HOTSSHAPP_CFLAGS) -I$(srcdir)/libgsystem -I$(srcdir)/libgssh -I$(srcdir)/src
-hotssh_LDADD = $(BUILDDEP_HOTSSHAPP_LIBS) libgssh.la libgsystem.la
+hotssh_CFLAGS = $(AM_CFLAGS) $(BUILDDEP_HOTSSHAPP_CFLAGS) -I$(srcdir)/libgsystem -I$(srcdir)/src
+hotssh_LDADD = $(BUILDDEP_HOTSSHAPP_LIBS) libgsystem.la
 
 resources.c: src/hotssh.gresource.xml $(shell glib-compile-resources --sourcedir=$(srcdir)/src --generate-dependencies $(srcdir)/src/hotssh.gresource.xml)
 	$(AM_V_GEN) glib-compile-resources $< \

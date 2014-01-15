@@ -30,7 +30,6 @@ libgsystem_libs = $(BUILDDEP_GIO_UNIX_LIBS)
 include libgsystem/Makefile-libgsystem.am
 noinst_LTLIBRARIES += libgsystem.la
 
-include Makefile-libgssh.am
 include Makefile-src.am
 
 release-tag:
