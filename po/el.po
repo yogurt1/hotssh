@@ -1,0 +1,240 @@
+# Greek translation for hotssh.
+# Copyright (C) 2014 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-01-16 15:21+0000\n"
+"PO-Revision-Date: 2014-01-19 19:18+0300\n"
+"Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
+"Language-Team: team@lists.gnome.gr\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.0\n"
+"X-Project-Style: gnome\n"
+
+#: ../src/hotssh-app.c:78
+msgid "SSH client"
+msgstr "Πελάτης SSH"
+
+#: ../src/hotssh-app.c:82 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:83
+msgid "translator-credits"
+msgstr ""
+"Ελληνική μεταφραστική ομάδα του GNOME\n"
+" Δημήτρης Σπίγγος <dmtrs32@gmail.com>\n"
+"Για περισσότερα δείτε: http://gnome.gr"
+
+#: ../src/hotssh-app.c:86
+msgid "HotSSH Website"
+msgstr "Ιστότοπος του HotSSH"
+
+#: ../src/hotssh-win.c:168
+msgid "Close tab"
+msgstr "Κλείσιμο καρτέλας"
+
+#: ../src/hotssh-win.c:191
+msgid "Disconnected"
+msgstr "Αποσυνδέθηκε"
+
+#: ../src/hotssh-tab.c:320 ../src/hotssh-tab.c:1205
+msgid "Authenticated, requesting channel…"
+msgstr "Πιστοποιήθηκε, αίτημα για κανάλι…"
+
+#: ../src/hotssh-tab.c:385
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Δεν υπάρχουν περισσότεροι διαθέσιμοι μηχανισμοί πιστοποίησης"
+
+#: ../src/hotssh-tab.c:394
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "Ζητείται πιστοποίηση μέσα από '%s'"
+
+#: ../src/hotssh-tab.c:450
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"Ο απομακρυσμένος τύπος κλειδιού οικοδεσπότη έχει αλλάξει· προηγουμένως ήταν "
+"\"%s\", τώρα είναι \"%s\""
+
+#: ../src/hotssh-tab.c:455
+msgid "The remote host key has changed"
+msgstr "Το απομακρυσμένο κλειδί οικοδεσπότη έχει αλλάξει"
+
+#: ../src/hotssh-tab.c:464
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Σφάλμα: Τα διαπιστευτήρια οικοδεσπότη για το \"%s\" (%s) δεν ταιριάζουν με "
+"τα προηγουμένως αποθηκευμένα διαπιστευτήρια. Αυτό μπορεί να αντιστοιχεί σε "
+"προσπάθεια κακόβουλου για ανάσχεση στην επικοινωνία· όμως, μπορεί επίσης να "
+"δηλώνει ότι το κλειδί του οικοδεσπότη αλλάχτηκε από τον διαχειριστή του "
+"συστήματος.\n"
+"\n"
+"Λεπτομέρειες: %s"
+
+#: ../src/hotssh-tab.c:477 ../src/hotssh-tab.c:804
+msgid "Negotiating authentication…"
+msgstr "Εξέταση πιστοποίησης…"
+
+#: ../src/hotssh-tab.c:557
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "Επίλυση του '%s'…"
+
+#: ../src/hotssh-tab.c:572
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "Σύνδεση με το '%s'…"
+
+#: ../src/hotssh-tab.c:785
+msgid "Authenticating…"
+msgstr "Πιστοποιείται…"
+
+#: ../src/hotssh-tab.c:1034
+msgid "Less than 1 minute ago"
+msgstr "Λιγότερο από 1 λεπτό πριν"
+
+#: ../src/hotssh-tab.c:1037
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d λεπτό πριν"
+msgstr[1] "%d λεπτά πριν"
+
+#: ../src/hotssh-tab.c:1041
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d ώρα πριν"
+msgstr[1] "%d ώρες πριν"
+
+#: ../src/hotssh-tab.c:1044
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d ημέρα πριν"
+msgstr[1] "%d ημέρες πριν"
+
+#: ../src/hotssh-tab.c:1066
+msgid "Never"
+msgstr "Ποτέ"
+
+#: ../src/hotssh-tab.c:1072
+msgid "In the future"
+msgstr "Στο μέλλον"
+
+#: ../src/hotssh-tab.c:1104
+msgid "Unknown"
+msgstr "Άγνωστο"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Προτιμήσεις"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_Περί"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Τερματισμός"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "Α_ποσύνδεση"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "Α_ντιγραφή"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "_Επικόλληση"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Προτιμήσεις"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Κλείσιμο"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "Τεχνοτροπία τερματικού συστήματος συμ_φωνίας:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Οικοδεσπότης: "
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Όνομα χρήστη: "
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "_Δημιουργία και σύνδεση"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Όνομα οικοδεσπότη"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Τελευταία χρησιμοποιημένο"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Γνωστό"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Προσθήκη νέας σύνδεσης"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "Συνδέεται…"
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "Σφάλμα:"
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "Αποσύνδεση"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"Απαιτείται έγκριση του νεοεμφανιζόμενου κλειδιού οικοδεσπότη· το δακτυλικό "
+"αποτύπωμα του κλειδιού RSA είναι:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "Έγκριση και σύνδεση"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "Κωδικός πρόσβασης: "
