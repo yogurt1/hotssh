@@ -1,0 +1,236 @@
+# German translation for hotssh.
+# Copyright (C) 2014 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# Christian Kirbach <Christian.Kirbach@gmail.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-01-20 06:49+0000\n"
+"PO-Revision-Date: 2014-01-26 17:17+0100\n"
+"Last-Translator: Benjamin Steinwender <b@stbe.at>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.3\n"
+
+#: ../src/hotssh-app.c:78
+msgid "SSH client"
+msgstr "SSH-Client"
+
+#: ../src/hotssh-app.c:82 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:83
+msgid "translator-credits"
+msgstr "Christian Kirbach <Christian.Kirbach@gmail.com>"
+
+#: ../src/hotssh-app.c:86
+msgid "HotSSH Website"
+msgstr "HotSSH-Webseite"
+
+#: ../src/hotssh-win.c:168
+msgid "Close tab"
+msgstr "Reiter schließen"
+
+#: ../src/hotssh-win.c:191
+msgid "Disconnected"
+msgstr "Verbindung getrennt"
+
+#: ../src/hotssh-tab.c:320 ../src/hotssh-tab.c:1205
+msgid "Authenticated, requesting channel…"
+msgstr "Authentisiert, Kanal wird angefordert …"
+
+#: ../src/hotssh-tab.c:385
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Es sind keine weiteren Mechanismen zur Authentisierung verfügbar"
+
+#: ../src/hotssh-tab.c:394
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "Authentisierung via »%s« wird angefragt"
+
+#: ../src/hotssh-tab.c:450
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"Der Schlüsseltyp des entfernten Rechners hat sich geändert; er war zuvor "
+"»%s« und ist nun »%s«"
+
+#: ../src/hotssh-tab.c:455
+msgid "The remote host key has changed"
+msgstr "Der Schlüssel des entfernten Rechners hat sich geändert"
+
+#: ../src/hotssh-tab.c:464
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Fehler: Der Berechtigungsnachweis für »%s«(%s) stimmt nicht mit dem zuvor "
+"gespeicherten überein. Dies könnte einen Versuch einer bösartigen Angreifers "
+"mit dem Versuch darstellen, die Kommunikation abzufangen; es ist jedoch auch "
+"möglich, dass der Rechnerschlüssel von einem Administrator geändert wurde.\n"
+"\n"
+"Details: %s"
+
+#: ../src/hotssh-tab.c:477 ../src/hotssh-tab.c:804
+msgid "Negotiating authentication…"
+msgstr "Authentisierung wird ausgehandelt …"
+
+#: ../src/hotssh-tab.c:557
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "»%s« wird aufgelöst …"
+
+#: ../src/hotssh-tab.c:572
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "Verbindung zu »%s« wird hergestellt …"
+
+#: ../src/hotssh-tab.c:785
+msgid "Authenticating…"
+msgstr "Authentisieren …"
+
+#: ../src/hotssh-tab.c:1034
+msgid "Less than 1 minute ago"
+msgstr "Vor weniger als einer Minute"
+
+#: ../src/hotssh-tab.c:1037
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "Vor %d Minute"
+msgstr[1] "Vor %d Minuten"
+
+#: ../src/hotssh-tab.c:1041
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "Vor %d Stunde"
+msgstr[1] "Vor %d Stunden"
+
+#: ../src/hotssh-tab.c:1044
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "vor %d Tag"
+msgstr[1] "vor %d Tagen"
+
+#: ../src/hotssh-tab.c:1066
+msgid "Never"
+msgstr "Niemals"
+
+#: ../src/hotssh-tab.c:1072
+msgid "In the future"
+msgstr "In der Zukunft"
+
+#: ../src/hotssh-tab.c:1104
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Einstellungen"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_Info"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Beenden"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "_Trennen"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "_Kopieren"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "_Einfügen"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "S_chließen"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "Terminal-Stil des _Systems übernehmen:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Rechner: "
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Benutzername: "
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "_Speichern und Verbinden"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Rechnername"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Zuletzt verwendet"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Bekannt"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Neue Verbindung hinzufügen"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "Verbindung wird hergestellt …"
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "Fehler:"
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "Verbindung trennen"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"Der neue Rechnerschlüssel muss akzeptiert werden; Der RSA-Fingerabdruck "
+"lautet:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "Zustimmen und verbinden"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "Passwort: "
