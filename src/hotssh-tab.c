@@ -587,8 +587,8 @@ on_add_new_connection (GtkButton     *button,
 }
                         
 static void
-on_connect (GtkButton     *button,
-	    HotSshTab  *self)
+on_create_and_connect (GtkButton     *button,
+                       HotSshTab  *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   GError *local_error = NULL;
@@ -596,16 +596,20 @@ on_connect (GtkButton     *button,
   GtkTreeIter iter;
   gs_unref_object GNetworkAddress *address = NULL;
   const char *hostname;
+  gs_free char *stripped_hostname = NULL;
   const char *username;
+  gs_free char *stripped_username = NULL;
 
   hostname = gtk_entry_get_text (GTK_ENTRY (priv->host_entry));
+  stripped_hostname = g_strstrip (g_strdup (hostname));
   username = gtk_entry_get_text (GTK_ENTRY (priv->username_entry));
+  stripped_username = g_strstrip (g_strdup (username));
 
   g_clear_object (&priv->cancellable);
   priv->cancellable = g_cancellable_new ();
 
   g_clear_object (&priv->address);
-  address = (GNetworkAddress*)g_network_address_parse (hostname, 22, error);
+  address = (GNetworkAddress*)g_network_address_parse (stripped_hostname, 22, error);
   if (!address)
     {
       page_transition_take_error (self, local_error);
@@ -614,7 +618,7 @@ on_connect (GtkButton     *button,
 
   g_clear_pointer (&priv->connection_id, g_free);
   hotssh_hostdb_add_entry (hotssh_hostdb_get_instance (),
-                           username,
+                           stripped_username,
                            (GNetworkAddress*)address,
                            &priv->connection_id);
   hotssh_hostdb_lookup_by_id (hotssh_hostdb_get_instance (),
@@ -948,7 +952,7 @@ hotssh_tab_init (HotSshTab *self)
 
   gtk_notebook_set_show_tabs ((GtkNotebook*)self, FALSE);
 
-  g_signal_connect (priv->create_and_connect_button, "clicked", G_CALLBACK (on_connect), self);
+  g_signal_connect (priv->create_and_connect_button, "clicked", G_CALLBACK (on_create_and_connect), self);
   g_signal_connect (priv->add_new_connection_button, "clicked", G_CALLBACK (on_add_new_connection), self);
   g_signal_connect (priv->connect_cancel_button, "clicked", G_CALLBACK (on_connect_cancel), self);
   g_signal_connect (priv->error_disconnect, "clicked", G_CALLBACK (on_connect_cancel), self);
