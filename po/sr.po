@@ -1,0 +1,242 @@
+# Serbian translation for hotssh.
+# Copyright (C) 2014 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=hotssh"
+"&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-01-28 15:59+0000\n"
+"PO-Revision-Date: 2014-01-29 12:10+0200\n"
+"Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
+"Language-Team: Serbian <gnom@prevod.org>\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : "
+"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Project-Style: gnome\n"
+
+#: ../src/hotssh-app.c:78
+msgid "SSH client"
+msgstr "Клијент безбедне шкољке"
+
+#: ../src/hotssh-app.c:82 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "Врућа БШ"
+
+#: ../src/hotssh-app.c:83
+msgid "translator-credits"
+msgstr ""
+"  Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
+"\n"
+"http://prevod.org — превод на српски језик"
+
+#: ../src/hotssh-app.c:86
+msgid "HotSSH Website"
+msgstr "Веб страница Вруће БШ-е"
+
+#: ../src/hotssh-win.c:168
+msgid "Close tab"
+msgstr "Затвори језичак"
+
+#: ../src/hotssh-win.c:191
+msgid "Disconnected"
+msgstr "Веза је прекинута"
+
+#: ../src/hotssh-tab.c:320 ../src/hotssh-tab.c:1209
+msgid "Authenticated, requesting channel…"
+msgstr "Потврђеног идентитета, захтевам канал…"
+
+#: ../src/hotssh-tab.c:385
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Нема више доступних механизама потврђивања идентитета"
+
+#: ../src/hotssh-tab.c:394
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "Захтевам потврђивање идентитета путем „%s“"
+
+#: ../src/hotssh-tab.c:450
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr "Измењена је врста кључа удаљеног домаћина; била је „%s“, а сада је „%s“"
+
+#: ../src/hotssh-tab.c:455
+msgid "The remote host key has changed"
+msgstr "Измењен је кључ удаљеног домаћина"
+
+#: ../src/hotssh-tab.c:464
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Грешка: Пуномоћства домаћина за „%s“ (%s) не одговарају претходно сачуваним "
+"пуномоћствима.  Ово може представљати покушај злонамерног лица да "
+"прислушкује везу; међутим, могуће је такође да је администратор система "
+"изменио кључ домаћина.\n"
+"\n"
+"Појединости: %s"
+
+#: ../src/hotssh-tab.c:477 ../src/hotssh-tab.c:808
+msgid "Negotiating authentication…"
+msgstr "Преговарам потврђивање идентитета…"
+
+#: ../src/hotssh-tab.c:557
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "Решавам „%s“…"
+
+#: ../src/hotssh-tab.c:572
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "Повезујем се са „%s“…"
+
+#: ../src/hotssh-tab.c:789
+msgid "Authenticating…"
+msgstr "Потврђујем идентитет…"
+
+#: ../src/hotssh-tab.c:1038
+msgid "Less than 1 minute ago"
+msgstr "Пре мање од једног минута"
+
+#: ../src/hotssh-tab.c:1041
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "Пре %d минут"
+msgstr[1] "Пре %d минута"
+msgstr[2] "Пре %d минута"
+msgstr[3] "Пре једног минута"
+
+#: ../src/hotssh-tab.c:1045
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "Пре %d сат"
+msgstr[1] "Пре %d сата"
+msgstr[2] "Пре %d сати"
+msgstr[3] "Пре једног сата"
+
+#: ../src/hotssh-tab.c:1048
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "Пре %d дан"
+msgstr[1] "Пре %d дана"
+msgstr[2] "Пре %d дана"
+msgstr[3] "Пре једног дана"
+
+#: ../src/hotssh-tab.c:1070
+msgid "Never"
+msgstr "Никад"
+
+#: ../src/hotssh-tab.c:1076
+msgid "In the future"
+msgstr "У будућности"
+
+#: ../src/hotssh-tab.c:1108
+msgid "Unknown"
+msgstr "Непознато"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Поставке"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_О програму"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Изађи"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "_Прекини везу"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "У_множи"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "У_баци"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Поставке"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Затвори"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "_Поклопи стил системског терминала:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Домаћин: "
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Корисничко име: "
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "_Направи и повежи се"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Назив домаћина"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Коришћено"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Познат"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Додајте нову везу"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "Повезујем се…"
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "Грешка:"
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "Прекини везу"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"Потребно је одобравање ново виђеног кључа домаћина; отисак РСА кључа је:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "Одобри и повежи се"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "Лозинка: "
