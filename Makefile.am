@@ -22,12 +22,6 @@ AM_CFLAGS += $(WARN_CFLAGS)
 EXTRA_DIST += autogen.sh COPYING
 GITIGNOREFILES += aclocal.m4 build-aux config.h.in m4
 
-libgsystem_srcpath := libgsystem
-libgsystem_cflags = $(BUILDDEP_GIO_UNIX_CFLAGS) -I$(srcdir)/libgsystem
-libgsystem_libs = $(BUILDDEP_GIO_UNIX_LIBS)
-include libgsystem/Makefile-libgsystem.am
-noinst_LTLIBRARIES += libgsystem.la
-
 include Makefile-src.am
 
 release-tag:
