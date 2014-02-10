@@ -109,6 +109,8 @@ struct _HotSshTabPrivate
   GSshConnection *connection;
   GSshChannel *channel;
 
+  guint queued_pty_size_id;
+
   gboolean need_pty_size_request;
   gboolean sent_pty_size_request;
   gboolean awaiting_password_entry;
@@ -173,6 +175,11 @@ state_reset_for_new_connection (HotSshTab                *self)
       gtk_label_set_text ((GtkLabel*)priv->connection_text, "");
       gtk_widget_set_sensitive (priv->password_container, TRUE);
       priv->awaiting_password_entry = priv->submitted_password = FALSE;
+    }
+  if (priv->queued_pty_size_id)
+    {
+      g_source_remove (priv->queued_pty_size_id);
+      priv->queued_pty_size_id = 0;
     }
   g_debug ("reset state done");
 }
@@ -843,17 +850,32 @@ on_pty_size_complete (GObject                    *src,
     page_transition_take_error (self, local_error);
 }
 
-static void
-send_pty_size_request (HotSshTab             *self)
+static gboolean
+idle_send_pty_size_request (gpointer user_data)
 {
+  HotSshTab *self = user_data;
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
   guint width = vte_terminal_get_column_count ((VteTerminal*)priv->terminal);
   guint height = vte_terminal_get_row_count ((VteTerminal*)priv->terminal);
-  
+
+  priv->queued_pty_size_id = 0;
   priv->need_pty_size_request = FALSE;
   priv->sent_pty_size_request = TRUE;
   gssh_channel_request_pty_size_async (priv->channel, width, height,
 				       priv->cancellable, on_pty_size_complete, self);
+
+  return FALSE;
+}
+
+static void
+send_pty_size_request (HotSshTab             *self)
+{
+  HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
+
+  if (priv->queued_pty_size_id > 0)
+    return;
+  
+  priv->queued_pty_size_id = g_idle_add (idle_send_pty_size_request, self);
 }
 
 static void
