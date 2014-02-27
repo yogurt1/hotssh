@@ -859,10 +859,16 @@ idle_send_pty_size_request (gpointer user_data)
   guint height = vte_terminal_get_row_count ((VteTerminal*)priv->terminal);
 
   priv->queued_pty_size_id = 0;
-  priv->need_pty_size_request = FALSE;
-  priv->sent_pty_size_request = TRUE;
-  gssh_channel_request_pty_size_async (priv->channel, width, height,
-				       priv->cancellable, on_pty_size_complete, self);
+
+  g_assert (priv->connection);
+
+  if (gssh_connection_get_state (priv->connection) == GSSH_CONNECTION_STATE_CONNECTED)
+    {
+      priv->need_pty_size_request = FALSE;
+      priv->sent_pty_size_request = TRUE;
+      gssh_channel_request_pty_size_async (priv->channel, width, height,
+                                           priv->cancellable, on_pty_size_complete, self);
+    }
 
   return FALSE;
 }
