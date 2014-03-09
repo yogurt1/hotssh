@@ -878,6 +878,9 @@ send_pty_size_request (HotSshTab             *self)
 {
   HotSshTabPrivate *priv = hotssh_tab_get_instance_private (self);
 
+  if (!priv->connection)
+    return;
+
   if (priv->queued_pty_size_id > 0)
     return;
   
