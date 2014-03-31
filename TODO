@@ -1,0 +1,4 @@
+* Better frontpage UI
+ - Allow removing known hosts
+* Special handling for dynamic cloud IPs?
+* Save/restore tabs
