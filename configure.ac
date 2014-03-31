@@ -38,7 +38,7 @@ PKG_PROG_PKG_CONFIG
 GLIB_GSETTINGS
 
 PKG_CHECK_MODULES(BUILDDEP_GIO_UNIX, [gio-unix-2.0 >= 2.34])
-PKG_CHECK_MODULES(BUILDDEP_HOTSSHAPP, [gio-unix-2.0 >= 2.34 gtk+-3.0 >= 3.10.0 vte-2.90 libgsystem libgssh-1])
+PKG_CHECK_MODULES(BUILDDEP_HOTSSHAPP, [gio-unix-2.0 >= 2.34 gtk+-3.0 >= 3.10.0 vte-2.91 libgsystem libgssh-1])
 
 AC_CONFIG_FILES([
 Makefile
