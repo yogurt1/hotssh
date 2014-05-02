@@ -920,10 +920,10 @@ hotssh_tab_style_updated (GtkWidget      *widget)
   bg.red = bg.blue = bg.green = 1;
   bg.alpha = 1;
 
-  vte_terminal_set_color_foreground_rgba ((VteTerminal*)priv->terminal, &fg);
-  vte_terminal_set_color_background_rgba ((VteTerminal*)priv->terminal, &bg);
-  vte_terminal_set_color_bold_rgba ((VteTerminal*)priv->terminal, &fg);
-  vte_terminal_set_color_dim_rgba ((VteTerminal*)priv->terminal, &fg);
+  vte_terminal_set_color_foreground ((VteTerminal*)priv->terminal, &fg);
+  vte_terminal_set_color_background ((VteTerminal*)priv->terminal, &bg);
+  vte_terminal_set_color_bold ((VteTerminal*)priv->terminal, &fg);
+  vte_terminal_set_color_dim ((VteTerminal*)priv->terminal, &fg);
 }
 
 static gboolean
