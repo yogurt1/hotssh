@@ -9,15 +9,16 @@ msgstr ""
 "Project-Id-Version: hotssh master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=hotssh&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-03-21 22:26+0000\n"
-"PO-Revision-Date: 2014-03-22 08:33+0100\n"
+"POT-Creation-Date: 2014-08-06 09:19+0000\n"
+"PO-Revision-Date: 2014-08-06 14:55+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 1.5.4\n"
 
@@ -46,29 +47,30 @@ msgid "Disconnected"
 msgstr "Povezava je prekinjena"
 
 #: ../src/hotssh-tab.c:325 ../src/hotssh-tab.c:1238
-#, fuzzy
 msgid "Authenticated, requesting channel…"
-msgstr "Napaka med podajanjem zahteve za skupinski kanala: %s"
+msgstr "Overitev je končana, poteka povezovanje s kanalom ..."
 
 #: ../src/hotssh-tab.c:390
-#, fuzzy, c-format
+#, c-format
 msgid "No more authentication mechanisms available"
-msgstr "Ni drugih razpoložljivih zrcalnih strežnikov"
+msgstr "Ni drugih razpoložljivih načinov overitve"
 
 #: ../src/hotssh-tab.c:399
-#, fuzzy, c-format
+#, c-format
 msgid "Requesting authentication via '%s'"
-msgstr "Pošlji %s preko elektronske pošte"
+msgstr "Poteka zahteva overitve preko '%s'"
 
 #: ../src/hotssh-tab.c:455
 #, c-format
 msgid ""
 "The remote host key type has changed; it was previously \"%s\", now \"%s\""
 msgstr ""
+"Ključ oddaljenega gostitelja se je spremenil; prej je bil \"%s\", sedaj pa "
+"je \"%s\""
 
 #: ../src/hotssh-tab.c:460
 msgid "The remote host key has changed"
-msgstr ""
+msgstr "Ključ oddaljenega gostitelja se je spremenil"
 
 #: ../src/hotssh-tab.c:469
 #, c-format
@@ -220,7 +222,7 @@ msgstr "Odklopi"
 
 #: ../src/tab.ui.h:11
 msgid "Approval of newly seen host key required; RSA key fingerprint is:"
-msgstr ""
+msgstr "Zahtevana je odobritev za novi ključ gostitelja; Prstni odtis RSA je:"
 
 #: ../src/tab.ui.h:12
 msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
