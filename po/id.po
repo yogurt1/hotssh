@@ -1,0 +1,233 @@
+# Indonesian translation for hotssh.
+# Copyright (C) 2014 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# Andika Triwidada <andika@gmail.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-10-06 21:34+0000\n"
+"PO-Revision-Date: 2014-10-16 13:45+0700\n"
+"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
+"Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: ../src/hotssh-app.c:76
+msgid "SSH client"
+msgstr "Klien SSH"
+
+#: ../src/hotssh-app.c:80 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:81
+msgid "translator-credits"
+msgstr "Andika Triwidada <andika@gmail.com>"
+
+#: ../src/hotssh-app.c:84
+msgid "HotSSH Website"
+msgstr "Situs Web HotSSH"
+
+#: ../src/hotssh-win.c:166
+msgid "Close tab"
+msgstr "Tutup tab"
+
+#: ../src/hotssh-win.c:189
+msgid "Disconnected"
+msgstr "Terputus"
+
+#: ../src/hotssh-tab.c:325 ../src/hotssh-tab.c:1237
+msgid "Authenticated, requesting channel…"
+msgstr "Terotentikasi, meminta kanal…"
+
+#: ../src/hotssh-tab.c:390
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Tak ada mekanisme otentikasi lain yang tersedia"
+
+#: ../src/hotssh-tab.c:399
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "Meminta otentikasi melalui '%s'"
+
+#: ../src/hotssh-tab.c:455
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"Tipe kunci host remote telah berubah; sebelumnya \"%s\", kini \""
+"%s\""
+
+#: ../src/hotssh-tab.c:460
+msgid "The remote host key has changed"
+msgstr "Kunci host remote telah berubah"
+
+#: ../src/hotssh-tab.c:469
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Galat: Kredensial host bagi \"%s\" (%s) tak cocok dengan kredensial "
+"yang sebelumnya disimpan. Ini mungkin merepresentasikan suatu upaya oleh "
+"pihak yang bermaksud buruk untuk mencegat komunikasi; namun juga mungkin "
+"bahwa kunci host diubah oleh seorang administrator sistem.\n"
+"\n"
+"Rincian: %s"
+
+#: ../src/hotssh-tab.c:482 ../src/hotssh-tab.c:813
+msgid "Negotiating authentication…"
+msgstr "Menegosiasikan otentikasi…"
+
+#: ../src/hotssh-tab.c:562
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "Mengurai '%s'…"
+
+#: ../src/hotssh-tab.c:577
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "Menyambung ke '%s'…"
+
+#: ../src/hotssh-tab.c:794
+msgid "Authenticating…"
+msgstr "Mengotentikasi…"
+
+#: ../src/hotssh-tab.c:1066
+msgid "Less than 1 minute ago"
+msgstr "Kurang dari 1 menit yang lalu"
+
+#: ../src/hotssh-tab.c:1069
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d menit yang lalu"
+
+#: ../src/hotssh-tab.c:1073
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d jam yang lalu"
+
+#: ../src/hotssh-tab.c:1076
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d hari yang lalu"
+
+#: ../src/hotssh-tab.c:1098
+msgid "Never"
+msgstr "Tak pernah"
+
+#: ../src/hotssh-tab.c:1104
+msgid "In the future"
+msgstr "Di masa mendatang"
+
+#: ../src/hotssh-tab.c:1136
+msgid "Unknown"
+msgstr "Tak diketahui"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Preferensi"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "Tent_ang"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Keluar"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "_Diputus"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "_Salin"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "Tem_pel"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Preferensi"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Tutup"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "Cocokkan gaya Ter_minal Sistem:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Host: "
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Nama pengguna: "
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "_Buat dan Sambung"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Nama host"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Terakhri Dipakai"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Dikenal"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Tambah Koneksi Baru"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "Menyambung…"
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "Galat:"
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "Putuskan"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"Diperlukan persetujuan atas kunci host yang baru muncul; sidik jari kunci "
+"RSA adalah:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "Setujui dan Sambung"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "Sandi: "
