@@ -1,0 +1,236 @@
+# Hungarian translation for hotssh.
+# Copyright (C) 2014 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+#
+# Balázs Úr <urbalazs@gmail.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-12-21 22:28+0000\n"
+"PO-Revision-Date: 2014-12-22 10:21+0100\n"
+"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
+"Language-Team: Hungarian <gnome-hu-list@gnome.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.2\n"
+
+#: ../src/hotssh-app.c:76
+msgid "SSH client"
+msgstr "SSH kliens"
+
+#: ../src/hotssh-app.c:80 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:81
+msgid "translator-credits"
+msgstr "Úr Balázs <urbalazs@gmail.com>, 2014."
+
+#: ../src/hotssh-app.c:84
+msgid "HotSSH Website"
+msgstr "HotSSH weboldala"
+
+#: ../src/hotssh-win.c:166
+msgid "Close tab"
+msgstr "Lap bezárása"
+
+#: ../src/hotssh-win.c:189
+msgid "Disconnected"
+msgstr "Kapcsolat bontva"
+
+#: ../src/hotssh-tab.c:325 ../src/hotssh-tab.c:1237
+msgid "Authenticated, requesting channel…"
+msgstr "Hitelesítve, csatorna kérve…"
+
+#: ../src/hotssh-tab.c:390
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Nincs több elérhető hitelesítési mechanizmus"
+
+#: ../src/hotssh-tab.c:399
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "Hitelesítés kérése a következőn keresztül: „%s”"
+
+#: ../src/hotssh-tab.c:455
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"A távoli gép kulcsának típusa megváltozott; korábban „%s” volt, most „%s”"
+
+#: ../src/hotssh-tab.c:460
+msgid "The remote host key has changed"
+msgstr "A távoli gép kulcsa megváltozott"
+
+#: ../src/hotssh-tab.c:469
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Hiba: A gép hitelesítési adatai ennél: „%s” (%s) nem egyeznek az előzőleg "
+"elmentett hitelesítési adatokkal. Ez azt is jelentheti, hogy egy "
+"rosszindulatú fél megpróbálja elfogni a kommunikációt, habár az is "
+"lehetséges, hogy a rendszergazda változtatta meg a gép kulcsát.\n"
+"\n"
+"Részletek: %s"
+
+#: ../src/hotssh-tab.c:482 ../src/hotssh-tab.c:813
+msgid "Negotiating authentication…"
+msgstr "Hitelesítés egyeztetése…"
+
+#: ../src/hotssh-tab.c:562
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "„%s” feloldása…"
+
+#: ../src/hotssh-tab.c:577
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "Kapcsolódás a következőhöz: „%s”…"
+
+#: ../src/hotssh-tab.c:794
+msgid "Authenticating…"
+msgstr "Hitelesítés…"
+
+#: ../src/hotssh-tab.c:1066
+msgid "Less than 1 minute ago"
+msgstr "Kevesebb, mint egy perce"
+
+#: ../src/hotssh-tab.c:1069
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d perce"
+msgstr[1] "%d perce"
+
+#: ../src/hotssh-tab.c:1073
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d órája"
+msgstr[1] "%d órája"
+
+#: ../src/hotssh-tab.c:1076
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d napja"
+msgstr[1] "%d napja"
+
+#: ../src/hotssh-tab.c:1098
+msgid "Never"
+msgstr "Soha"
+
+#: ../src/hotssh-tab.c:1104
+msgid "In the future"
+msgstr "A jövőben"
+
+#: ../src/hotssh-tab.c:1136
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Beállítások"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_Névjegy"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Kilépés"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "Kap_csolat bontása"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "_Másolás"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "_Beillesztés"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Beállítások"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Bezárás"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "_Rendszerterminál stílus egyeztetése:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Gép: "
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Felhasználónév: "
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "_Létrehozás és kapcsolódás"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Gépnév"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Legutóbb használt"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Ismert"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Új kapcsolat hozzáadása"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "Kapcsolódás…"
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "Hiba:"
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "Kapcsolat bontása"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"Az újonnan megtekintett gép kulcsának jóváhagyása szükséges; az RSA-kulcs "
+"ujjlenyomata:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "Jóváhagyás és kapcsolódás"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "Jelszó: "
+
