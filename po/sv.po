@@ -1,0 +1,236 @@
+# Swedish translation for hotssh.
+# Copyright © 2014 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# Åke Engelbrektson <eson57@gmail.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-12-08 22:19+0000\n"
+"PO-Revision-Date: 2014-12-19 08:54+0100\n"
+"Last-Translator: Åke Engelbrektson <eson57@gmail.com>\n"
+"Language-Team: Swedish <gnome-se-list@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.7.1\n"
+"Language: sv\n"
+
+#: ../src/hotssh-app.c:76
+msgid "SSH client"
+msgstr "SSH-klient"
+
+#: ../src/hotssh-app.c:80 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:81
+msgid "translator-credits"
+msgstr "Åke Engelbrektson <eson57@gmail.com>,2014"
+
+#: ../src/hotssh-app.c:84
+msgid "HotSSH Website"
+msgstr "HotSSH webbplats"
+
+#: ../src/hotssh-win.c:166
+msgid "Close tab"
+msgstr "Stäng flik"
+
+#: ../src/hotssh-win.c:189
+msgid "Disconnected"
+msgstr "Frånkopplad"
+
+#: ../src/hotssh-tab.c:325 ../src/hotssh-tab.c:1237
+msgid "Authenticated, requesting channel…"
+msgstr "Autentiserad, begär kanal..."
+
+#: ../src/hotssh-tab.c:390
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Inga fler autentiseringsmekanismer tillgängliga"
+
+#: ../src/hotssh-tab.c:399
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "Begära autentisering via '%s'"
+
+#: ../src/hotssh-tab.c:455
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"Fjärrvärdens nyckeltyp har ändrats, den föregående var \"%s\", nuvarande är "
+"\"%s\""
+
+#: ../src/hotssh-tab.c:460
+msgid "The remote host key has changed"
+msgstr "Fjärrvärdens nyckel har ändrats"
+
+#: ../src/hotssh-tab.c:469
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Fel: Värdreferenserna för \"%s\" (%s), stämmer inte överens med tidigare "
+"sparade referenser. Detta kan innebära ett försök att avlyssna "
+"kommunikationen. Det är också möjligt att värdnyckeln ändrats av någon "
+"systemadministratör.\n"
+"\n"
+"Detaljer: %s"
+
+#: ../src/hotssh-tab.c:482 ../src/hotssh-tab.c:813
+msgid "Negotiating authentication…"
+msgstr "Förhandlar autentisering..."
+
+#: ../src/hotssh-tab.c:562
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "Slår upp %s..."
+
+#: ../src/hotssh-tab.c:577
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "Ansluter till '%s'…"
+
+#: ../src/hotssh-tab.c:794
+msgid "Authenticating…"
+msgstr "Autentiserar..."
+
+#: ../src/hotssh-tab.c:1066
+msgid "Less than 1 minute ago"
+msgstr "Mindre än en minut sedan"
+
+#: ../src/hotssh-tab.c:1069
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d minut sedan"
+msgstr[1] "%d minuter sedan"
+
+#: ../src/hotssh-tab.c:1073
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d timma sedan"
+msgstr[1] "%d timmar sedan"
+
+#: ../src/hotssh-tab.c:1076
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dag sedan"
+msgstr[1] "%d dagar sedan"
+
+#: ../src/hotssh-tab.c:1098
+msgid "Never"
+msgstr "Aldrig"
+
+#: ../src/hotssh-tab.c:1104
+msgid "In the future"
+msgstr "I fortsättningen"
+
+#: ../src/hotssh-tab.c:1136
+msgid "Unknown"
+msgstr "Okänd"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Inställningar"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_Om"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Avsluta"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "_Koppla ifrån"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "_Kopiera"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "_Klistra in"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Stäng"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "_Matcha systemterminalstil:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Värd:"
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Användarnamn:"
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "_Skapa och anslut"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Värdnamn"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Senast använd"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Känd"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Lägg till ny anslutning"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "Ansluter..."
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "Fel:"
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "Koppla ifrån"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"Godkännande av nyligen upptäckt värdnyckel krävs. RSA-nyckelns "
+"fingeravtryck är:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "Godkänn och anslut"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "Lösenord:"
