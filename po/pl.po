@@ -4,14 +4,14 @@
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
 # gnomepl@aviary.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2014.
-# Aviary.pl <gnomepl@aviary.pl>, 2009-2014.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2015.
+# Aviary.pl <gnomepl@aviary.pl>, 2009-2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: hotssh\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-03 15:15+0100\n"
-"PO-Revision-Date: 2014-01-03 15:17+0100\n"
+"POT-Creation-Date: 2015-09-03 02:14+0200\n"
+"PO-Revision-Date: 2015-09-03 02:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -23,59 +23,59 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: Poland\n"
 
-#: ../src/hotssh-app.c:78
+#: ../src/hotssh-app.c:76
 msgid "SSH client"
 msgstr "Klient SSH"
 
-#: ../src/hotssh-app.c:82 ../src/window.ui.h:1
+#: ../src/hotssh-app.c:80 ../src/window.ui.h:1
 msgid "HotSSH"
 msgstr "HotSSH"
 
-#: ../src/hotssh-app.c:83
+#: ../src/hotssh-app.c:81
 msgid "translator-credits"
 msgstr ""
-"Piotr Drąg <piotrdrag@gmail.com>, 2009-2014\n"
-"Aviary.pl <gnomepl@aviary.pl>, 2009-2014"
+"Piotr Drąg <piotrdrag@gmail.com>, 2009-2015\n"
+"Aviary.pl <gnomepl@aviary.pl>, 2009-2015"
 
-#: ../src/hotssh-app.c:86
+#: ../src/hotssh-app.c:84
 msgid "HotSSH Website"
-msgstr "Witryna HotSSH"
+msgstr "Witryna programu HotSSH"
 
-#: ../src/hotssh-win.c:164
+#: ../src/hotssh-win.c:166
 msgid "Close tab"
-msgstr "Zamknij kartę"
+msgstr "Zamyka kartę"
 
-#: ../src/hotssh-win.c:187
+#: ../src/hotssh-win.c:189
 msgid "Disconnected"
 msgstr "Rozłączono"
 
-#: ../src/hotssh-tab.c:320 ../src/hotssh-tab.c:1176
+#: ../src/hotssh-tab.c:325 ../src/hotssh-tab.c:1237
 msgid "Authenticated, requesting channel…"
 msgstr "Uwierzytelniono, żądanie kanału…"
 
-#: ../src/hotssh-tab.c:385
+#: ../src/hotssh-tab.c:390
 #, c-format
 msgid "No more authentication mechanisms available"
 msgstr "Nie ma więcej dostępnych mechanizmów uwierzytelniania"
 
-#: ../src/hotssh-tab.c:394
+#: ../src/hotssh-tab.c:399
 #, c-format
 msgid "Requesting authentication via '%s'"
-msgstr "Żądanie uwierzytelniania przez \"%s\""
+msgstr "Żądanie uwierzytelniania przez „%s”"
 
-#: ../src/hotssh-tab.c:450
+#: ../src/hotssh-tab.c:455
 #, c-format
 msgid ""
 "The remote host key type has changed; it was previously \"%s\", now \"%s\""
 msgstr ""
-"Typ klucza zdalnego komputera został zmieniony; poprzednio wynosił \"%s\", "
-"teraz wynosi \"%s\""
+"Typ klucza zdalnego komputera został zmieniony; poprzednio wynosił „%s”, "
+"teraz wynosi „%s”"
 
-#: ../src/hotssh-tab.c:455
+#: ../src/hotssh-tab.c:460
 msgid "The remote host key has changed"
 msgstr "Klucz zdalnego komputera został zmieniony"
 
-#: ../src/hotssh-tab.c:464
+#: ../src/hotssh-tab.c:469
 #, c-format
 msgid ""
 "Error: The host credentials for \"%s\" (%s) do not match the previously "
@@ -85,36 +85,36 @@ msgid ""
 "\n"
 "Details: %s"
 msgstr ""
-"Błąd: dane uwierzytelniające komputera dla \"%s\" (%s) nie pasują do "
+"Błąd: dane uwierzytelniające komputera dla „%s” (%s) nie pasują do "
 "poprzednio zapisanych danych. Może to oznaczać próbę przejęcia komunikacji "
 "przez niewłaściwą osobę, jednakże może też oznaczać, że administrator "
 "systemu zmienił klucz komputera.\n"
 "\n"
 "Szczegóły: %s"
 
-#: ../src/hotssh-tab.c:477 ../src/hotssh-tab.c:804
+#: ../src/hotssh-tab.c:482 ../src/hotssh-tab.c:813
 msgid "Negotiating authentication…"
 msgstr "Negocjowanie uwierzytelniania…"
 
-#: ../src/hotssh-tab.c:557
+#: ../src/hotssh-tab.c:562
 #, c-format
 msgid "Resolving '%s'…"
-msgstr "Rozwiązywanie \"%s\"…"
+msgstr "Rozwiązywanie „%s”…"
 
-#: ../src/hotssh-tab.c:572
+#: ../src/hotssh-tab.c:577
 #, c-format
 msgid "Connecting to '%s'…"
-msgstr "Łączenie z \"%s\"…"
+msgstr "Łączenie z „%s”…"
 
-#: ../src/hotssh-tab.c:785
+#: ../src/hotssh-tab.c:794
 msgid "Authenticating…"
 msgstr "Uwierzytelnianie…"
 
-#: ../src/hotssh-tab.c:1006
+#: ../src/hotssh-tab.c:1066
 msgid "Less than 1 minute ago"
 msgstr "Mniej niż minuta temu"
 
-#: ../src/hotssh-tab.c:1009
+#: ../src/hotssh-tab.c:1069
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
@@ -122,7 +122,7 @@ msgstr[0] "%d minuta temu"
 msgstr[1] "%d minuty temu"
 msgstr[2] "%d minut temu"
 
-#: ../src/hotssh-tab.c:1013
+#: ../src/hotssh-tab.c:1073
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
@@ -130,7 +130,7 @@ msgstr[0] "%d godzina temu"
 msgstr[1] "%d godziny temu"
 msgstr[2] "%d godzin temu"
 
-#: ../src/hotssh-tab.c:1016
+#: ../src/hotssh-tab.c:1076
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -138,15 +138,15 @@ msgstr[0] "%d dzień temu"
 msgstr[1] "%d dni temu"
 msgstr[2] "%d dni temu"
 
-#: ../src/hotssh-tab.c:1038
+#: ../src/hotssh-tab.c:1098
 msgid "Never"
 msgstr "Nigdy"
 
-#: ../src/hotssh-tab.c:1044
+#: ../src/hotssh-tab.c:1104
 msgid "In the future"
 msgstr "W przyszłości"
 
-#: ../src/hotssh-tab.c:1076
+#: ../src/hotssh-tab.c:1136
 msgid "Unknown"
 msgstr "Nieznane"
 
