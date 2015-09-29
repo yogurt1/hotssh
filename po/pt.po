@@ -1,0 +1,237 @@
+# HotSSH
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: HotSSH\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-08-13 10:14+0000\n"
+"PO-Revision-Date: 2015-09-29 06:36+0100\n"
+"Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
+"Language-Team: Português <palbuquerque73@gmail.com>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\\n\n"
+"X-Generator: Gtranslator 2.91.6\n"
+"X-Project-Style: gnome\n"
+
+#: ../src/hotssh-app.c:76
+msgid "SSH client"
+msgstr "Cliente SSH"
+
+#: ../src/hotssh-app.c:80 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:81
+msgid "translator-credits"
+msgstr "Pedro Albuquerque <palbuquerque73@gmail.com>"
+
+#: ../src/hotssh-app.c:84
+msgid "HotSSH Website"
+msgstr "Página web do HotSSH"
+
+#: ../src/hotssh-win.c:166
+msgid "Close tab"
+msgstr "Fechar separador"
+
+#: ../src/hotssh-win.c:189
+msgid "Disconnected"
+msgstr "Desligado"
+
+#: ../src/hotssh-tab.c:325 ../src/hotssh-tab.c:1237
+msgid "Authenticated, requesting channel…"
+msgstr "Autenticado, a pedir canal…"
+
+#: ../src/hotssh-tab.c:390
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Não há mais mecanismos de autenticação disponíveis"
+
+#: ../src/hotssh-tab.c:399
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "A pedir autenticação via \"%s\""
+
+#: ../src/hotssh-tab.c:455
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"O tipo de chave do anfitrião remoto foi alterado; era anteriormente \"%s\", "
+"agora é \"%s\""
+
+#: ../src/hotssh-tab.c:460
+msgid "The remote host key has changed"
+msgstr "O tipo de chave do anfitrião remoto foi alterado"
+
+#: ../src/hotssh-tab.c:469
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Erro: as credenciais do anfitrião remoto para \"%s\" (%s) não correspondem "
+"às credenciais previamente gravadas. Isto pode ser uma tentativa maliciosa "
+"para interceptar a comunicação; contudo, também é possível que a chave do "
+"anfitrião tenha sido alterada por um administrador.\n"
+"\n"
+"Detalhes: %s"
+
+#: ../src/hotssh-tab.c:482 ../src/hotssh-tab.c:813
+msgid "Negotiating authentication…"
+msgstr "A negociar a autenticação…"
+
+#: ../src/hotssh-tab.c:562
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "A resolver \"%s\"…"
+
+#: ../src/hotssh-tab.c:577
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "A ligar a \"%s\"…"
+
+#: ../src/hotssh-tab.c:794
+msgid "Authenticating…"
+msgstr "A autenticar…"
+
+#: ../src/hotssh-tab.c:1066
+msgid "Less than 1 minute ago"
+msgstr "Menos de um minuto atrás"
+
+#: ../src/hotssh-tab.c:1069
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d minuto atrás"
+msgstr[1] "%d minutos atrás"
+
+#: ../src/hotssh-tab.c:1073
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d hora atrás"
+msgstr[1] "%d horas atrás"
+
+#: ../src/hotssh-tab.c:1076
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dia atrás"
+msgstr[1] "%d dias atrás"
+
+#: ../src/hotssh-tab.c:1098
+msgid "Never"
+msgstr "Nunca"
+
+#: ../src/hotssh-tab.c:1104
+msgid "In the future"
+msgstr "No futuro"
+
+#: ../src/hotssh-tab.c:1136
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Preferências"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_Sobre"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Sair"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "_Desligar"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "_Copiar"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "Co_Lar"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Preferências"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Fechar"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "_Comparar estilo do terminal de sistema:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Anfitrião:"
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Utilizador: "
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "_Criar e ligar"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Nome do anfitrião"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Último uso"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "Conhecido"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Adicionar nova ligação"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "A ligar…"
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "Erro:"
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "Desligar"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"É necessária aprovação da nova chave de anfitrião; a impressão digital da "
+"chave RSA é:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "Aprovar e ligar"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "Senha:"
