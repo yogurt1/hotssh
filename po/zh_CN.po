@@ -1,0 +1,228 @@
+# Chinese (China) translation for hotssh.
+# Copyright (C) 2015 hotssh's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hotssh package.
+# liushuyu <liushuyu_011@126.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-11-11 12:36+0000\n"
+"PO-Revision-Date: 2015-11-12 17:15+0800\n"
+"Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
+"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../src/hotssh-app.c:76
+msgid "SSH client"
+msgstr "SSH 客户端"
+
+#: ../src/hotssh-app.c:80 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:81
+msgid "translator-credits"
+msgstr ""
+"liushuyu <liushuyu_011@126.com>\n"
+"Aron Xu <happyaron.xu@gmail.com>"
+
+#: ../src/hotssh-app.c:84
+msgid "HotSSH Website"
+msgstr "HotSSH 网站"
+
+#: ../src/hotssh-win.c:166
+msgid "Close tab"
+msgstr "关闭标签页"
+
+#: ../src/hotssh-win.c:189
+msgid "Disconnected"
+msgstr "已断开"
+
+#: ../src/hotssh-tab.c:325 ../src/hotssh-tab.c:1237
+msgid "Authenticated, requesting channel…"
+msgstr "已通过身份验证，正在请求频道..."
+
+#: ../src/hotssh-tab.c:390
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "没有更多可用的身份验证机制"
+
+#: ../src/hotssh-tab.c:399
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "正在通过 %s 认证"
+
+#: ../src/hotssh-tab.c:455
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr "远程主机密钥类型已更改，以前是 %s，现在是 %s"
+
+#: ../src/hotssh-tab.c:460
+msgid "The remote host key has changed"
+msgstr "远程主机密钥已更改"
+
+#: ../src/hotssh-tab.c:469
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"错误：%s (%s) 的主机凭据与以前保存的凭据不匹配。 这可能是因为有恶意方在试图"
+"监听通信内容，也可能是因为主机密钥已被系统管理员修改。\n"
+"\n"
+"详细信息: %s"
+
+#: ../src/hotssh-tab.c:482 ../src/hotssh-tab.c:813
+msgid "Negotiating authentication…"
+msgstr "正在协商认证..."
+
+#: ../src/hotssh-tab.c:562
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "正在解析 %s..."
+
+#: ../src/hotssh-tab.c:577
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "正在连接 %s..."
+
+#: ../src/hotssh-tab.c:794
+msgid "Authenticating…"
+msgstr "正在认证..."
+
+#: ../src/hotssh-tab.c:1066
+msgid "Less than 1 minute ago"
+msgstr "不到1分钟前"
+
+#: ../src/hotssh-tab.c:1069
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d 分钟前"
+
+#: ../src/hotssh-tab.c:1073
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d 小时前"
+
+#: ../src/hotssh-tab.c:1076
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d 天前"
+
+#: ../src/hotssh-tab.c:1098
+msgid "Never"
+msgstr "从未"
+
+#: ../src/hotssh-tab.c:1104
+msgid "In the future"
+msgstr "未来"
+
+#: ../src/hotssh-tab.c:1136
+msgid "Unknown"
+msgstr "未知"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "首选项(_P)"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "关于(_A)"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "退出(_Q)"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "断开连接(_D)"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "复制(_C)"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "粘贴(_P)"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "首选项"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "关闭(_C)"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "匹配系统终端样式(_M):"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "主机: "
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "用户名: "
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "创建和连接(_C)"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "主机名"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "上次使用"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "已知"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "添加新连接"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "正在连接..."
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "错误："
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "断开"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr "需要批准新看到的主机密钥，RSA 密钥指纹是:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "批准并连接"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "密码: "
