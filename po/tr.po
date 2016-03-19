@@ -1,4 +1,5 @@
 #
+# İşbaran Akçayır <isbaran@gmail.com>, 2015.
 # Gökhan Gurbetoğlu <ggurbet@gmail.com>, 2016.
 #
 msgid ""
