@@ -1,0 +1,230 @@
+#
+# Gökhan Gurbetoğlu <ggurbet@gmail.com>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hotssh master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=hotssh&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-02-23 10:32+0000\n"
+"PO-Revision-Date: 2016-03-19 17:10+0200\n"
+"Last-Translator: Gökhan Gurbetoğlu <ggurbet@gmail.com>\n"
+"Language-Team: Türkçe <gnome-turk@gnome.org>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Gtranslator 2.91.6\n"
+"X-POOTLE-MTIME: 1424335787.000000\n"
+
+#: ../src/hotssh-app.c:76
+msgid "SSH client"
+msgstr "SSH istemcisi"
+
+#: ../src/hotssh-app.c:80 ../src/window.ui.h:1
+msgid "HotSSH"
+msgstr "HotSSH"
+
+#: ../src/hotssh-app.c:81
+msgid "translator-credits"
+msgstr "İşbaran Akçayır <isbaran@gmail.com>"
+
+#: ../src/hotssh-app.c:84
+msgid "HotSSH Website"
+msgstr "HotSSH Web sitesi"
+
+#: ../src/hotssh-win.c:166
+msgid "Close tab"
+msgstr "Sekmeyi kapat"
+
+#: ../src/hotssh-win.c:189
+msgid "Disconnected"
+msgstr "Bağlantı kesildi"
+
+#: ../src/hotssh-tab.c:325 ../src/hotssh-tab.c:1237
+msgid "Authenticated, requesting channel…"
+msgstr "Doğrulandı, kanal isteniyor…"
+
+#: ../src/hotssh-tab.c:390
+#, c-format
+msgid "No more authentication mechanisms available"
+msgstr "Başka kullanılabilir kimlik doğrulama mekanizması yok"
+
+#: ../src/hotssh-tab.c:399
+#, c-format
+msgid "Requesting authentication via '%s'"
+msgstr "'%s' aracılığıyla kimlik doğrulama isteniyor"
+
+#: ../src/hotssh-tab.c:455
+#, c-format
+msgid ""
+"The remote host key type has changed; it was previously \"%s\", now \"%s\""
+msgstr ""
+"Uzak istemci anahtar türü değişti; daha önce \"%s\" idi, şimdi \"%s\" oldu"
+
+#: ../src/hotssh-tab.c:460
+msgid "The remote host key has changed"
+msgstr "Uzak makine anahtar türü değişti"
+
+#: ../src/hotssh-tab.c:469
+#, c-format
+msgid ""
+"Error: The host credentials for \"%s\" (%s) do not match the previously "
+"saved credentials.  This may represent an attempt by a malicious party to "
+"intercept communication; however, it is also possible that the host key was "
+"changed by a system administrator.\n"
+"\n"
+"Details: %s"
+msgstr ""
+"Hata: \"%s\" (%s) için istemci kimliği daha önce kaydedilenle eşleşmiyor.  "
+"Bu, kötü niyetli şahısların iletişimin arasına sızmaya çalıştığı anlamına "
+"geliyor olabilir; ancak istemci anahtarı sistem yöneticisi tarafından da "
+"değiştirilmiş olabilir.\n"
+"\n"
+"Ayrıntılar: %s"
+
+#: ../src/hotssh-tab.c:482 ../src/hotssh-tab.c:813
+msgid "Negotiating authentication…"
+msgstr "Kimlik doğrulama görüşülüyor…"
+
+#: ../src/hotssh-tab.c:562
+#, c-format
+msgid "Resolving '%s'…"
+msgstr "'%s' çözülüyor…"
+
+#: ../src/hotssh-tab.c:577
+#, c-format
+msgid "Connecting to '%s'…"
+msgstr "'%s' bağlantısı yapılıyor…"
+
+#: ../src/hotssh-tab.c:794
+msgid "Authenticating…"
+msgstr "Kimlik doğrulanıyor…"
+
+#: ../src/hotssh-tab.c:1066
+msgid "Less than 1 minute ago"
+msgstr "1 dakikadan daha kısa süre önce"
+
+#: ../src/hotssh-tab.c:1069
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d dakika önce"
+
+#: ../src/hotssh-tab.c:1073
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d saat önce"
+
+#: ../src/hotssh-tab.c:1076
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d gün önce"
+
+#: ../src/hotssh-tab.c:1098
+msgid "Never"
+msgstr "Asla"
+
+#: ../src/hotssh-tab.c:1104
+msgid "In the future"
+msgstr "Gelecekte"
+
+#: ../src/hotssh-tab.c:1136
+msgid "Unknown"
+msgstr "Bilinmeyen"
+
+#: ../src/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Tercihler"
+
+#: ../src/app-menu.ui.h:2
+msgid "_About"
+msgstr "_Hakkında"
+
+#: ../src/app-menu.ui.h:3
+msgid "_Quit"
+msgstr "_Çık"
+
+#: ../src/gears-menu.ui.h:1
+msgid "_Disconnect"
+msgstr "_Bağlantıyı Kes"
+
+#: ../src/gears-menu.ui.h:2
+msgid "_Copy"
+msgstr "_Kopyala"
+
+#: ../src/gears-menu.ui.h:3
+msgid "_Paste"
+msgstr "_Yapıştır"
+
+#: ../src/prefs.ui.h:1
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: ../src/prefs.ui.h:2
+msgid "_Close"
+msgstr "_Kapat"
+
+#: ../src/prefs.ui.h:3
+msgid "_Match System Terminal style:"
+msgstr "_Sistem Uçbirimi biçemiyle eşleş:"
+
+#: ../src/tab.ui.h:1
+msgid "Host: "
+msgstr "Makine: "
+
+#: ../src/tab.ui.h:2
+msgid "Username: "
+msgstr "Kullanıcı adı: "
+
+#: ../src/tab.ui.h:3
+msgid "_Create and Connect"
+msgstr "_Oluştur ve Bağlan"
+
+#: ../src/tab.ui.h:4
+msgid "Hostname"
+msgstr "Makine Adı"
+
+#: ../src/tab.ui.h:5
+msgid "Last Used"
+msgstr "Son Kullanım"
+
+#: ../src/tab.ui.h:6
+msgid "Known"
+msgstr "_Bilinen"
+
+#: ../src/tab.ui.h:7
+msgid "Add New Connection"
+msgstr "Yeni Bağlantı Ekle"
+
+#: ../src/tab.ui.h:8
+msgid "Connecting…"
+msgstr "Bağlanıyor…"
+
+#: ../src/tab.ui.h:9
+msgid "Error:"
+msgstr "Hata:"
+
+#: ../src/tab.ui.h:10
+msgid "Disconnect"
+msgstr "Bağlantıyı Kes"
+
+#: ../src/tab.ui.h:11
+msgid "Approval of newly seen host key required; RSA key fingerprint is:"
+msgstr ""
+"Yeni görülen makine anahtarının onayı gerekiyor; RSA anahtar parmak izi:"
+
+#: ../src/tab.ui.h:12
+msgid "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+msgstr "00:--:--:--:--:--:--:--:--:--:--:--:--:--:--:00"
+
+#: ../src/tab.ui.h:13
+msgid "Approve and Connect"
+msgstr "Onayla ve Bağlan"
+
+#: ../src/tab.ui.h:14
+msgid "Password: "
+msgstr "Parola: "
